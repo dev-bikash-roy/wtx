@@ -63,6 +63,11 @@
   input[type='time']::-webkit-calendar-picker-indicator {
     @apply rounded-md dark:bg-neutral-500;
   }
+  
+  /* Ensure base styles are applied */
+  body {
+    @apply bg-white text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200;
+  }
 }
 
 @utility container {
@@ -102,11 +107,6 @@
     display: none;
   }
 }
-
-/* // CARD TITLE */
-/* @utility post-card-title {
-  @apply transition-colors duration-75 hover:text-primary-900 hover:underline dark:hover:text-primary-300;
-} */
 
 /* // Z-MAX */
 @utility z-max {

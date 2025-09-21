@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable source maps for better debugging
+  productionBrowserSourceMaps: true,
+  
+  // Ensure proper handling of static assets
   images: {
     minimumCacheTTL: 2678400 * 6, // 3 months
     remotePatterns: [
@@ -55,6 +59,17 @@ const nextConfig = {
       },
     ],
   },
+  
+  // Ensure proper handling of CSS and static assets
+  experimental: {
+    optimizeCss: true,
+  },
+  
+  // Ensure proper asset handling
+  assetPrefix: '',
+  
+  // Ensure proper trailing slash handling
+  trailingSlash: false,
 }
 
 export default nextConfig

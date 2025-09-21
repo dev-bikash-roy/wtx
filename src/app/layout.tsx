@@ -1,4 +1,5 @@
 import '@/styles/tailwind.css'
+import '@/app/globals.css'
 import { Metadata } from 'next'
 import { Be_Vietnam_Pro } from 'next/font/google'
 import ThemeProvider from './theme-provider'
