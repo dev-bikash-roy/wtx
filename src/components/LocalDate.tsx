@@ -1,6 +1,6 @@
 'use client'
 
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 
 interface Props {
   date: string
@@ -9,9 +9,13 @@ interface Props {
 }
 
 const LocalDate: FC<Props> = ({ date, className, options = { month: 'short', day: 'numeric', year: 'numeric' } }) => {
+  const formattedDate = useMemo(() => {
+    return new Date(date).toLocaleDateString('en-US', options)
+  }, [date, options])
+
   return (
     <time dateTime={date} className={className}>
-      {new Date(date).toLocaleDateString('en-US', options)}
+      {formattedDate}
     </time>
   )
 }

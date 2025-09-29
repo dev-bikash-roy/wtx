@@ -3,6 +3,7 @@ import '@/app/globals.css'
 import { Metadata } from 'next'
 import { Be_Vietnam_Pro } from 'next/font/google'
 import ThemeProvider from './theme-provider'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['latin'],
@@ -23,9 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={beVietnamPro.className}>
       <body className="bg-white text-base text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200">
-        <ThemeProvider>
-          <div>{children}</div>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <div>{children}</div>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   )

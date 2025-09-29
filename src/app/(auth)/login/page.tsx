@@ -1,10 +1,14 @@
+'use client'
+
 import ButtonPrimary from '@/shared/ButtonPrimary'
 import { Field, Label } from '@/shared/fieldset'
 import Input from '@/shared/Input'
 import Logo from '@/shared/Logo'
-import { Metadata } from 'next'
 import Link from 'next/link'
 import type { JSX } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 const socials: {
   name: string
@@ -48,12 +52,52 @@ const socials: {
   },
 ]
 
-export const metadata: Metadata = {
-  title: 'Login',
-  description: 'Login to your account',
-}
+const LoginPage = () => {
+  const { login, user } = useAuth()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const redirect = searchParams.get('redirect') || '/dashboard/posts'
+  
+  // If user is already logged in, redirect to dashboard
+  useEffect(() => {
+    if (user) {
+      console.log('User already logged in, redirecting to:', redirect)
+      router.push(redirect)
+    }
+  }, [user, router, redirect])
 
-const Page = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError('')
+    
+    const formData = new FormData(e.currentTarget)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    
+    console.log('Form submitted with:', { email, password })
+    
+    try {
+      const userData = await login(email, password)
+      console.log('Login result:', userData)
+      
+      if (userData) {
+        console.log('Login successful, redirecting to:', redirect)
+        router.push(redirect)
+      } else {
+        setError('Invalid email or password')
+      }
+    } catch (err) {
+      setError('An error occurred during login')
+      console.error(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="container">
       <div className="my-16 flex justify-center">
@@ -81,10 +125,15 @@ const Page = () => {
           <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 border border-neutral-100 dark:border-neutral-800"></div>
         </div>
         {/* FORM */}
-        <form className="grid grid-cols-1 gap-6" action="#" method="post">
+        <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
+          {error && (
+            <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
+              <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
+            </div>
+          )}
           <Field className="block">
             <Label className="text-neutral-800 dark:text-neutral-200">Email address</Label>
-            <Input type="email" placeholder="example@example.com" className="mt-1" />
+            <Input type="email" name="email" placeholder="example@example.com" className="mt-1" required />
           </Field>
           <Field className="block">
             <div className="flex items-center justify-between text-neutral-800 dark:text-neutral-200">
@@ -93,9 +142,11 @@ const Page = () => {
                 Forgot password?
               </Link>
             </div>
-            <Input type="password" className="mt-1" />
+            <Input type="password" name="password" className="mt-1" required />
           </Field>
-          <ButtonPrimary type="submit">Login</ButtonPrimary>
+          <ButtonPrimary type="submit" disabled={isLoading}>
+            {isLoading ? 'Logging in...' : 'Login'}
+          </ButtonPrimary>
         </form>
 
         {/* ==== */}
@@ -110,4 +161,4 @@ const Page = () => {
   )
 }
 
-export default Page
+export default LoginPage

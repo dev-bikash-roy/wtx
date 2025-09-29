@@ -14,10 +14,12 @@ export const ThemeContext = createContext<ThemeContextValue | null>(null)
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
   const [themeDir, setThemeDir] = useState<'rtl' | 'ltr'>('ltr')
+  const [isMounted, setIsMounted] = useState(false)
 
   // themeMode
   useEffect(() => {
-    if (localStorage.getItem('theme') === 'dark-mode') {
+    setIsMounted(true)
+    if (typeof window !== 'undefined' && localStorage.getItem('theme') === 'dark-mode') {
       setIsDarkMode(true)
       const root = document.querySelector('html')
       if (root && !root.classList.contains('dark')) {
@@ -43,33 +45,39 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   // This ensures that the document's direction is set correctly
   // when the themeDir state changes.
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && isMounted) {
       document.documentElement.setAttribute('dir', themeDir)
     }
-  }, [themeDir])
+  }, [themeDir, isMounted])
 
   // toggleDarkMode
   // This function toggles the dark mode state and updates the localStorage
   // and the HTML class accordingly
   const toggleDarkMode = useCallback((): void => {
-    if (localStorage.getItem('theme') === 'light-mode') {
-      setIsDarkMode(true)
-      const root = document.querySelector('html')
-      if (root && !root.classList.contains('dark')) {
-        root.classList.add('dark')
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('theme') === 'light-mode') {
+        setIsDarkMode(true)
+        const root = document.querySelector('html')
+        if (root && !root.classList.contains('dark')) {
+          root.classList.add('dark')
+        }
+        localStorage.setItem('theme', 'dark-mode')
+      } else {
+        setIsDarkMode(false)
+        const root = document.querySelector('html')
+        if (root) {
+          root.classList.remove('dark')
+        }
+        localStorage.setItem('theme', 'light-mode')
       }
-      localStorage.setItem('theme', 'dark-mode')
-    } else {
-      setIsDarkMode(false)
-      const root = document.querySelector('html')
-      if (root) {
-        root.classList.remove('dark')
-      }
-      localStorage.setItem('theme', 'light-mode')
     }
   }, [])
 
-  //
+  // Prevent rendering on server to avoid hydration mismatch
+  if (!isMounted) {
+    return <div style={{ visibility: 'hidden' }}>{children}</div>
+  }
+
   return (
     <ThemeContext.Provider
       value={{

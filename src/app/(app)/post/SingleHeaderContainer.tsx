@@ -195,9 +195,12 @@ const HeaderAudio = ({ className, post }: Omit<Props, 'defaultStyle'>) => {
 }
 
 const HeaderVideo = ({ className, post }: Omit<Props, 'defaultStyle'>) => {
+  // Fix: Add null check for videoUrl
+  const safeVideoUrl = post.videoUrl || ''
+  
   return (
     <div className={clsx('single-header-style-video', className)}>
-      <VideoPlayer videoUrl={post.videoUrl} />
+      <VideoPlayer videoUrl={safeVideoUrl} />
       <div className="container mt-10 pb-5">
         <TitleAndMeta post={post} />
       </div>
@@ -206,6 +209,9 @@ const HeaderVideo = ({ className, post }: Omit<Props, 'defaultStyle'>) => {
 }
 
 const HeaderGallery = ({ className, post }: Omit<Props, 'defaultStyle'>) => {
+  // Fix: Add null check for galleryImgs
+  const safeGalleryImgs = post.galleryImgs || []
+  
   return (
     <>
       <div className="container">
@@ -217,7 +223,7 @@ const HeaderGallery = ({ className, post }: Omit<Props, 'defaultStyle'>) => {
             <TitleAndMeta post={post} />
           </div>
         </div>
-        <GalleryImages images={post.galleryImgs} gridType="grid3" />
+        <GalleryImages images={safeGalleryImgs} gridType="grid3" />
       </div>
     </>
   )

@@ -33,6 +33,10 @@ const SingleContentContainer: FC<Props> = ({ post, comments, className }) => {
 
   const { tags, author, content, likeCount, commentCount, liked, handle } = post
 
+  // Fix: Add null checks for optional properties
+  const safeContent = content || ''
+  const safeTags = tags || []
+
   const endedAnchorEntry = useIntersectionObserver(endedAnchorRef, {
     threshold: 0,
     root: null,
@@ -88,12 +92,12 @@ const SingleContentContainer: FC<Props> = ({ post, comments, className }) => {
           className="mx-auto prose max-w-(--breakpoint-md)! lg:prose-lg dark:prose-invert"
           ref={contentRef}
         >
-          <TheContent content={content} />
+          <TheContent content={safeContent} />
         </div>
 
         {/* TAGS */}
         <div className="mx-auto flex max-w-(--breakpoint-md) flex-wrap">
-          {tags.map((tag: { id: string; handle: string; name: string }) => (
+          {safeTags.map((tag: { id: string; handle: string; name: string }) => (
             <Tag key={tag.id} className="me-2 mb-2" href={`/tag/${tag.handle}`}>
               {tag.name}
             </Tag>

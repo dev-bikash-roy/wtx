@@ -1,4 +1,5 @@
 import { WPPost, WPCategory, WPTag, TemplatePost, TemplateCategory, TemplateTag } from './wp-types'
+import he from 'he'
 
 const WP_API_BASE = process.env.WP_API_BASE || 'https://wtxnews.com/wp-json/wp/v2'
 
@@ -7,6 +8,11 @@ const CATEGORY_COLORS = [
   'blue', 'red', 'green', 'yellow', 'purple', 
   'indigo', 'pink', 'teal', 'orange', 'cyan'
 ]
+
+// Utility function to decode HTML entities
+function decodeHtmlEntities(text: string): string {
+  return he.decode(text)
+}
 
 // Utility function to extract featured image from WordPress post
 function getFeaturedImage(post: WPPost): { src: string; alt: string; width: number; height: number } {
@@ -89,14 +95,38 @@ function mapWPPostToTemplatePost(post: WPPost): TemplatePost {
     color: CATEGORY_COLORS[index % CATEGORY_COLORS.length]
   }))
   
+  // Determine post type based on format or content
+  let postType: 'standard' | 'audio' | 'video' | 'gallery' = 'standard'
+  let videoUrl: string | undefined
+  let audioUrl: string | undefined
+  
+  // Check if post has a video format or contains video URL in content
+  if (post.format === 'video') {
+    postType = 'video'
+    // Try to extract video URL from content
+    const videoMatch = post.content.rendered.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^"&?\/\s]{11})/)
+    if (videoMatch) {
+      videoUrl = `https://www.youtube.com/watch?v=${videoMatch[1]}`
+    }
+  } 
+  // Check if post has an audio format
+  else if (post.format === 'audio') {
+    postType = 'audio'
+    // Try to extract audio URL from content (this is a simplified example)
+    const audioMatch = post.content.rendered.match(/<audio[^>]*src=["']([^"']*)["']/)
+    if (audioMatch) {
+      audioUrl = audioMatch[1]
+    }
+  }
+  
   return {
     id: `post-${post.id}`,
     featuredImage: getFeaturedImage(post),
-    title: post.title.rendered,
+    title: decodeHtmlEntities(post.title.rendered),
     handle: post.slug,
-    excerpt: post.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 200) + '...',
+    excerpt: decodeHtmlEntities(post.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 200) + '...'),
     // Add the content to the template post
-    content: post.content.rendered,
+    content: decodeHtmlEntities(post.content.rendered),
     date: post.date,
     readingTime: Math.max(1, Math.floor(post.content.rendered.split(' ').length / 200)),
     commentCount: 0, // WordPress doesn't provide this directly in the API response
@@ -105,7 +135,7 @@ function mapWPPostToTemplatePost(post: WPPost): TemplatePost {
     bookmarked: false,
     likeCount: 0, // WordPress doesn't provide this directly in the API response
     liked: false,
-    postType: 'standard', // Default to standard, could be enhanced based on post format
+    postType: postType,
     status: post.status,
     author: getAuthor(post),
     categories: categories.length > 0 ? categories : [{
@@ -114,12 +144,14 @@ function mapWPPostToTemplatePost(post: WPPost): TemplatePost {
       handle: 'uncategorized',
       color: 'gray'
     }],
-    tags: tags
+    tags: tags,
+    videoUrl: videoUrl,
+    audioUrl: audioUrl
   }
 }
 
 // Fetch posts from WordPress API
-export async function fetchPosts(perPage: number = 10, page: number = 1): Promise<TemplatePost[]> {
+export async function fetchPosts(perPage: number = 20, page: number = 1): Promise<TemplatePost[]> {
   try {
     const params = new URLSearchParams({
       per_page: perPage.toString(),
@@ -204,7 +236,7 @@ export async function fetchPostBySlug(slug: string): Promise<TemplatePost | null
     
     return null
   } catch (error) {
-    console.error('Error fetching post from WordPress API:', error)
+    console.error('Error fetching post by slug from WordPress API:', error)
     return null
   }
 }

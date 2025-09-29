@@ -1,11 +1,18 @@
-import React, { FC } from 'react'
+import { Metadata } from 'next'
+import { ReactNode } from 'react'
 
-interface Props {
-  children?: React.ReactNode
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Ncmaz Auth',
+    default: 'Login | Ncmaz',
+  },
+  description: 'Authentication for Ncmaz admin panel',
 }
 
-const Layout: FC<Props> = ({ children }) => {
-  return <>{children}</>
+export default function AuthLayout({ children }: { children: ReactNode }) {
+  return (
+    <div className="min-h-screen bg-white dark:bg-neutral-900">
+      {children}
+    </div>
+  )
 }
-
-export default Layout

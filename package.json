@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:db": "tsx src/db/test-connection.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -41,7 +42,9 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "15.3.3",
     "framer-motion": "^12.16.0",
+    "he": "^1.2.0",
     "lodash": "^4.17.21",
+    "mongoose": "^8.18.2",
     "next": "15.3.3",
     "react": "19.1.0",
     "react-aria": "^3.41.1",
@@ -56,13 +59,15 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.5",
+    "@types/he": "^1.2.3",
     "@types/lodash": "^4.17.13",
     "critters": "^0.0.23",
     "postcss": "^8.4.31",
     "prettier": "^3.3.2",
     "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "tailwindcss": "^4.1.5"
+    "tailwindcss": "^4.1.5",
+    "tsx": "^4.20.5"
   },
   "overrides": {
     "@types/react": "19.1.6",

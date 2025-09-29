@@ -280,3 +280,37 @@
 @utility sub-menu {
   @apply hidden;
 }
+
+/* Cliff Notes styling */
+.nc-content-cliff-notes {
+  @apply border border-neutral-200 dark:border-neutral-700 rounded-xl p-6 my-6 shadow-sm;
+  background: linear-gradient(135deg, rgba(249, 250, 251, 0.7) 0%, rgba(255, 255, 255, 0.7) 100%);
+}
+
+.dark .nc-content-cliff-notes {
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.7) 0%, rgba(17, 24, 39, 0.7) 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.nc-content-cliff-notes h2 {
+  @apply text-xl font-bold mb-4 text-neutral-900 dark:text-neutral-100;
+}
+
+.nc-content-cliff-notes ul {
+  @apply space-y-2;
+}
+
+.nc-content-cliff-notes li {
+  @apply flex items-start;
+}
+
+.nc-content-cliff-notes li::before {
+  content: "•";
+  @apply text-primary-600 dark:text-primary-400 font-bold mr-2 mt-1 flex-shrink-0;
+}
+
+.nc-content-cliff-notes p {
+  @apply text-neutral-700 dark:text-neutral-300;
+}
+
+/* // CUSTOM STYLES FOR CLIFF NOTES IN POST CONTENT */
