@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
+import { wpAuth } from '@/lib/wordpress-auth'
 
-// Mock user data for demonstration
+// Mock user data for demonstration (fallback)
 const mockUsers = [
   {
     id: '1',
@@ -15,14 +16,33 @@ export async function POST(request: Request) {
   try {
     const { email, password } = await request.json()
     
-    // Find user in mock data
+    console.log('Auth attempt:', { email })
+    
+    // First try WordPress authentication
+    try {
+      const wpResponse = await fetch(`${request.url.replace('/api/auth', '/api/wordpress-auth')}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+      
+      if (wpResponse.ok) {
+        const wpData = await wpResponse.json()
+        console.log('WordPress auth successful, forwarding response')
+        return NextResponse.json(wpData)
+      }
+    } catch (wpError) {
+      console.log('WordPress auth failed, trying local auth')
+    }
+    
+    // Fallback to local mock authentication
     const user = mockUsers.find(u => u.email === email && u.password === password)
     
     if (user) {
-      // In a real app, you would generate a secure JWT token
       const token = `mock-jwt-token-${user.id}-${Date.now()}`
       
-      // Return user data and token with cookie
       const response = NextResponse.json({
         user: {
           id: user.id,
@@ -33,7 +53,6 @@ export async function POST(request: Request) {
         token
       })
       
-      // Set cookie
       response.cookies.set('auth-token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -49,6 +68,7 @@ export async function POST(request: Request) {
       )
     }
   } catch (error) {
+    console.error('Auth error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -58,7 +78,11 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   // Check if user is authenticated based on token
-  const token = request.headers.get('authorization')?.split(' ')[1]
+  const authHeader = request.headers.get('authorization')
+  const cookieToken = request.cookies.get('auth-token')?.value
+  const token = authHeader?.split(' ')[1] || cookieToken
+  
+  console.log('Auth check:', { hasToken: !!token, tokenPrefix: token?.substring(0, 20) })
   
   if (!token) {
     return NextResponse.json(
@@ -67,10 +91,30 @@ export async function GET(request: Request) {
     )
   }
   
-  // In a real app, you would verify the JWT token
-  // For this demo, we'll just check if it starts with our mock prefix
+  // Handle WordPress session tokens
+  if (token.startsWith('wp-session-')) {
+    const parts = token.split('-')
+    if (parts.length >= 4) {
+      const siteId = parts[2]
+      const userId = parts[3]
+      
+      // In a real implementation, you'd verify the token with WordPress
+      // For now, we'll create a mock user based on the token
+      const user = {
+        id: `wp-${siteId}-${userId}`,
+        email: `user${userId}@${siteId}.com`,
+        name: `WordPress User ${userId}`,
+        role: 'admin', // Assume admin for now
+        wpSiteId: siteId,
+        wpUserId: parseInt(userId)
+      }
+      
+      return NextResponse.json({ user })
+    }
+  }
+  
+  // Handle mock tokens
   if (token.startsWith('mock-jwt-token-')) {
-    // Extract user ID from token (in a real app, you'd decode the JWT)
     const userId = token.split('-')[3]
     const user = mockUsers.find(u => u.id === userId)
     
