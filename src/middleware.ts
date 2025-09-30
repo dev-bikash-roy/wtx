@@ -28,7 +28,13 @@ export function middleware(request: NextRequest) {
     '/dashboard/submit-post',
     '/dashboard/edit-profile',
     '/dashboard/billing-address',
-    '/dashboard/subscription'
+    '/dashboard/subscription',
+    '/admin',
+    '/admin/',
+    '/admin/posts',
+    '/admin/categories',
+    '/admin/users',
+    '/admin/settings'
   ]
   
   // Check if the current path is protected
@@ -46,7 +52,7 @@ export function middleware(request: NextRequest) {
     
     if (!authToken) {
       // Redirect to login page
-      const loginUrl = new URL('/login', request.url)
+      const loginUrl = new URL('/admin/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
       console.log('Redirecting to login')
       return NextResponse.redirect(loginUrl)

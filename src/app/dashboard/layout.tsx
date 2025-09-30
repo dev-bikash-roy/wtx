@@ -25,6 +25,7 @@ const navigation = [
   { name: 'Subscription', href: '/dashboard/subscription' },
   { name: 'Billing', href: '/dashboard/billing-address' },
   { name: 'Submit post', href: '/dashboard/submit-post' },
+  { name: 'Admin Panel', href: '/admin' },
 ]
 const userNavigation = [
   { name: 'Your Profile', href: '/dashboard/posts' },

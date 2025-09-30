@@ -35,6 +35,11 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
       href: '/contact',
       name: 'Contact',
     },
+    {
+      id: '8',
+      href: '/admin',
+      name: 'Admin',
+    },
   ]
 }
 

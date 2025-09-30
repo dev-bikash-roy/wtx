@@ -8,6 +8,7 @@ interface User {
   name: string
   email: string
   role: string
+  avatar?: string
 }
 
 interface AuthContextType {
@@ -91,7 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<User | null> => {
     try {
       console.log('Attempting login with:', email)
-      const response = await fetch('/api/auth', {
+      
+      // First, try to login with the existing system
+      let response = await fetch('/api/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -107,10 +110,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(data.user)
         setCookie('auth-token', data.token, 1) // Set cookie for 1 day
         return data.user
-      } else {
-        console.log('Login failed with status:', response.status)
-        return null
       }
+      
+      // If that fails, try WordPress authentication
+      response = await fetch('/api/wordpress-auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        console.log('WordPress login successful, data:', data)
+        setUser(data.user)
+        setCookie('auth-token', data.token, 1) // Set cookie for 1 day
+        return data.user
+      }
+      
+      console.log('Login failed with status:', response.status)
+      return null
     } catch (error) {
       console.error('Login failed:', error)
       return null

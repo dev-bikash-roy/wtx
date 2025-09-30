@@ -169,6 +169,38 @@ export async function fetchPosts(perPage: number = 20, page: number = 1): Promis
   }
 }
 
+// Fetch posts by tag from WordPress API
+export async function fetchPostsByTag(tagSlug: string, perPage: number = 20, page: number = 1): Promise<TemplatePost[]> {
+  try {
+    // First, get the tag ID by slug
+    const tagResponse = await fetch(`${WP_API_BASE}/tags?slug=${tagSlug}`)
+    const tags: WPTag[] = await tagResponse.json()
+    
+    if (tags.length === 0) {
+      console.warn(`No tag found with slug: ${tagSlug}`)
+      return []
+    }
+    
+    const tagId = tags[0].id
+    
+    // Then fetch posts with that tag
+    const params = new URLSearchParams({
+      per_page: perPage.toString(),
+      page: page.toString(),
+      tags: tagId.toString(),
+      _embed: '1'
+    })
+    
+    const response = await fetch(`${WP_API_BASE}/posts?${params}`)
+    const posts: WPPost[] = await response.json()
+    
+    return posts.map(mapWPPostToTemplatePost)
+  } catch (error) {
+    console.error('Error fetching posts by tag from WordPress API:', error)
+    return [] // Return empty array on error
+  }
+}
+
 // Fetch categories from WordPress API
 export async function fetchCategories(perPage: number = 100): Promise<TemplateCategory[]> {
   try {
@@ -238,5 +270,151 @@ export async function fetchPostBySlug(slug: string): Promise<TemplatePost | null
   } catch (error) {
     console.error('Error fetching post by slug from WordPress API:', error)
     return null
+  }
+}
+
+// Create a new post in WordPress
+export async function createPost(
+  title: string,
+  content: string,
+  status: 'publish' | 'draft' | 'pending' = 'draft',
+  categories: number[] = [],
+  tags: number[] = []
+): Promise<TemplatePost | null> {
+  try {
+    // In a real implementation, you would need to authenticate with WordPress
+    // This is a placeholder implementation
+    console.log('Creating post:', { title, content, status, categories, tags })
+    
+    // For now, return a mock post
+    return {
+      id: `post-${Date.now()}`,
+      featuredImage: {
+        src: 'https://images.unsplash.com/photo-1534445867742-43195f401b6c?q=80&w=2454&auto=format&fit=crop',
+        alt: 'Default image',
+        width: 1920,
+        height: 1080
+      },
+      title,
+      handle: title.toLowerCase().replace(/\s+/g, '-'),
+      excerpt: content.substring(0, 200) + '...',
+      content,
+      date: new Date().toISOString(),
+      readingTime: Math.max(1, Math.floor(content.split(' ').length / 200)),
+      commentCount: 0,
+      viewCount: 0,
+      bookmarkCount: 0,
+      bookmarked: false,
+      likeCount: 0,
+      liked: false,
+      postType: 'standard',
+      status,
+      author: {
+        id: 'author-1',
+        name: 'Current User',
+        handle: 'current-user',
+        avatar: {
+          src: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=3922&auto=format&fit=crop',
+          alt: 'Current User',
+          width: 96,
+          height: 96
+        }
+      },
+      categories: categories.map((id, index) => ({
+        id: `category-${id}`,
+        name: `Category ${id}`,
+        handle: `category-${id}`,
+        color: 'blue'
+      })),
+      tags: tags.map((id, index) => ({
+        id: `tag-${id}`,
+        name: `Tag ${id}`,
+        handle: `tag-${id}`,
+        color: 'gray'
+      }))
+    }
+  } catch (error) {
+    console.error('Error creating post in WordPress API:', error)
+    return null
+  }
+}
+
+// Update an existing post in WordPress
+export async function updatePost(
+  id: string,
+  title: string,
+  content: string,
+  status: 'publish' | 'draft' | 'pending' = 'draft',
+  categories: number[] = [],
+  tags: number[] = []
+): Promise<TemplatePost | null> {
+  try {
+    // In a real implementation, you would need to authenticate with WordPress
+    // This is a placeholder implementation
+    console.log('Updating post:', { id, title, content, status, categories, tags })
+    
+    // For now, return a mock post
+    return {
+      id,
+      featuredImage: {
+        src: 'https://images.unsplash.com/photo-1534445867742-43195f401b6c?q=80&w=2454&auto=format&fit=crop',
+        alt: 'Default image',
+        width: 1920,
+        height: 1080
+      },
+      title,
+      handle: title.toLowerCase().replace(/\s+/g, '-'),
+      excerpt: content.substring(0, 200) + '...',
+      content,
+      date: new Date().toISOString(),
+      readingTime: Math.max(1, Math.floor(content.split(' ').length / 200)),
+      commentCount: 0,
+      viewCount: 0,
+      bookmarkCount: 0,
+      bookmarked: false,
+      likeCount: 0,
+      liked: false,
+      postType: 'standard',
+      status,
+      author: {
+        id: 'author-1',
+        name: 'Current User',
+        handle: 'current-user',
+        avatar: {
+          src: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=3922&auto=format&fit=crop',
+          alt: 'Current User',
+          width: 96,
+          height: 96
+        }
+      },
+      categories: categories.map((id, index) => ({
+        id: `category-${id}`,
+        name: `Category ${id}`,
+        handle: `category-${id}`,
+        color: 'blue'
+      })),
+      tags: tags.map((id, index) => ({
+        id: `tag-${id}`,
+        name: `Tag ${id}`,
+        handle: `tag-${id}`,
+        color: 'gray'
+      }))
+    }
+  } catch (error) {
+    console.error('Error updating post in WordPress API:', error)
+    return null
+  }
+}
+
+// Delete a post from WordPress
+export async function deletePost(id: string): Promise<boolean> {
+  try {
+    // In a real implementation, you would need to authenticate with WordPress
+    // This is a placeholder implementation
+    console.log('Deleting post:', id)
+    return true
+  } catch (error) {
+    console.error('Error deleting post from WordPress API:', error)
+    return false
   }
 }
