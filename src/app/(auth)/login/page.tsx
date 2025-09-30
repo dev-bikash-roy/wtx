@@ -8,7 +8,7 @@ import Link from 'next/link'
 import type { JSX } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 
 const socials: {
   name: string
@@ -52,12 +52,24 @@ const socials: {
   },
 ]
 
-const LoginPage = () => {
-  const { login, user } = useAuth()
+const LoginPageContent = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  
+  // Handle auth context safely
+  let login: ((email: string, password: string) => Promise<any>) = async () => null
+  let user: any = null
+  
+  try {
+    const auth = useAuth()
+    login = auth.login
+    user = auth.user
+  } catch (error) {
+    // Auth context not available during build
+    console.log('Auth context not available')
+  }
   
   const redirect = searchParams.get('redirect') || '/dashboard/posts'
   
@@ -158,6 +170,14 @@ const LoginPage = () => {
         </div>
       </div>
     </div>
+  )
+}
+
+const LoginPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
   )
 }
 

@@ -16,7 +16,19 @@ export default function AuthChecker({
   const [authorized, setAuthorized] = useState(false)
   const router = useRouter()
   
-  const { user, isLoading } = useAuth()
+  // Handle auth context safely
+  let user: any = null
+  let isLoading = true
+  
+  try {
+    const auth = useAuth()
+    user = auth.user
+    isLoading = auth.isLoading
+  } catch (error) {
+    // Auth context not available during build
+    console.log('Auth context not available in AuthChecker')
+    isLoading = false
+  }
 
   useEffect(() => {
     if (isLoading) return

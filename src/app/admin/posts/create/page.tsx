@@ -265,7 +265,7 @@ export default function CreatePost() {
         {/* Action Buttons */}
         <div className="flex justify-end space-x-3">
           <Link href="/admin/posts">
-            <Button variant="outline">Cancel</Button>
+            <Button outline>Cancel</Button>
           </Link>
           <Button
             type="submit"

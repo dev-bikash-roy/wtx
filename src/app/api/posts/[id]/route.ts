@@ -5,7 +5,7 @@ import Post from '@/db/models/Post'
 // GET /api/posts/[id] - Get a single post by ID
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const db = await dbConnect()
@@ -20,7 +20,7 @@ export async function GET(
       return NextResponse.json({ error: 'Post model not available' }, { status: 500 })
     }
     
-    const { id } = await params
+    const { id } = await context.params
     const post = await Post.findById(id)
     
     if (!post) {
@@ -40,7 +40,7 @@ export async function GET(
 // PUT /api/posts/[id] - Update a post by ID
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const db = await dbConnect()
@@ -65,7 +65,7 @@ export async function PUT(
       )
     }
     
-    const { id } = await params
+    const { id } = await context.params
     const post = await Post.findByIdAndUpdate(
       id,
       {
@@ -98,7 +98,7 @@ export async function PUT(
 // DELETE /api/posts/[id] - Delete a post by ID
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const db = await dbConnect()
@@ -113,7 +113,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Post model not available' }, { status: 500 })
     }
     
-    const { id } = await params
+    const { id } = await context.params
     const post = await Post.findByIdAndDelete(id)
     
     if (!post) {

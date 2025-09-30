@@ -12,8 +12,18 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { login } = useAuth()
   const router = useRouter()
+  
+  // Handle auth context safely
+  let login: ((email: string, password: string) => Promise<any>) = async () => null
+  
+  try {
+    const auth = useAuth()
+    login = auth.login
+  } catch (error) {
+    // Auth context not available during build
+    console.log('Auth context not available in admin login')
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -7,7 +7,9 @@ import Link from 'next/link'
 
 export default function UserProfileDropdown() {
   // We'll handle the case where useAuth might throw an error
-  let user, logout;
+  let user: any = null;
+  let logout: (() => void) = () => {};
+  
   try {
     const auth = useAuth();
     user = auth.user;
