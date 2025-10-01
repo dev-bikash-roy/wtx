@@ -13,6 +13,7 @@ const navigation = [
   { name: 'Dashboard', href: '/admin' },
   { name: 'Posts', href: '/admin/posts' },
   { name: 'WordPress Sites', href: '/admin/wordpress-sites' },
+  { name: 'WordPress Setup', href: '/admin/wordpress-setup' },
   { name: 'Categories', href: '/admin/categories' },
   { name: 'Users', href: '/admin/users' },
   { name: 'Settings', href: '/admin/settings' },

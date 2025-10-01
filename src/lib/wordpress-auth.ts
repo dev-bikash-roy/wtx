@@ -39,17 +39,40 @@ export const DEFAULT_WP_SITES: WordPressSite[] = [
   }
 ]
 
+// In-memory storage for additional sites (in production, use a database)
+let additionalSites: WordPressSite[] = []
+
 // WordPress Authentication Class
 export class WordPressAuth {
   private sites: WordPressSite[]
 
-  constructor(sites: WordPressSite[] = DEFAULT_WP_SITES) {
+  constructor(sites: WordPressSite[] = [...DEFAULT_WP_SITES, ...additionalSites]) {
     this.sites = sites
   }
 
   // Add a new WordPress site
   addSite(site: WordPressSite) {
     this.sites.push(site)
+    additionalSites.push(site)
+  }
+
+  // Remove a WordPress site
+  removeSite(siteId: string) {
+    this.sites = this.sites.filter(site => site.id !== siteId)
+    additionalSites = additionalSites.filter(site => site.id !== siteId)
+  }
+
+  // Update a WordPress site
+  updateSite(siteId: string, updates: Partial<WordPressSite>) {
+    const siteIndex = this.sites.findIndex(site => site.id === siteId)
+    if (siteIndex !== -1) {
+      this.sites[siteIndex] = { ...this.sites[siteIndex], ...updates }
+    }
+    
+    const additionalIndex = additionalSites.findIndex(site => site.id === siteId)
+    if (additionalIndex !== -1) {
+      additionalSites[additionalIndex] = { ...additionalSites[additionalIndex], ...updates }
+    }
   }
 
   // Get all active sites

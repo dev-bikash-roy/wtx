@@ -93,8 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       console.log('Attempting login with:', email)
       
-      // First, try to login with the existing system
-      let response = await fetch('/api/auth', {
+      const response = await fetch('/api/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -107,30 +106,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const data = await response.json()
         console.log('Login successful, data:', data)
+        
+        // Store user data
         setUser(data.user)
         setCookie('auth-token', data.token, 1) // Set cookie for 1 day
+        
+        // Also store in localStorage for persistence
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('auth-token', data.token)
+          localStorage.setItem('auth-user', JSON.stringify(data.user))
+        }
+        
         return data.user
+      } else {
+        const errorData = await response.json()
+        console.log('Login failed:', errorData.error)
+        return null
       }
-      
-      // If that fails, try WordPress authentication
-      response = await fetch('/api/wordpress-auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        console.log('WordPress login successful, data:', data)
-        setUser(data.user)
-        setCookie('auth-token', data.token, 1) // Set cookie for 1 day
-        return data.user
-      }
-      
-      console.log('Login failed with status:', response.status)
-      return null
     } catch (error) {
       console.error('Login failed:', error)
       return null

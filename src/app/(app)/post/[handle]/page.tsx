@@ -10,7 +10,8 @@ import WidgetSocialFollow from '@/components/WidgetSocialFollow'
 import WidgetTags from '@/components/WidgetTags'
 import { getAuthors } from '@/data/authors'
 import { getCategories, getTags } from '@/data/categories'
-import { getAllPosts, getCommentsByPostId, getPostByHandle } from '@/data/posts'
+import { getAllPosts, getCommentsByPostId } from '@/data/posts'
+import { getPostByHandleWithWordPress, getAllPostsWithWordPress } from '@/data/wordpress-posts'
 import { Metadata } from 'next'
 import SingleContentContainer from '../SingleContentContainer'
 import SingleHeaderContainer from '../SingleHeaderContainer'
@@ -18,7 +19,7 @@ import SingleRelatedPosts from '../SingleRelatedPosts'
 
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
   const { handle } = await params
-  const post = await getPostByHandle(handle)
+  const post = await getPostByHandleWithWordPress(handle)
   if (!post) {
     return {
       title: 'Post not found',
@@ -33,12 +34,19 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
 
 const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const { handle } = await params
-  const post = await getPostByHandle(handle)
+  const post = await getPostByHandleWithWordPress(handle)
+  
+  if (!post) {
+    return <div>Post not found</div>
+  }
+  
   const comments = await getCommentsByPostId(post.id)
-  const relatedPosts = (await getAllPosts()).slice(0, 6)
-  const moreFromAuthorPosts = (await getAllPosts()).slice(1, 7)
+  
+  // Get all posts including WordPress posts
+  const allPosts = await getAllPostsWithWordPress({ perPage: 50 })
+  const relatedPosts = allPosts.slice(0, 6)
+  const moreFromAuthorPosts = allPosts.filter(p => p.author.id === post.author.id && p.id !== post.id).slice(0, 6)
 
-  const allPosts = await getAllPosts()
   const widgetRecentPosts = allPosts.slice(0, 5)
   const widgetPopularPosts = allPosts.slice(0, 5)
   const widgetCategories = (await getCategories()).slice(0, 6)

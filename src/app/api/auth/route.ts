@@ -79,7 +79,18 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   // Check if user is authenticated based on token
   const authHeader = request.headers.get('authorization')
-  const cookieToken = request.cookies.get('auth-token')?.value
+  const cookieHeader = request.headers.get('cookie')
+  let cookieToken = null
+  
+  // Parse cookie manually since request.cookies doesn't exist
+  if (cookieHeader) {
+    const cookies = cookieHeader.split(';').map(c => c.trim())
+    const authCookie = cookies.find(c => c.startsWith('auth-token='))
+    if (authCookie) {
+      cookieToken = authCookie.split('=')[1]
+    }
+  }
+  
   const token = authHeader?.split(' ')[1] || cookieToken
   
   console.log('Auth check:', { hasToken: !!token, tokenPrefix: token?.substring(0, 20) })
