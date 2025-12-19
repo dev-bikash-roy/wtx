@@ -29,20 +29,21 @@ export interface WordPressAuthResponse {
 }
 
 // Default WordPress sites configuration
-{
-  id: 'wtxnews',
+const DEFAULT_WP_SITES: WordPressSite[] = [
+  {
+    id: 'wtxnews',
     name: 'WTX News',
-      url: 'https://wtxnews.com',
-        apiBase: 'https://wtxnews.com/wp-json/wp/v2',
-          isActive: true
-},
-{
-  id: 'wtxblog',
+    url: 'https://wtxnews.com',
+    apiBase: 'https://wtxnews.com/wp-json/wp/v2',
+    isActive: true
+  },
+  {
+    id: 'wtxblog',
     name: 'WTX Blog',
-      url: 'https://blog.wtxnews.co.uk',
-        apiBase: 'https://blog.wtxnews.co.uk/wp-json/wp/v2',
-          isActive: true
-}
+    url: 'https://blog.wtxnews.co.uk',
+    apiBase: 'https://blog.wtxnews.co.uk/wp-json/wp/v2',
+    isActive: true
+  }
 ]
 
 // In-memory storage for additional sites (in production, use a database)
