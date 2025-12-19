@@ -31,7 +31,11 @@ function ActionDropdown({ handle, title, author }: { handle: string; title: stri
       name: 'Copy link',
       icon: ClipboardIcon,
       onClick: () => {
-        navigator.clipboard.writeText(window.location.href)
+        try {
+          navigator.clipboard.writeText(window.location.href).catch(() => { })
+        } catch (error) {
+          console.warn('Copy to clipboard failed', error)
+        }
       },
     },
     {

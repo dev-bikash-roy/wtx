@@ -13,11 +13,11 @@ const beVietnamPro = Be_Vietnam_Pro({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Ncmaz',
-    default: 'Ncmaz - Blog, News, Magazine template',
+    template: '%s | WTX News',
+    default: 'WTX News - Global News, Politics, Sports & Lifestyle',
   },
-  description: 'Ncmaz - Blog, News, Magazine template',
-  keywords: ['Ncmaz', 'Blog', 'News', 'Magazine'],
+  description: 'Stay informed with WTX News. Unbiased reporting, in-depth analysis, and the latest stories from around the word.',
+  keywords: ['WTX News', 'Global News', 'Politics', 'Sports', 'Lifestyle', 'Breaking News'],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -5,8 +5,8 @@ import { multiWP } from '@/lib/multi-wp-integration'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Blog - WTX News',
-    description: 'Read the latest updates from our blog.',
+    title: 'Blog',
+    description: 'Read the latest updates, insights, and stories from our team at WTX News.',
 }
 
 const BlogPage = async () => {

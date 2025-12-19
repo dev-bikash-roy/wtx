@@ -27,8 +27,7 @@ import { getTagsWithPosts } from '@/data/categories'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Home',
-  description: 'Home page showcasing the latest articles and categories.',
+  description: 'WTX News - Global News, Politics, Sports & Lifestyle',
 }
 
 const Page = async () => {
@@ -37,7 +36,7 @@ const Page = async () => {
   const videoPosts = await getPostsVideo()
   const categoryPosts = await getPostsAudio() // Using this for other category posts instead of audio
   const galleryPosts = await getPostsGallery()
-  
+
   const authors = await getAuthors()
   const categories = await getCategories()
   const categoriesWithPosts = await getCategoriesWithPosts()
@@ -51,13 +50,13 @@ const Page = async () => {
       const startIndexAdjusted = startIndex % postArray.length
       const endIndex = Math.min(startIndexAdjusted + count, postArray.length)
       let selectedPosts = postArray.slice(startIndexAdjusted, endIndex)
-      
+
       // If we don't have enough posts, wrap around to the beginning
       if (selectedPosts.length < count) {
         const remainingCount = count - selectedPosts.length
         selectedPosts = [...selectedPosts, ...postArray.slice(0, remainingCount)]
       }
-      
+
       return selectedPosts
     }
     // If not enough posts, duplicate the existing ones
@@ -87,7 +86,7 @@ const Page = async () => {
       />
 
       {/* Trending Posts */}
-      <SectionTrending 
+      <SectionTrending
         heading="Trending This Week"
         subHeading="Most popular articles this week"
         posts={getPostsForSection(posts, 6, 5)}
