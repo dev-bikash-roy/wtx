@@ -11,7 +11,7 @@ const Logo: React.FC<Props> = ({ className, size = 'h-12 w-auto sm:h-14', ...pro
   return (
     <Link href="/" className={clsx('inline-block shrink-0', className)}>
       <img 
-        src="https://wtxnews.com/wp-content/uploads/2025/09/WTX-News-Icon-1.png" 
+        src="https://wtxnews.com/wp-content/uploads/2025/12/WTX-News-Icon-1.png" 
         alt="WTX News" 
         className={clsx(size, 'object-contain')}
         {...props}

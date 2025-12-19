@@ -29,14 +29,20 @@ export interface WordPressAuthResponse {
 }
 
 // Default WordPress sites configuration
-export const DEFAULT_WP_SITES: WordPressSite[] = [
-  {
-    id: 'wtxnews',
+{
+  id: 'wtxnews',
     name: 'WTX News',
-    url: 'https://wtxnews.com',
-    apiBase: 'https://wtxnews.com/wp-json/wp/v2',
-    isActive: true
-  }
+      url: 'https://wtxnews.com',
+        apiBase: 'https://wtxnews.com/wp-json/wp/v2',
+          isActive: true
+},
+{
+  id: 'wtxblog',
+    name: 'WTX Blog',
+      url: 'https://blog.wtxnews.co.uk',
+        apiBase: 'https://blog.wtxnews.co.uk/wp-json/wp/v2',
+          isActive: true
+}
 ]
 
 // In-memory storage for additional sites (in production, use a database)
@@ -68,7 +74,7 @@ export class WordPressAuth {
     if (siteIndex !== -1) {
       this.sites[siteIndex] = { ...this.sites[siteIndex], ...updates }
     }
-    
+
     const additionalIndex = additionalSites.findIndex(site => site.id === siteId)
     if (additionalIndex !== -1) {
       additionalSites[additionalIndex] = { ...additionalSites[additionalIndex], ...updates }
@@ -87,8 +93,8 @@ export class WordPressAuth {
 
   // Authenticate with WordPress using Application Password
   async authenticateWithApplicationPassword(
-    siteId: string, 
-    username: string, 
+    siteId: string,
+    username: string,
     applicationPassword: string
   ): Promise<WordPressAuthResponse> {
     const site = this.getSite(siteId)
@@ -99,7 +105,7 @@ export class WordPressAuth {
     try {
       // Create Basic Auth header
       const credentials = btoa(`${username}:${applicationPassword}`)
-      
+
       // Test authentication by fetching user info
       const response = await fetch(`${site.apiBase}/users/me`, {
         headers: {
@@ -110,10 +116,10 @@ export class WordPressAuth {
 
       if (response.ok) {
         const user: WordPressUser = await response.json()
-        
+
         // Generate our own token for session management
         const token = this.generateSessionToken(siteId, user.id)
-        
+
         return {
           success: true,
           user,
@@ -124,9 +130,9 @@ export class WordPressAuth {
         return { success: false, error: `Authentication failed: ${error}` }
       }
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}` 
+      return {
+        success: false,
+        error: `Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       }
     }
   }
@@ -154,7 +160,7 @@ export class WordPressAuth {
 
       if (jwtResponse.ok) {
         const jwtData = await jwtResponse.json()
-        
+
         // Fetch user details
         const userResponse = await fetch(`${site.apiBase}/users/me`, {
           headers: {
@@ -176,9 +182,9 @@ export class WordPressAuth {
       // Fallback to Application Password method
       return this.authenticateWithApplicationPassword(siteId, username, password)
     } catch (error) {
-      return { 
-        success: false, 
-        error: `Authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}` 
+      return {
+        success: false,
+        error: `Authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       }
     }
   }
@@ -195,16 +201,16 @@ export class WordPressAuth {
   verifySessionToken(token: string): { siteId: string; userId: number; timestamp: number } | null {
     try {
       const payload = JSON.parse(atob(token))
-      
+
       // Check if token is not expired (24 hours)
       const now = Date.now()
       const tokenAge = now - payload.timestamp
       const maxAge = 24 * 60 * 60 * 1000 // 24 hours
-      
+
       if (tokenAge > maxAge) {
         return null
       }
-      
+
       return payload
     } catch {
       return null

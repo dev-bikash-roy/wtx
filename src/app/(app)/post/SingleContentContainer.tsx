@@ -127,17 +127,25 @@ const SingleContentContainer: FC<Props> = ({ post, comments, className }) => {
 
         {/* COMMENT FORM */}
         <div id="comments" className="mx-auto max-w-(--breakpoint-md) scroll-mt-20 pt-5">
-          <h3 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200">Responses ({commentCount})</h3>
+          <h3 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200">
+            {commentCount > 0 ? `Responses (${commentCount})` : 'Responses'}
+          </h3>
           <SingleCommentForm />
         </div>
 
         {/* COMMENTS LIST */}
         <div className="mx-auto max-w-(--breakpoint-md)">
           <ul className="single-comment-lists space-y-5">
-            {comments.map((comment) => (
-              <CommentCard key={comment.id} comment={comment} />
-            ))}
-            <ButtonPrimary className="mt-10 w-full">View all {commentCount} comments</ButtonPrimary>
+            {comments.length > 0 ? (
+              <>
+                {comments.map((comment) => (
+                  <CommentCard key={comment.id} comment={comment} />
+                ))}
+                <ButtonPrimary className="mt-10 w-full">View all {commentCount} comments</ButtonPrimary>
+              </>
+            ) : (
+              <div className="text-neutral-500 dark:text-neutral-400">No comments yet. Be the first to comment!</div>
+            )}
           </ul>
           <div ref={endedAnchorRef}></div>
         </div>
@@ -154,9 +162,8 @@ const SingleContentContainer: FC<Props> = ({ post, comments, className }) => {
           <div className="h-4 border-s border-neutral-200 dark:border-neutral-700"></div>
 
           <button
-            className={`size-8.5 items-center justify-center rounded-full bg-neutral-50 hover:bg-neutral-100 dark:bg-white/10 dark:hover:bg-white/20 ${
-              isShowScrollToTop ? 'flex' : 'hidden'
-            }`}
+            className={`size-8.5 items-center justify-center rounded-full bg-neutral-50 hover:bg-neutral-100 dark:bg-white/10 dark:hover:bg-white/20 ${isShowScrollToTop ? 'flex' : 'hidden'
+              }`}
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }}

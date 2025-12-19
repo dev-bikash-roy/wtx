@@ -90,6 +90,50 @@ export class MultiWordPressIntegration {
     this.sites = wpAuth.getActiveSites()
   }
 
+  async fetchPostsBySiteId(siteId: string, options: {
+    page?: number
+    perPage?: number
+    search?: string
+    categories?: string[]
+    tags?: string[]
+  } = {}): Promise<WordPressPost[]> { // Changed return type to Promise<WordPressPost[]>
+    const site = this.getSite(siteId)
+    if (!site) {
+      console.error(`Site with ID ${siteId} not found`)
+      return []
+    }
+
+    try {
+      const { page = 1, perPage = 10, search, categories, tags } = options
+      const params = new URLSearchParams({
+        per_page: perPage.toString(),
+        page: page.toString(),
+        _embed: '1',
+        orderby: 'date',
+        order: 'desc'
+      })
+
+      if (search) params.append('search', search)
+      if (categories && categories.length > 0) params.append('categories', categories.join(','))
+      if (tags && tags.length > 0) params.append('tags', tags.join(','))
+
+      const response = await fetch(`${site.apiBase}/posts?${params}`, {
+        headers: { 'User-Agent': 'NextJS-Blog-Integration/1.0' }
+      })
+
+      if (response.ok) {
+        const posts: WordPressPost[] = await response.json()
+        return posts.map(post => ({
+          ...post,
+          _site: { id: site.id, name: site.name, url: site.url }
+        }))
+      }
+    } catch (error) {
+      console.error(`Error fetching posts from ${site.name}:`, error)
+    }
+    return []
+  }
+
   // Fetch posts from all WordPress sites
   async fetchAllPosts(options: {
     page?: number
@@ -109,7 +153,7 @@ export class MultiWordPressIntegration {
     }>
   }> {
     const { page = 1, perPage = 10, search, categories, tags } = options
-    
+
     const allPosts: WordPressPost[] = []
     const siteResults: Array<{
       siteId: string
@@ -149,7 +193,7 @@ export class MultiWordPressIntegration {
 
         if (response.ok) {
           const posts: WordPressPost[] = await response.json()
-          
+
           // Add site information to each post
           const postsWithSite = posts.map(post => ({
             ...post,
@@ -239,13 +283,27 @@ export class MultiWordPressIntegration {
         src: featuredImage.source_url,
         width: featuredImage.media_details?.width || 800,
         height: featuredImage.media_details?.height || 600
-      } : {
-        id: '1',
-        altText: wpPost.title.rendered,
-        src: 'https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-        width: 800,
-        height: 600
-      },
+      } : (() => {
+        // Fallback: Try to extract first image from content
+        const imgMatch = wpPost.content.rendered.match(/<img[^>]+src="([^">]+)"/)
+        if (imgMatch && imgMatch[1]) {
+          return {
+            id: 'content-image',
+            altText: wpPost.title.rendered,
+            src: imgMatch[1],
+            width: 800,
+            height: 600
+          }
+        }
+        // Final fallback
+        return {
+          id: '1',
+          altText: wpPost.title.rendered,
+          src: 'https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+          width: 800,
+          height: 600
+        }
+      })(),
       like: {
         count: 0,
         isLiked: false
@@ -288,6 +346,18 @@ export class MultiWordPressIntegration {
   } = {}): Promise<TPost[]> {
     const result = await this.fetchAllPosts(options)
     return result.posts.map(post => this.convertWordPressPostToTPost(post))
+  }
+
+  // Fetch posts from specific site as TPost
+  async getPostsBySiteAsTPost(siteId: string, options: {
+    page?: number
+    perPage?: number
+    search?: string
+    categories?: string[]
+    tags?: string[]
+  } = {}): Promise<TPost[]> {
+    const posts = await this.fetchPostsBySiteId(siteId, options)
+    return posts.map(post => this.convertWordPressPostToTPost(post))
   }
 
   // Get a specific post by slug from any WordPress site
@@ -341,7 +411,7 @@ export class MultiWordPressIntegration {
     postUrl?: string
     error?: string
   }>> {
-    const targetSites = siteIds.length > 0 
+    const targetSites = siteIds.length > 0
       ? siteIds.map(id => wpAuth.getSite(id)).filter(Boolean)
       : this.sites
 
@@ -360,7 +430,7 @@ export class MultiWordPressIntegration {
         }
 
         const createdPost = await wpAuth.createPost(site!.id, token, postData)
-        
+
         results.push({
           siteId: site!.id,
           siteName: site!.name,
