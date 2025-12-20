@@ -170,24 +170,32 @@ const styles = {
     // Icon
     '*:data-[slot=icon]:-mx-0.5 *:data-[slot=icon]:my-0.5 *:data-[slot=icon]:size-5 *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:self-center sm:*:data-[slot=icon]:my-1 sm:*:data-[slot=icon]:size-5 forced-colors:[--btn-icon:ButtonText] forced-colors:data-hover:[--btn-icon:ButtonText]',
   ],
+  sizes: {
+    xs: 'px-[calc(--spacing(3)-1px)] py-[calc(--spacing(1.5)-1px)] text-xs/5',
+    sm: 'px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2)-1px)] text-sm/5',
+    md: 'px-[calc(--spacing(4)-1px)] py-[calc(--spacing(2.5)-1px)] text-sm/6',
+    lg: 'px-[calc(--spacing(5)-1px)] py-[calc(--spacing(3)-1px)] text-base/7',
+    xl: 'px-[calc(--spacing(6)-1px)] py-[calc(--spacing(4)-1px)] text-base/7',
+  },
 }
 
 export type ButtonProps = (
   | { color?: keyof typeof styles.colors; outline?: never; plain?: never }
   | { color?: never; outline: true; plain?: never }
   | { color?: never; outline?: never; plain: true }
-) & { className?: string; children: React.ReactNode } & (
+) & { className?: string; children: React.ReactNode; size?: keyof typeof styles.sizes } & (
     | Omit<Headless.ButtonProps, 'as' | 'className'>
     | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
   )
 
 export const Button = forwardRef(function Button(
-  { color, outline, plain, className, children, ...props }: ButtonProps,
+  { color, outline, plain, className, children, size, ...props }: ButtonProps,
   ref: React.ForwardedRef<HTMLElement>
 ) {
   let classes = clsx(
     className,
     styles.base,
+    size ? styles.sizes[size] : null,
     outline ? styles.outline : plain ? styles.plain : clsx(styles.solid, styles.colors[color ?? 'dark/neutral'])
   )
 

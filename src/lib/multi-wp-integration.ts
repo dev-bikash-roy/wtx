@@ -97,7 +97,7 @@ export class MultiWordPressIntegration {
     categories?: string[]
     tags?: string[]
   } = {}): Promise<WordPressPost[]> { // Changed return type to Promise<WordPressPost[]>
-    const site = this.getSite(siteId)
+    const site = wpAuth.getSite(siteId)
     if (!site) {
       console.error(`Site with ID ${siteId} not found`)
       return []
@@ -251,11 +251,10 @@ export class MultiWordPressIntegration {
     return {
       id: `wp-${wpPost._site?.id}-${wpPost.id}`,
       title: wpPost.title.rendered,
-      slug: wpPost.slug,
+      handle: wpPost.slug,
       excerpt: wpPost.excerpt.rendered.replace(/<[^>]*>/g, '').trim(),
       content: wpPost.content.rendered,
       date: wpPost.date,
-      href: `/post/${wpPost.slug}`,
       categories: categories.map(cat => ({
         id: cat.id.toString(),
         name: cat.name,
@@ -267,20 +266,19 @@ export class MultiWordPressIntegration {
       })),
       author: {
         id: author?.id.toString() || '1',
-        firstName: author?.name.split(' ')[0] || 'Unknown',
-        lastName: author?.name.split(' ').slice(1).join(' ') || 'Author',
-        displayName: author?.name || 'Unknown Author',
-        email: '',
-        avatar: author?.avatar_urls?.['96'] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        bgImage: '',
-        count: 0,
-        href: `/author/${author?.slug || 'unknown'}`,
-        desc: author?.description || ''
+        name: author?.name || 'Unknown Author',
+        handle: author?.slug || 'unknown',
+        description: author?.description || '',
+        avatar: {
+          src: author?.avatar_urls?.['96'] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+          alt: author?.name || 'Author',
+          width: 96,
+          height: 96
+        }
       },
       featuredImage: featuredImage ? {
-        id: featuredImage.id.toString(),
-        altText: featuredImage.alt_text || wpPost.title.rendered,
         src: featuredImage.source_url,
+        alt: featuredImage.alt_text || wpPost.title.rendered,
         width: featuredImage.media_details?.width || 800,
         height: featuredImage.media_details?.height || 600
       } : (() => {
@@ -288,8 +286,7 @@ export class MultiWordPressIntegration {
         const imgMatch = wpPost.content.rendered.match(/<img[^>]+src="([^">]+)"/)
         if (imgMatch && imgMatch[1]) {
           return {
-            id: 'content-image',
-            altText: wpPost.title.rendered,
+            alt: wpPost.title.rendered,
             src: imgMatch[1],
             width: 800,
             height: 600
@@ -297,25 +294,21 @@ export class MultiWordPressIntegration {
         }
         // Final fallback
         return {
-          id: '1',
-          altText: wpPost.title.rendered,
+          alt: wpPost.title.rendered,
           src: 'https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
           width: 800,
           height: 600
         }
       })(),
-      like: {
-        count: 0,
-        isLiked: false
-      },
-      bookmark: {
-        count: 0,
-        isBookmarked: false
-      },
+      likeCount: 0,
+      liked: false,
+      bookmarkCount: 0,
+      bookmarked: false,
       commentCount: 0,
-      viewdCount: 0,
+      viewCount: 0,
       readingTime: Math.ceil(wpPost.content.rendered.replace(/<[^>]*>/g, '').split(' ').length / 200),
       postType: 'standard',
+      status: wpPost.status,
       videoUrl: '',
       audioUrl: '',
       galleryImgs: [],
@@ -323,16 +316,8 @@ export class MultiWordPressIntegration {
         id: tag.id.toString(),
         name: tag.name,
         handle: tag.slug,
-        href: `/tag/${tag.slug}`,
         color: 'blue'
-      })),
-      status: wpPost.status as 'published' | 'draft',
-      _wpSource: {
-        siteId: wpPost._site?.id || 'unknown',
-        siteName: wpPost._site?.name || 'Unknown Site',
-        originalId: wpPost.id,
-        originalUrl: wpPost.link
-      }
+      }))
     }
   }
 

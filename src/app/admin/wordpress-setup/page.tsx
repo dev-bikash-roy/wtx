@@ -314,8 +314,8 @@ export default function WordPressSetupPage() {
               </span>
             </div>
             <div className="flex space-x-2">
-              <Button outline size="sm">Test</Button>
-              <Button outline size="sm">Edit</Button>
+              <Button outline>Test</Button>
+              <Button outline>Edit</Button>
             </div>
           </div>
         </div>
