@@ -464,7 +464,7 @@ function getMockPosts(): TemplatePost[] {
 function getMockVideoPosts(): TemplatePost[] {
   return [
     {
-      id: 'post-video-1',
+      id: 'post-video-1-mock',
       featuredImage: {
         src: 'https://images.unsplash.com/photo-1534445867742-43195f401b6c?q=80&w=2454&auto=format&fit=crop',
         alt: 'Sample video post image',
@@ -506,7 +506,7 @@ function getMockVideoPosts(): TemplatePost[] {
       videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     },
     {
-      id: 'post-video-2',
+      id: 'post-video-2-mock',
       featuredImage: {
         src: 'https://images.unsplash.com/photo-1543857778-c4a1a569e7bd?q=80&w=2574&auto=format&fit=crop',
         alt: 'Another video post image',
@@ -548,7 +548,7 @@ function getMockVideoPosts(): TemplatePost[] {
       videoUrl: 'https://www.youtube.com/watch?v=jNQXAC9IVRw',
     },
     {
-      id: 'post-video-3',
+      id: 'post-video-3-mock',
       featuredImage: {
         src: 'https://images.unsplash.com/photo-1574717024456-4444c0ad7830?q=80&w=2574&auto=format&fit=crop',
         alt: 'Third video post image',

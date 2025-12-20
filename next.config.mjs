@@ -72,6 +72,26 @@ const nextConfig = {
         hostname: 'i.guim.co.uk',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'assets1.cbsnewsstatic.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets3.cbsnewsstatic.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn1.unitedinfocus.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ichef.bbci.co.uk',
+        pathname: '/**',
+      },
     ],
   },
 
