@@ -165,6 +165,69 @@ export class MultiWordPressIntegration {
 
     for (const site of this.sites) {
       try {
+        let categoryIds: number[] = []
+        let tagIds: number[] = []
+
+        // Resolve category slugs to IDs if provided
+        if (categories && categories.length > 0) {
+          try {
+            // WordPress allows comma-separated slugs
+            const catResponse = await fetch(`${site.apiBase}/categories?slug=${categories.join(',')}`, {
+              headers: { 'User-Agent': 'NextJS-Blog-Integration/1.0' }
+            })
+
+            if (catResponse.ok) {
+              const cats: any[] = await catResponse.json()
+              categoryIds = cats.map(c => c.id)
+            }
+
+            // If we asked for specific categories but found none on this site, skip this site
+            // (unless we want to show all posts, but usually filtering means filtering)
+            if (categoryIds.length === 0) {
+              // No matching categories on this site, skip fetching posts
+              siteResults.push({
+                siteId: site.id,
+                siteName: site.name,
+                postCount: 0,
+                success: true,
+                error: 'No matching categories found'
+              })
+              continue
+            }
+          } catch (e) {
+            console.error(`Error resolving categories for site ${site.name}`, e)
+            // Continue without category filter or skip? 
+            // Safest to probably skip if we can't verify category, or log error.
+          }
+        }
+
+        // Resolve tag slugs to IDs if provided (similar logic)
+        if (tags && tags.length > 0) {
+          try {
+            const tagResponse = await fetch(`${site.apiBase}/tags?slug=${tags.join(',')}`, {
+              headers: { 'User-Agent': 'NextJS-Blog-Integration/1.0' }
+            })
+
+            if (tagResponse.ok) {
+              const t: any[] = await tagResponse.json()
+              tagIds = t.map(tag => tag.id)
+            }
+
+            if (tagIds.length === 0) {
+              siteResults.push({
+                siteId: site.id,
+                siteName: site.name,
+                postCount: 0,
+                success: true,
+                error: 'No matching tags found'
+              })
+              continue
+            }
+          } catch (e) {
+            console.error(`Error resolving tags for site ${site.name}`, e)
+          }
+        }
+
         const params = new URLSearchParams({
           per_page: perPage.toString(),
           page: page.toString(),
@@ -177,12 +240,12 @@ export class MultiWordPressIntegration {
           params.append('search', search)
         }
 
-        if (categories && categories.length > 0) {
-          params.append('categories', categories.join(','))
+        if (categoryIds.length > 0) {
+          params.append('categories', categoryIds.join(','))
         }
 
-        if (tags && tags.length > 0) {
-          params.append('tags', tags.join(','))
+        if (tagIds.length > 0) {
+          params.append('tags', tagIds.join(','))
         }
 
         const response = await fetch(`${site.apiBase}/posts?${params}`, {

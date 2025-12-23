@@ -13,9 +13,8 @@ interface Props {
 
 const WidgetPopularPosts: FC<Props> = ({ className = 'bg-neutral-100 dark:bg-neutral-800', posts }) => {
   // Sort posts by view count or engagement (mock implementation)
-  const popularPosts = posts?.sort((a, b) => {
-    // Mock popularity based on post ID for now
-    return parseInt(b.id) - parseInt(a.id)
+  const popularPosts = [...(posts || [])].sort((a, b) => {
+    return (b.viewCount || 0) - (a.viewCount || 0)
   })
 
   return (

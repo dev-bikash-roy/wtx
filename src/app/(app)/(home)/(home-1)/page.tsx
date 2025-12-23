@@ -1,7 +1,6 @@
 import SectionLargeSlider from '@/components/SectionLargeSlider'
 import SectionGridPosts from '@/components/SectionGridPosts'
 import SectionSliderNewCategories from '@/components/SectionSliderNewCategories'
-import SectionVideos from '@/components/SectionVideos'
 import SectionMagazine1 from '@/components/SectionMagazine1'
 import SectionMagazine2 from '@/components/SectionMagazine2'
 import SectionMagazine3 from '@/components/SectionMagazine3'
@@ -22,6 +21,7 @@ import SectionBecomeAnAuthor from '@/components/SectionBecomeAnAuthor'
 import SectionPostsWithWidgets from '@/components/SectionPostsWithWidgets'
 import { getCategories, getCategoriesWithPosts } from '@/data/categories'
 import { getPostsDefault as getAllPosts, getPostsVideo, getPostsAudio, getPostsGallery } from '@/data/posts'
+import { getAllPostsWithWordPress, getWordPressPostsByCategory } from '@/data/wordpress-posts'
 import { getAuthors } from '@/data/authors'
 import { getTagsWithPosts } from '@/data/categories'
 import { Metadata } from 'next'
@@ -31,11 +31,30 @@ export const metadata: Metadata = {
 }
 
 const Page = async () => {
-  // Fetch different types of posts
-  const posts = await getAllPosts()
-  const videoPosts = await getPostsVideo()
-  const categoryPosts = await getPostsAudio() // Using this for other category posts instead of audio
-  const galleryPosts = await getPostsGallery()
+  // Fetch different types of posts - with fallbacks
+  let posts, categoryPosts, businessCategoryPosts, sportsCategoryPosts
+
+  try {
+    // Try to get WordPress posts first
+    const allWordPressPosts = await getAllPostsWithWordPress({ perPage: 50 })
+    posts = allWordPressPosts.length > 0 ? allWordPressPosts : await getAllPosts()
+
+    // Get specific category posts from WordPress with fallbacks
+    const technologyPosts = await getWordPressPostsByCategory('technology', 8)
+    const businessPosts = await getWordPressPostsByCategory('business', 8)
+    const sportsPosts = await getWordPressPostsByCategory('sports', 8)
+
+    categoryPosts = technologyPosts.length > 0 ? technologyPosts : posts.slice(0, 8)
+    businessCategoryPosts = businessPosts.length > 0 ? businessPosts : posts.slice(8, 16)
+    sportsCategoryPosts = sportsPosts.length > 0 ? sportsPosts : posts.slice(16, 24)
+  } catch (error) {
+    console.error('Error fetching WordPress posts:', error)
+    // Fallback to local posts
+    posts = await getAllPosts()
+    categoryPosts = posts.slice(0, 8)
+    businessCategoryPosts = posts.slice(8, 16)
+    sportsCategoryPosts = posts.slice(16, 24)
+  }
 
   const authors = await getAuthors()
   const categories = await getCategories()
@@ -45,6 +64,10 @@ const Page = async () => {
   // Ensure we have enough posts for each section by duplicating if necessary
   // But now we'll make sure each section gets different posts
   const getPostsForSection = (postArray: any[], count: number, startIndex: number = 0) => {
+    if (!postArray || postArray.length === 0) {
+      return []
+    }
+
     if (postArray.length >= count) {
       // Return posts starting from startIndex to ensure variety
       const startIndexAdjusted = startIndex % postArray.length
@@ -99,20 +122,6 @@ const Page = async () => {
         posts={getPostsForSection(posts, 5, 11)}
       />
 
-      {/* Video Posts Section */}
-      {videoPosts.length > 0 && (
-        <SectionVideos
-          heading="Video Stories"
-          subHeading="Watch the latest video content"
-          videos={getPostsForSection(videoPosts, 4).map(post => ({
-            id: post.id,
-            title: post.title,
-            thumbnail: post.featuredImage.src,
-            video: post.videoUrl || 'https://www.youtube.com/watch?v=vHBodN0Mirs'
-          }))}
-        />
-      )}
-
       {/* Magazine Layout 2 - Featured Post */}
       <SectionMagazine2
         heading="In Depth"
@@ -130,7 +139,7 @@ const Page = async () => {
         gridClass="md:grid-cols-2 lg:grid-cols-4"
       />
 
-      {/* Category Posts Slider (replacing audio posts) */}
+      {/* Technology News Slider */}
       <SectionSliderPosts
         heading="Technology News"
         subHeading="Latest in technology and innovation"
@@ -159,18 +168,18 @@ const Page = async () => {
         posts={getPostsForSection(posts, 6, 39)}
       />
 
-      {/* Magazine Layout 8 - Gallery Section */}
+      {/* Business News Section - Replacing Photo Stories */}
       <SectionMagazine8
-        heading="Photo Stories"
-        subHeading="Visual storytelling through images"
-        posts={getPostsForSection(galleryPosts.length > 0 ? galleryPosts : posts, 6, 0)}
+        heading="Business News"
+        subHeading="Latest business and finance updates"
+        posts={getPostsForSection(businessCategoryPosts.length > 0 ? businessCategoryPosts : posts, 6, 0)}
       />
 
-      {/* Magazine Layout 9 - Mixed Content */}
+      {/* Sports News Section */}
       <SectionMagazine9
-        heading="From Our Blog"
-        subHeading="Latest updates from our writers"
-        posts={getPostsForSection(posts, 7, 45)}
+        heading="Sports News"
+        subHeading="Latest sports updates and highlights"
+        posts={getPostsForSection(sportsCategoryPosts.length > 0 ? sportsCategoryPosts : posts, 7, 45)}
       />
 
       {/* Magazine Layout 10 - Featured Grid */}
@@ -213,17 +222,6 @@ const Page = async () => {
         posts={getPostsForSection(posts, 5, 62)}
       />
 
-      {/* Posts with Widgets */}
-      <SectionPostsWithWidgets
-        heading="Latest News"
-        subHeading="Stay updated with our latest articles"
-        posts={getPostsForSection(posts, 6, 67)}
-        widgetCategories={categories.slice(0, 5)}
-        widgetAuthors={authors.slice(0, 4)}
-        widgetTags={tagsWithPosts.slice(0, 8)}
-        widgetPosts={getPostsForSection(posts, 4, 73)}
-        postCardName="card9"
-      />
 
       {/* Become an Author Section */}
       <SectionBecomeAnAuthor />

@@ -4,8 +4,8 @@ import HeadingWithSub from '@/shared/Heading'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
-import ReactPlayer from 'react-player/youtube'
 import NcPlayIcon2 from './NcPlayIcon2'
+import VideoPlayer from './VideoPlayer'
 
 interface VideoType {
   id: string
@@ -64,29 +64,9 @@ const SectionVideos: FC<SectionVideosProps> = ({ videos = VIDEOS_DEMO, className
   const renderMainVideo = () => {
     if (!renderedVideo) return null
 
-    const video = videos.find((video) => video.id === currentVideo) || videos[0]
-
     return (
-      <div
-        className="group aspect-w-16 z-0 overflow-hidden rounded-3xl border-4 border-white bg-neutral-800 aspect-h-16 sm:rounded-[3rem] sm:border-10 sm:aspect-h-9 dark:border-neutral-900"
-        title={video.title}
-      >
-        <ReactPlayer
-          url={video.video}
-          playing={isPlay}
-          onPlay={() => {
-            setIsPlay(true)
-            setCurrentVideo(video.id)
-          }}
-          onPause={() => setIsPlay(false)}
-          onStart={() => setIsPlay(true)}
-          onEnded={() => {
-            setIsPlay(false)
-          }}
-          controls
-          width="100%"
-          height="100%"
-        />
+      <div className="group aspect-w-16 z-0 overflow-hidden rounded-3xl border-4 border-white bg-neutral-800 aspect-h-16 sm:rounded-[3rem] sm:border-10 sm:aspect-h-9 dark:border-neutral-900">
+        <VideoPlayer className="w-full h-full" />
       </div>
     )
   }

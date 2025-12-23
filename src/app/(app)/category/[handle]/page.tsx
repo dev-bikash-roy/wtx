@@ -33,11 +33,10 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const posts = category.posts || []
   const categories = await getCategories()
   const tags = await getTags()
-  
+
   // Get featured posts for this category
-  const allPosts = await getAllPosts()
-  const featuredPosts = allPosts.slice(0, 5)
-  const recentPosts = allPosts.slice(5, 11)
+  const featuredPosts = posts.slice(0, 5)
+  const recentPosts = posts.slice(5, 11)
 
   if (!category) {
     return notFound()

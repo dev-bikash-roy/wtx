@@ -11,24 +11,33 @@ export async function getAllPostsWithWordPress(options: {
   includeWordPress?: boolean
 } = {}): Promise<TPost[]> {
   const { includeWordPress = true } = options
-  
+
   // Get local posts (your existing posts)
   const { getAllPosts } = await import('./posts')
   const localPosts = await getAllPosts()
-  
+
   if (!includeWordPress) {
     return localPosts
   }
-  
+
   try {
     // Get WordPress posts
     const wpPosts = await multiWP.fetchPostsAsTPost(options)
-    
+
+    // Combine and sort by date
     // Combine and sort by date
     const allPosts = [...localPosts, ...wpPosts]
-    allPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    
-    return allPosts
+
+    // Deduplicate based on ID
+    const uniquePostsMap = new Map()
+    allPosts.forEach(post => {
+      uniquePostsMap.set(post.id, post)
+    })
+
+    const uniquePosts = Array.from(uniquePostsMap.values())
+    uniquePosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+    return uniquePosts
   } catch (error) {
     console.error('Error fetching WordPress posts:', error)
     // Return local posts if WordPress fails
@@ -41,11 +50,11 @@ export async function getPostByHandleWithWordPress(handle: string): Promise<TPos
   // First try local posts
   const { getPostByHandle } = await import('./posts')
   const localPost = await getPostByHandle(handle)
-  
+
   if (localPost) {
     return localPost
   }
-  
+
   // Try WordPress posts
   try {
     const wpPost = await multiWP.getPostBySlug(handle)
@@ -70,9 +79,9 @@ export async function getRecentWordPressPosts(limit: number = 5): Promise<TPost[
 // Get posts by category from WordPress
 export async function getWordPressPostsByCategory(categorySlug: string, limit: number = 10): Promise<TPost[]> {
   try {
-    const wpPosts = await multiWP.fetchPostsAsTPost({ 
-      categories: [categorySlug], 
-      perPage: limit 
+    const wpPosts = await multiWP.fetchPostsAsTPost({
+      categories: [categorySlug],
+      perPage: limit
     })
     return wpPosts
   } catch (error) {
@@ -84,9 +93,9 @@ export async function getWordPressPostsByCategory(categorySlug: string, limit: n
 // Search posts across all sources
 export async function searchAllPosts(query: string, limit: number = 20): Promise<TPost[]> {
   try {
-    const allPosts = await getAllPostsWithWordPress({ 
-      search: query, 
-      perPage: limit 
+    const allPosts = await getAllPostsWithWordPress({
+      search: query,
+      perPage: limit
     })
     return allPosts
   } catch (error) {
@@ -110,7 +119,7 @@ export async function getWordPressSiteStats(): Promise<{
 }> {
   try {
     const result = await multiWP.fetchAllPosts({ perPage: 100 })
-    
+
     return {
       totalSites: result.sites.length,
       activeSites: result.sites.filter(s => s.success).length,

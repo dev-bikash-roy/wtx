@@ -1,14 +1,10 @@
 import { getNavigation } from '@/data/navigation'
 import { getAllPosts } from '@/data/posts'
-import { Button } from '@/shared/Button'
 import Logo from '@/shared/Logo'
-import { PlusIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { FC } from 'react'
-import AvatarDropdown from './AvatarDropdown'
 import HamburgerBtnMenu from './HamburgerBtnMenu'
 import MegaMenuPopover from './MegaMenuPopover'
-import NotifyDropdown from './NotifyDropdown'
 import SearchModal from './SearchModal'
 
 interface HeaderProps {
@@ -59,15 +55,6 @@ const Header: FC<HeaderProps> = async ({ bottomBorder, className }) => {
               </div>
             ))}
             
-            <div className="ms-6 me-3 hidden h-8 border-l lg:block" />
-            <div className="hidden sm:block">
-              <Button className="h-10 px-3!" href={'/submission'} plain>
-                <PlusIcon className="size-5!" />
-                Create
-              </Button>
-            </div>
-            <NotifyDropdown className="me-3" />
-            <AvatarDropdown />
             <div className="ms-2.5 flex lg:hidden">
               <HamburgerBtnMenu />
             </div>

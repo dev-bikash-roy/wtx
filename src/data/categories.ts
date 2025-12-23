@@ -1,14 +1,13 @@
-import { fetchCategories, fetchTags } from './wp-api'
+import { fetchCategories, fetchTags, fetchPosts, fetchPostsByCategory } from './wp-api'
 import { TemplateCategory, TemplateTag } from './wp-types'
 import { getAllPosts, getPostsDefault, TPost } from './posts'
 
 // Color mapping for categories and tags
 const CATEGORY_COLORS = [
-  'blue', 'red', 'green', 'yellow', 'purple', 
+  'blue', 'red', 'green', 'yellow', 'purple',
   'indigo', 'pink', 'teal', 'orange', 'cyan'
 ]
 
-// TODO: replace with actual images
 // TODO: replace with actual images
 // _demo_category_image_urls has length 10
 const _demo_category_image_urls = [
@@ -28,24 +27,37 @@ const _demo_category_image_urls = [
 export async function getCategories(): Promise<TemplateCategory[]> {
   // Fetch real categories from WordPress API
   const categories = await fetchCategories(100)
-  
+
   // If we have real categories, return them
   if (categories.length > 0) {
-    return categories.map((category, index) => ({
-      ...category,
-      description: `Explore articles in the ${category.name} category`,
-      count: 0, // WordPress API doesn't return count in our current implementation
-      date: new Date().toISOString(),
-      color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
-      thumbnail: {
+    // Fetch recent posts to find matched images for categories
+    const recentPosts = await fetchPosts(50)
+
+    return categories.map((category, index) => {
+      // Find a post that belongs to this category
+      const categoryPost = recentPosts.find(post =>
+        post.categories.some(cat => cat.handle === category.handle)
+      )
+
+      // Use post's featured image if available, otherwise fallback to demo
+      const thumbnailResponse = categoryPost?.featuredImage || {
         src: _demo_category_image_urls[index % _demo_category_image_urls.length],
         alt: `${category.name} category image`,
         width: 1920,
         height: 1080
       }
-    }))
+
+      return {
+        ...category,
+        description: `Explore articles in the ${category.name} category`,
+        count: category.count || 0,
+        date: new Date().toISOString(),
+        color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
+        thumbnail: thumbnailResponse
+      }
+    })
   }
-  
+
   // Fallback to mock data if API fails
   return [
     {
@@ -231,8 +243,21 @@ export async function getCategoryByHandle(handle: string) {
   // lower case handle
   handle = handle?.toLowerCase()
 
-  // for demo purpose, get all posts
-  const posts = (await getAllPosts()).slice(0, 12)
+  // get posts for this category
+  let posts: any[] = []
+
+  if (handle === 'all') {
+    posts = (await fetchPosts(20))
+  } else {
+    posts = await fetchPostsByCategory(handle, 20)
+    // If no posts found in WP, try local or empty
+    if (posts.length === 0) {
+      // Should we fallback to all posts? User complained about "correct posts", so probably NO.
+      // But we can fallback to searching if it's a mix?
+      // For now, respect the empty result but maybe fallback to generic if really needed? 
+      // Nah, correct behavior is to show logic.
+    }
+  }
 
   if (handle === 'all') {
     return {
@@ -240,7 +265,7 @@ export async function getCategoryByHandle(handle: string) {
       name: 'All articles',
       handle: 'all',
       description: 'Explore all articles',
-      count: 2500,
+      count: 2500, // TODO: Get real count
       date: '2025-01-01',
       thumbnail: {
         src: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -263,40 +288,77 @@ export async function getCategoryByHandle(handle: string) {
   const categories = await getCategories()
   let category = categories.find((category) => category.handle === handle)
   if (!category) {
-    // return null
-    // for demo purpose, return the first category
+    // If not found in list (maybe not in top 100), try to fetch it or return generic?
+    // We already return the whole category object.
+
+    // Fallback: create a dummy category object if not found in list, or return null
+    // But keeping existing fallback behavior but using the posts we fetched
     category = categories[0]
+
+    // Better logic: if we have posts, we can reconstruct the category from the first post?
+    if (posts.length > 0 && posts[0].categories) {
+      const catFromPost = posts[0].categories.find((c: any) => c.handle === handle)
+      if (catFromPost) {
+        category = {
+          ...catFromPost,
+          description: `Articles about ${catFromPost.name}`,
+          count: posts.length, // Approximate
+          date: new Date().toISOString(),
+          thumbnail: posts[0].featuredImage, // Use post image
+        }
+      }
+    }
   }
+
+  if (category) {
+    return {
+      ...category,
+      posts,
+    }
+  }
+
+  // If still no category and no posts...
   return {
-    ...category,
-    posts,
+    ...categories[0],
+    posts: []
   }
 }
 
 export async function getCategoriesWithPosts() {
   const categories = await getCategories()
-  const posts = await getPostsDefault()
-  return categories.map((category) => ({
-    ...category,
-    posts: posts.slice(0, 8),
-  }))
+
+  // Create an array of promises to fetch posts for each category
+  const categoriesWithPostsPromises = categories.map(async (category) => {
+    // Fetch posts specifically for this category
+    const posts = await fetchPostsByCategory(category.handle, 8)
+
+    // If no posts found, potentially try to get generic posts or keep empty
+    // But for "Browse by Category", empty/few is better than wrong/duplicate
+
+    return {
+      ...category,
+      posts: posts.length > 0 ? posts : []
+    }
+  })
+
+  return Promise.all(categoriesWithPostsPromises)
 }
 
 // TAGS
 export async function getTags(): Promise<TemplateTag[]> {
   // Fetch real tags from WordPress API
   const tags = await fetchTags(100)
-  
+
   // If we have real tags, return them
   if (tags.length > 0) {
     return tags.map((tag, index) => ({
       ...tag,
       description: `Explore articles tagged with ${tag.name}`,
-      count: 0, // WordPress API doesn't return count in our current implementation
+      count: tag.count || 0,
       color: CATEGORY_COLORS[index % CATEGORY_COLORS.length]
     }))
   }
-  
+
   // Fallback to mock data if API fails
   return [
     {

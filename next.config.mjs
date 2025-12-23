@@ -34,6 +34,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'wtx-news.co.uk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: '*.espncdn.com',
         pathname: '/**',
       },
@@ -90,6 +95,16 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'ichef.bbci.co.uk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.heraldscotland.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.heraldscotland.com',
         pathname: '/**',
       },
     ],

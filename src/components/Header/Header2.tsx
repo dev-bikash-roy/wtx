@@ -1,14 +1,10 @@
 import { getNavigation } from '@/data/navigation'
 import { getAllPosts } from '@/data/posts'
-import { Button } from '@/shared/Button'
 import Logo from '@/shared/Logo'
-import { PlusIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { FC } from 'react'
-import AvatarDropdown from './AvatarDropdown'
 import HamburgerBtnMenu from './HamburgerBtnMenu'
 import Navigation from './Navigation/Navigation'
-import NotifyDropdown from './NotifyDropdown'
 import SearchModal from './SearchModal'
 
 interface Props {
@@ -43,14 +39,6 @@ const Header2: FC<Props> = async ({ bottomBorder, className }) => {
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-x-0.5">
-          <div className="hidden sm:block">
-            <Button className="h-10 px-3!" href={'/submission'} plain>
-              <PlusIcon className="size-5!" />
-              Create
-            </Button>
-          </div>
-          <NotifyDropdown className="me-3" />
-          <AvatarDropdown />
           <div className="ms-2 flex lg:hidden">
             <HamburgerBtnMenu />
           </div>

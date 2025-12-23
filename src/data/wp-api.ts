@@ -5,7 +5,7 @@ const WP_API_BASE = process.env.WP_API_BASE || 'https://wtxnews.com/wp-json/wp/v
 
 // Color mapping for categories
 const CATEGORY_COLORS = [
-  'blue', 'red', 'green', 'yellow', 'purple', 
+  'blue', 'red', 'green', 'yellow', 'purple',
   'indigo', 'pink', 'teal', 'orange', 'cyan'
 ]
 
@@ -17,16 +17,16 @@ function decodeHtmlEntities(text: string): string {
 // Utility function to extract featured image from WordPress post
 function getFeaturedImage(post: WPPost): { src: string; alt: string; width: number; height: number } {
   const media = post._embedded?.['wp:featuredmedia']?.[0]
-  
+
   if (media) {
     return {
       src: media.source_url,
-      alt: media.alt_text || media.title.rendered,
+      alt: media.alt_text || media.title?.rendered || 'Article Image',
       width: media.media_details?.width || 1920,
       height: media.media_details?.height || 1080
     }
   }
-  
+
   // Default image if none found
   return {
     src: 'https://images.unsplash.com/photo-1534445867742-43195f401b6c?q=80&w=2454&auto=format&fit=crop',
@@ -39,7 +39,7 @@ function getFeaturedImage(post: WPPost): { src: string; alt: string; width: numb
 // Utility function to extract author from WordPress post
 function getAuthor(post: WPPost): TemplatePost['author'] {
   const author = post._embedded?.author?.[0]
-  
+
   if (author) {
     return {
       id: `author-${author.id}`,
@@ -54,7 +54,7 @@ function getAuthor(post: WPPost): TemplatePost['author'] {
       }
     }
   }
-  
+
   // Default author if none found
   return {
     id: 'author-default',
@@ -85,7 +85,7 @@ function mapWPPostToTemplatePost(post: WPPost): TemplatePost {
   // Extract categories from embedded data
   const wpCategories = post._embedded?.['wp:term']?.[0] || []
   const categories = getCategories(wpCategories.filter(term => term.taxonomy === 'category') as WPCategory[])
-  
+
   // Extract tags from embedded data
   const wpTags = post._embedded?.['wp:term']?.[1] || []
   const tags = wpTags.filter(term => term.taxonomy === 'post_tag').map((tag, index) => ({
@@ -94,12 +94,12 @@ function mapWPPostToTemplatePost(post: WPPost): TemplatePost {
     handle: tag.slug,
     color: CATEGORY_COLORS[index % CATEGORY_COLORS.length]
   }))
-  
+
   // Determine post type based on format or content
   let postType: 'standard' | 'audio' | 'video' | 'gallery' = 'standard'
   let videoUrl: string | undefined
   let audioUrl: string | undefined
-  
+
   // Check if post has a video format or contains video URL in content
   if (post.format === 'video') {
     postType = 'video'
@@ -108,7 +108,7 @@ function mapWPPostToTemplatePost(post: WPPost): TemplatePost {
     if (videoMatch) {
       videoUrl = `https://www.youtube.com/watch?v=${videoMatch[1]}`
     }
-  } 
+  }
   // Check if post has an audio format
   else if (post.format === 'audio') {
     postType = 'audio'
@@ -118,7 +118,7 @@ function mapWPPostToTemplatePost(post: WPPost): TemplatePost {
       audioUrl = audioMatch[1]
     }
   }
-  
+
   return {
     id: `post-${post.id}`,
     featuredImage: getFeaturedImage(post),
@@ -158,10 +158,16 @@ export async function fetchPosts(perPage: number = 20, page: number = 1): Promis
       page: page.toString(),
       _embed: '1'
     })
-    
+
     const response = await fetch(`${WP_API_BASE}/posts?${params}`)
+
+    if (!response.ok) {
+      console.error(`Status: ${response.status}. Error fetching posts: ${response.statusText}`)
+      return []
+    }
+
     const posts: WPPost[] = await response.json()
-    
+
     return posts.map(mapWPPostToTemplatePost)
   } catch (error) {
     console.error('Error fetching posts from WordPress API:', error)
@@ -174,15 +180,21 @@ export async function fetchPostsByTag(tagSlug: string, perPage: number = 20, pag
   try {
     // First, get the tag ID by slug
     const tagResponse = await fetch(`${WP_API_BASE}/tags?slug=${tagSlug}`)
+
+    if (!tagResponse.ok) {
+      console.error(`Status: ${tagResponse.status}. Error fetching tag by slug: ${tagResponse.statusText}`)
+      return []
+    }
+
     const tags: WPTag[] = await tagResponse.json()
-    
+
     if (tags.length === 0) {
       console.warn(`No tag found with slug: ${tagSlug}`)
       return []
     }
-    
+
     const tagId = tags[0].id
-    
+
     // Then fetch posts with that tag
     const params = new URLSearchParams({
       per_page: perPage.toString(),
@@ -190,13 +202,71 @@ export async function fetchPostsByTag(tagSlug: string, perPage: number = 20, pag
       tags: tagId.toString(),
       _embed: '1'
     })
-    
+
     const response = await fetch(`${WP_API_BASE}/posts?${params}`)
+
+    if (!response.ok) {
+      console.error(`Status: ${response.status}. Error fetching posts by tag: ${response.statusText}`)
+      return []
+    }
+
     const posts: WPPost[] = await response.json()
-    
+
     return posts.map(mapWPPostToTemplatePost)
   } catch (error) {
     console.error('Error fetching posts by tag from WordPress API:', error)
+    return [] // Return empty array on error
+  }
+}
+
+// Fetch posts by category from WordPress API
+export async function fetchPostsByCategory(categorySlug: string, perPage: number = 20, page: number = 1): Promise<TemplatePost[]> {
+  try {
+    // First, get the category ID by slug
+    const categoryResponse = await fetch(`${WP_API_BASE}/categories?slug=${categorySlug}`)
+
+    if (!categoryResponse.ok) {
+      console.error(`Status: ${categoryResponse.status}. Error fetching category by slug: ${categoryResponse.statusText}`)
+      return []
+    }
+
+    const categories: WPCategory[] = await categoryResponse.json()
+
+    if (categories.length === 0) {
+      console.warn(`No category found with slug: ${categorySlug}`)
+      return []
+    }
+
+    const categoryId = categories[0].id
+
+    // Then fetch posts with that category
+    const params = new URLSearchParams({
+      per_page: perPage.toString(),
+      page: page.toString(),
+      categories: categoryId.toString(),
+      _embed: '1'
+    })
+
+    const response = await fetch(`${WP_API_BASE}/posts?${params}`)
+
+    if (!response.ok) {
+      console.error(`Status: ${response.status}. Error fetching posts by category: ${response.statusText}`)
+      return []
+    }
+
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      console.error(`Error: Received non-JSON response from ${WP_API_BASE}/posts?${params}`);
+      const text = await response.text();
+      console.error("Response body:", text.substring(0, 100)); // Log first 100 chars
+      return [];
+    }
+
+    const posts: WPPost[] = await response.json()
+
+    return posts.map(mapWPPostToTemplatePost)
+  } catch (error) {
+    console.error('Error fetching posts by category from WordPress API:', error)
     return [] // Return empty array on error
   }
 }
@@ -210,14 +280,23 @@ export async function fetchCategories(perPage: number = 100): Promise<TemplateCa
       orderby: 'count',
       order: 'desc'
     })
-    
+
     const response = await fetch(`${WP_API_BASE}/categories?${params}`)
+
+    if (!response.ok) {
+      // If 404, it might just mean no categories found or endpoint valid but empty?
+      // Usually categories endpoint returns empty list, but if status is error, return empty
+      console.error(`Status: ${response.status}. Error fetching categories: ${response.statusText}`)
+      return []
+    }
+
     const categories: WPCategory[] = await response.json()
-    
+
     return categories.map((cat, index) => ({
       id: `category-${cat.id}`,
       name: cat.name,
       handle: cat.slug,
+      count: cat.count,
       color: CATEGORY_COLORS[index % CATEGORY_COLORS.length]
     }))
   } catch (error) {
@@ -235,14 +314,21 @@ export async function fetchTags(perPage: number = 100): Promise<TemplateTag[]> {
       orderby: 'count',
       order: 'desc'
     })
-    
+
     const response = await fetch(`${WP_API_BASE}/tags?${params}`)
+
+    if (!response.ok) {
+      console.error(`Status: ${response.status}. Error fetching tags: ${response.statusText}`)
+      return []
+    }
+
     const tags: WPTag[] = await response.json()
-    
+
     return tags.map((tag, index) => ({
       id: `tag-${tag.id}`,
       name: tag.name,
       handle: tag.slug,
+      count: tag.count,
       color: CATEGORY_COLORS[index % CATEGORY_COLORS.length]
     }))
   } catch (error) {
@@ -258,14 +344,20 @@ export async function fetchPostBySlug(slug: string): Promise<TemplatePost | null
       slug: slug,
       _embed: '1'
     })
-    
+
     const response = await fetch(`${WP_API_BASE}/posts?${params}`)
+
+    if (!response.ok) {
+      console.error(`Status: ${response.status}. Error fetching post by slug: ${response.statusText}`)
+      return null
+    }
+
     const posts: WPPost[] = await response.json()
-    
+
     if (posts.length > 0) {
       return mapWPPostToTemplatePost(posts[0])
     }
-    
+
     return null
   } catch (error) {
     console.error('Error fetching post by slug from WordPress API:', error)
@@ -285,7 +377,7 @@ export async function createPost(
     // In a real implementation, you would need to authenticate with WordPress
     // This is a placeholder implementation
     console.log('Creating post:', { title, content, status, categories, tags })
-    
+
     // For now, return a mock post
     return {
       id: `post-${Date.now()}`,
@@ -352,7 +444,7 @@ export async function updatePost(
     // In a real implementation, you would need to authenticate with WordPress
     // This is a placeholder implementation
     console.log('Updating post:', { id, title, content, status, categories, tags })
-    
+
     // For now, return a mock post
     return {
       id,
