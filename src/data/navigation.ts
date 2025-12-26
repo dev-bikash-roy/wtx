@@ -6,6 +6,11 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
       name: 'Home',
     },
     {
+      id: '8',
+      href: '/latest-news',
+      name: 'Latest News',
+    },
+    {
       id: '2',
       href: '/category/news',
       name: 'News',

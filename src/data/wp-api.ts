@@ -151,7 +151,7 @@ function mapWPPostToTemplatePost(post: WPPost): TemplatePost {
 }
 
 // Fetch posts from WordPress API
-export async function fetchPosts(perPage: number = 20, page: number = 1): Promise<TemplatePost[]> {
+export async function fetchPosts(perPage: number = 20, page: number = 1, apiBase: string = WP_API_BASE): Promise<TemplatePost[]> {
   try {
     const params = new URLSearchParams({
       per_page: perPage.toString(),
@@ -159,7 +159,7 @@ export async function fetchPosts(perPage: number = 20, page: number = 1): Promis
       _embed: '1'
     })
 
-    const response = await fetch(`${WP_API_BASE}/posts?${params}`)
+    const response = await fetch(`${apiBase}/posts?${params}`)
 
     if (!response.ok) {
       console.error(`Status: ${response.status}. Error fetching posts: ${response.statusText}`)
@@ -176,10 +176,10 @@ export async function fetchPosts(perPage: number = 20, page: number = 1): Promis
 }
 
 // Fetch posts by tag from WordPress API
-export async function fetchPostsByTag(tagSlug: string, perPage: number = 20, page: number = 1): Promise<TemplatePost[]> {
+export async function fetchPostsByTag(tagSlug: string, perPage: number = 20, page: number = 1, apiBase: string = WP_API_BASE): Promise<TemplatePost[]> {
   try {
     // First, get the tag ID by slug
-    const tagResponse = await fetch(`${WP_API_BASE}/tags?slug=${tagSlug}`)
+    const tagResponse = await fetch(`${apiBase}/tags?slug=${tagSlug}`)
 
     if (!tagResponse.ok) {
       console.error(`Status: ${tagResponse.status}. Error fetching tag by slug: ${tagResponse.statusText}`)
@@ -203,7 +203,7 @@ export async function fetchPostsByTag(tagSlug: string, perPage: number = 20, pag
       _embed: '1'
     })
 
-    const response = await fetch(`${WP_API_BASE}/posts?${params}`)
+    const response = await fetch(`${apiBase}/posts?${params}`)
 
     if (!response.ok) {
       console.error(`Status: ${response.status}. Error fetching posts by tag: ${response.statusText}`)
@@ -220,10 +220,10 @@ export async function fetchPostsByTag(tagSlug: string, perPage: number = 20, pag
 }
 
 // Fetch posts by category from WordPress API
-export async function fetchPostsByCategory(categorySlug: string, perPage: number = 20, page: number = 1): Promise<TemplatePost[]> {
+export async function fetchPostsByCategory(categorySlug: string, perPage: number = 20, page: number = 1, apiBase: string = WP_API_BASE): Promise<TemplatePost[]> {
   try {
     // First, get the category ID by slug
-    const categoryResponse = await fetch(`${WP_API_BASE}/categories?slug=${categorySlug}`)
+    const categoryResponse = await fetch(`${apiBase}/categories?slug=${categorySlug}`)
 
     if (!categoryResponse.ok) {
       console.error(`Status: ${categoryResponse.status}. Error fetching category by slug: ${categoryResponse.statusText}`)
@@ -247,7 +247,7 @@ export async function fetchPostsByCategory(categorySlug: string, perPage: number
       _embed: '1'
     })
 
-    const response = await fetch(`${WP_API_BASE}/posts?${params}`)
+    const response = await fetch(`${apiBase}/posts?${params}`)
 
     if (!response.ok) {
       console.error(`Status: ${response.status}. Error fetching posts by category: ${response.statusText}`)
@@ -256,7 +256,7 @@ export async function fetchPostsByCategory(categorySlug: string, perPage: number
 
     const contentType = response.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
-      console.error(`Error: Received non-JSON response from ${WP_API_BASE}/posts?${params}`);
+      console.error(`Error: Received non-JSON response from ${apiBase}/posts?${params}`);
       const text = await response.text();
       console.error("Response body:", text.substring(0, 100)); // Log first 100 chars
       return [];
@@ -272,7 +272,7 @@ export async function fetchPostsByCategory(categorySlug: string, perPage: number
 }
 
 // Fetch categories from WordPress API
-export async function fetchCategories(perPage: number = 100): Promise<TemplateCategory[]> {
+export async function fetchCategories(perPage: number = 100, apiBase: string = WP_API_BASE): Promise<TemplateCategory[]> {
   try {
     const params = new URLSearchParams({
       per_page: perPage.toString(),
@@ -281,7 +281,7 @@ export async function fetchCategories(perPage: number = 100): Promise<TemplateCa
       order: 'desc'
     })
 
-    const response = await fetch(`${WP_API_BASE}/categories?${params}`)
+    const response = await fetch(`${apiBase}/categories?${params}`)
 
     if (!response.ok) {
       // If 404, it might just mean no categories found or endpoint valid but empty?
@@ -306,7 +306,7 @@ export async function fetchCategories(perPage: number = 100): Promise<TemplateCa
 }
 
 // Fetch tags from WordPress API
-export async function fetchTags(perPage: number = 100): Promise<TemplateTag[]> {
+export async function fetchTags(perPage: number = 100, apiBase: string = WP_API_BASE): Promise<TemplateTag[]> {
   try {
     const params = new URLSearchParams({
       per_page: perPage.toString(),
@@ -315,7 +315,7 @@ export async function fetchTags(perPage: number = 100): Promise<TemplateTag[]> {
       order: 'desc'
     })
 
-    const response = await fetch(`${WP_API_BASE}/tags?${params}`)
+    const response = await fetch(`${apiBase}/tags?${params}`)
 
     if (!response.ok) {
       console.error(`Status: ${response.status}. Error fetching tags: ${response.statusText}`)
