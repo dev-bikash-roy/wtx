@@ -20,12 +20,12 @@ interface Props {
 
 const Card11: FC<Props> = ({ className, post, hiddenAuthor = false, ratio = 'aspect-4/3' }) => {
   const [isHover, setIsHover] = useState(false)
-  
+
   // Check if post exists before destructuring
   if (!post) {
     return null;
   }
-  
+
   const { title, handle, categories, date, likeCount, liked, commentCount, readingTime, bookmarked } = post
 
   return (
@@ -45,7 +45,8 @@ const Card11: FC<Props> = ({ className, post, hiddenAuthor = false, ratio = 'asp
         {!hiddenAuthor ? <PostCardMeta meta={post} /> : <span className="text-xs text-neutral-500">{date}</span>}
         <h3 className="nc-card-title block text-base font-semibold text-neutral-900 dark:text-neutral-100">
           <Link href={`/post/${post.handle}`} className="line-clamp-2" title={title}>
-            {title}
+            {/* Simple decoding for common entities */}
+            {title.replace(/&#8216;/g, "‘").replace(/&#8217;/g, "’").replace(/&#038;/g, "&").replace(/&amp;/g, "&")}
           </Link>
         </h3>
 

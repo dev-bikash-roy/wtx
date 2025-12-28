@@ -19,7 +19,8 @@ const PostCardMeta2: FC<Props> = ({ meta, className, avatarSize }) => {
       <div>
         <h2 className={clsx('block text-base font-semibold')}>
           <Link href={`/post/${handle}`} className="line-clamp-2">
-            {title}
+            {/* Simple decoding for common entities */}
+            {title.replace(/&#8216;/g, "‘").replace(/&#8217;/g, "’").replace(/&#038;/g, "&").replace(/&amp;/g, "&")}
           </Link>
         </h2>
 
