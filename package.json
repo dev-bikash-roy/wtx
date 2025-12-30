@@ -46,6 +46,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^8.18.2",
     "next": "15.3.8",
+    "openai": "^6.15.0",
     "react": "19.1.0",
     "react-aria": "^3.41.1",
     "react-dom": "19.1.0",

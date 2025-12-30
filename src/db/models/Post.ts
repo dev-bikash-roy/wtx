@@ -12,6 +12,7 @@ export interface IPost extends Document {
   author: string;
   createdAt: Date;
   updatedAt: Date;
+  aiSummary?: string;
 }
 
 const PostSchema: Schema = new Schema(
@@ -20,8 +21,8 @@ const PostSchema: Schema = new Schema(
     content: { type: String, required: true },
     excerpt: { type: String },
     slug: { type: String, required: true, unique: true },
-    status: { 
-      type: String, 
+    status: {
+      type: String,
       enum: ['draft', 'published', 'archived'],
       default: 'draft'
     },
@@ -29,6 +30,7 @@ const PostSchema: Schema = new Schema(
     categories: [{ type: String }],
     tags: [{ type: String }],
     author: { type: String, required: true },
+    aiSummary: { type: String },
   },
   {
     timestamps: true,
@@ -48,6 +50,6 @@ PostSchema.set('toJSON', {
 const isConnected = mongoose.connections[0]?.readyState === 1;
 
 // Only export the model if we're connected to mongoose
-export default isConnected 
+export default isConnected
   ? mongoose.models.Post || mongoose.model<IPost>('Post', PostSchema)
   : null;

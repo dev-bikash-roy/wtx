@@ -250,12 +250,12 @@ export async function getCategoryByHandle(handle: string) {
     posts = (await fetchPosts(20))
   } else {
     posts = await fetchPostsByCategory(handle, 20)
-    // If no posts found in WP, try local or empty
+    // If no posts found in WP, try local posts
     if (posts.length === 0) {
-      // Should we fallback to all posts? User complained about "correct posts", so probably NO.
-      // But we can fallback to searching if it's a mix?
-      // For now, respect the empty result but maybe fallback to generic if really needed? 
-      // Nah, correct behavior is to show logic.
+      const allPosts = await getAllPosts()
+      posts = allPosts.filter(post => 
+        post.categories?.some(cat => cat.handle === handle)
+      ).slice(0, 20)
     }
   }
 
@@ -288,23 +288,36 @@ export async function getCategoryByHandle(handle: string) {
   const categories = await getCategories()
   let category = categories.find((category) => category.handle === handle)
   if (!category) {
-    // If not found in list (maybe not in top 100), try to fetch it or return generic?
-    // We already return the whole category object.
-
-    // Fallback: create a dummy category object if not found in list, or return null
-    // But keeping existing fallback behavior but using the posts we fetched
-    category = categories[0]
-
-    // Better logic: if we have posts, we can reconstruct the category from the first post?
+    // If not found in list, try to reconstruct from posts
     if (posts.length > 0 && posts[0].categories) {
       const catFromPost = posts[0].categories.find((c: any) => c.handle === handle)
       if (catFromPost) {
         category = {
           ...catFromPost,
           description: `Articles about ${catFromPost.name}`,
-          count: posts.length, // Approximate
+          count: posts.length,
           date: new Date().toISOString(),
           thumbnail: posts[0].featuredImage, // Use post image
+          color: 'blue'
+        }
+      }
+    }
+    
+    // Final fallback: create a basic category object
+    if (!category) {
+      category = {
+        id: `category-${handle}`,
+        name: handle.charAt(0).toUpperCase() + handle.slice(1).replace(/-/g, ' '),
+        handle: handle,
+        description: `Articles in the ${handle} category`,
+        count: posts.length,
+        date: new Date().toISOString(),
+        color: 'blue',
+        thumbnail: {
+          src: _demo_category_image_urls[0],
+          alt: handle,
+          width: 1920,
+          height: 1080,
         }
       }
     }
@@ -314,13 +327,15 @@ export async function getCategoryByHandle(handle: string) {
     return {
       ...category,
       posts,
+      count: posts.length
     }
   }
 
   // If still no category and no posts...
   return {
     ...categories[0],
-    posts: []
+    posts: [],
+    count: 0
   }
 }
 
@@ -471,13 +486,24 @@ export async function getTagsWithPosts() {
   }))
 }
 
+export async function getTrendingTags(limit: number = 5) {
+  const tags = await getTags()
+  // Sort by count (most used) and return top 5
+  return tags
+    .sort((a, b) => (b.count || 0) - (a.count || 0))
+    .slice(0, limit)
+    .map(tag => ({
+      ...tag,
+      trending: true
+    }))
+}
+
 export async function getTagByHandle(handle: string) {
   // lower case handle
   handle = handle?.toLowerCase()
 
-  const posts = (await getAllPosts()).slice(0, 12)
-
   if (handle === 'all') {
+    const posts = (await getAllPosts()).slice(0, 12)
     return {
       id: 'tag-all',
       name: 'All articles',
@@ -488,16 +514,49 @@ export async function getTagByHandle(handle: string) {
     }
   }
 
+  // Get posts specifically for this tag
+  let posts: any[] = []
+  
+  try {
+    // First try to get posts from WordPress by tag
+    const { getWordPressPostsByTag } = await import('./wordpress-posts')
+    posts = await getWordPressPostsByTag(handle, 20)
+    
+    // If no WordPress posts found, try to get posts that have this tag from local posts
+    if (posts.length === 0) {
+      const allPosts = await getAllPosts()
+      posts = allPosts.filter(post => 
+        post.tags?.some(tag => tag.handle === handle)
+      ).slice(0, 12)
+    }
+  } catch (error) {
+    console.error('Error fetching posts by tag:', error)
+    // Fallback to local posts
+    const allPosts = await getAllPosts()
+    posts = allPosts.filter(post => 
+      post.tags?.some(tag => tag.handle === handle)
+    ).slice(0, 12)
+  }
+
   const tags = await getTags()
   let tag = tags.find((tag) => tag.handle === handle)
+  
   if (!tag) {
-    // return null
-    // for demo purpose, return the first tag
-    tag = tags[0]
+    // If tag not found in the list, create a basic tag object
+    tag = {
+      id: `tag-${handle}`,
+      name: handle.charAt(0).toUpperCase() + handle.slice(1).replace(/-/g, ' '),
+      handle: handle,
+      description: `Explore articles tagged with ${handle}`,
+      count: posts.length,
+      color: 'blue'
+    }
   }
+  
   return {
     ...tag,
     posts,
+    count: posts.length
   }
 }
 

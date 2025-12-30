@@ -178,6 +178,7 @@ export interface TemplatePost {
   audioUrl?: string
   videoUrl?: string
   galleryImgs?: string[]
+  aiSummary?: string
 }
 
 export interface TemplateCategory {

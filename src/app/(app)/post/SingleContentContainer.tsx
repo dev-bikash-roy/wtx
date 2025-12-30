@@ -14,6 +14,7 @@ import { Link } from '@/shared/link'
 import { ArrowUp02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FC, useEffect, useRef, useState } from 'react'
+import AIChatWidget from '@/components/AIChatWidget'
 import { ShareDropdown } from './SingleMetaAction'
 import TheContent from './TheContent'
 
@@ -31,7 +32,7 @@ const SingleContentContainer: FC<Props> = ({ post, comments, className }) => {
   const [isShowScrollToTop, setIsShowScrollToTop] = useState<boolean>(false)
   //
 
-  const { tags, author, content, likeCount, commentCount, liked, handle } = post
+  const { tags, author, content, likeCount, commentCount, liked, handle, aiSummary } = post
 
   // Fix: Add null checks for optional properties
   const safeContent = content || ''
@@ -87,6 +88,23 @@ const SingleContentContainer: FC<Props> = ({ post, comments, className }) => {
     <div className={`relative ${className}`}>
       <div className="single-content space-y-10">
         {/* ENTRY CONTENT */}
+        {aiSummary && (
+          <div className="mx-auto mb-10 max-w-(--breakpoint-md) rounded-2xl bg-neutral-50 p-6 dark:bg-neutral-800/50">
+            <div className="mb-2 flex items-center gap-2">
+              <span className="flex size-6 items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-3.5">
+                  <path d="M9 4.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 9 9V4.5ZM9 15.75a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 9 20.25v-4.5ZM16.5 4.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75V4.5ZM16.5 15.75a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75v-4.5Z" />
+                </svg>
+              </span>
+              <span className="text-sm font-semibold tracking-wider uppercase text-neutral-900 dark:text-neutral-100">
+                AI Summary
+              </span>
+            </div>
+            <p className="text-base leading-relaxed text-neutral-700 dark:text-neutral-300">
+              {aiSummary}
+            </p>
+          </div>
+        )}
         <div
           id="single-entry-content"
           className="mx-auto prose max-w-(--breakpoint-md)! lg:prose-lg dark:prose-invert"
@@ -180,6 +198,8 @@ const SingleContentContainer: FC<Props> = ({ post, comments, className }) => {
             %
           </button>
         </div>
+        {/* AI CHAT WIDGET */}
+        <AIChatWidget postContent={safeContent} />
       </div>
     </div>
   )

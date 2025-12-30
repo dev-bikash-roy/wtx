@@ -49,6 +49,18 @@ const CardLarge1: FC<Props> = ({ className, post, onClickNext, onClickPrev }) =>
             </Link>
           </h2>
 
+          {/* AI SUMMARY */}
+          {post.aiSummary ? (
+            <div className="hidden sm:block">
+              <span className="mb-1 inline-flex items-center gap-1 rounded bg-primary-50 px-2 py-0.5 text-[10px] uppercase font-bold text-primary-600 dark:bg-primary-900/20 dark:text-primary-400">
+                AI Summary
+              </span>
+              <p className="line-clamp-2 text-sm text-neutral-500 dark:text-neutral-400">
+                {post.aiSummary}
+              </p>
+            </div>
+          ) : null}
+
           <PostCardMeta3 className="relative" author={author} date={date} />
 
           <div className="flex flex-wrap gap-x-2 gap-y-1">
@@ -81,7 +93,7 @@ const CardLarge1: FC<Props> = ({ className, post, onClickNext, onClickPrev }) =>
           <PostTypeFeaturedIcon postType={post.postType} className="absolute end-5 top-5" />
         </Link>
       </div>
-    </div>
+    </div >
   )
 }
 

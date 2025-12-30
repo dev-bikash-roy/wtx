@@ -311,16 +311,114 @@ export class MultiWordPressIntegration {
     const categories = wpPost._embedded?.['wp:term']?.[0] || []
     const tags = wpPost._embedded?.['wp:term']?.[1] || []
 
+    // Function to decode HTML entities
+    const decodeHtmlEntities = (text: string): string => {
+      const entityMap: { [key: string]: string } = {
+        '&#8216;': "'",  // Left single quotation mark
+        '&#8217;': "'",  // Right single quotation mark
+        '&#8220;': '"',  // Left double quotation mark
+        '&#8221;': '"',  // Right double quotation mark
+        '&#8211;': '–',  // En dash
+        '&#8212;': '—',  // Em dash
+        '&#038;': '&',   // Ampersand
+        '&amp;': '&',    // Ampersand
+        '&lt;': '<',     // Less than
+        '&gt;': '>',     // Greater than
+        '&quot;': '"',   // Quote
+        '&apos;': "'",   // Apostrophe
+        '&#039;': "'",   // Apostrophe
+        '&nbsp;': ' ',   // Non-breaking space
+        '&#8230;': '…',  // Horizontal ellipsis
+        '&#8482;': '™',  // Trademark
+        '&#169;': '©',   // Copyright
+        '&#174;': '®',   // Registered trademark
+      }
+
+      let decodedText = text
+      Object.entries(entityMap).forEach(([entity, replacement]) => {
+        decodedText = decodedText.replace(new RegExp(entity, 'g'), replacement)
+      })
+
+      // Handle numeric entities (&#123;)
+      decodedText = decodedText.replace(/&#(\d+);/g, (match, dec) => {
+        return String.fromCharCode(dec)
+      })
+
+      // Handle hex entities (&#x1F;)
+      decodedText = decodedText.replace(/&#x([0-9A-Fa-f]+);/g, (match, hex) => {
+        return String.fromCharCode(parseInt(hex, 16))
+      })
+
+      return decodedText
+    }
+
+    // Better image extraction and fallback logic
+    const getFeaturedImage = () => {
+      // First priority: WordPress featured image
+      if (featuredImage && featuredImage.source_url) {
+        return {
+          src: featuredImage.source_url,
+          alt: decodeHtmlEntities(featuredImage.alt_text || wpPost.title.rendered),
+          width: featuredImage.media_details?.width || 800,
+          height: featuredImage.media_details?.height || 600
+        }
+      }
+
+      // Second priority: Extract first image from content
+      const imgMatch = wpPost.content.rendered.match(/<img[^>]+src="([^">]+)"[^>]*alt="([^"]*)"/)
+      if (imgMatch && imgMatch[1]) {
+        return {
+          alt: decodeHtmlEntities(imgMatch[2] || wpPost.title.rendered),
+          src: imgMatch[1],
+          width: 800,
+          height: 600
+        }
+      }
+
+      // Third priority: Try to extract any image from content (without alt)
+      const simpleImgMatch = wpPost.content.rendered.match(/<img[^>]+src="([^">]+)"/)
+      if (simpleImgMatch && simpleImgMatch[1]) {
+        return {
+          alt: decodeHtmlEntities(wpPost.title.rendered),
+          src: simpleImgMatch[1],
+          width: 800,
+          height: 600
+        }
+      }
+
+      // Final fallback: Use a diverse set of placeholder images based on post ID
+      const fallbackImages = [
+        'https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // News/general
+        'https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Sports
+        'https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Politics
+        'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Business/Money
+        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Technology
+        'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Travel
+        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Entertainment
+        'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Fashion/Lifestyle
+      ]
+
+      // Use post ID to select a consistent but varied fallback image
+      const imageIndex = wpPost.id % fallbackImages.length
+
+      return {
+        alt: decodeHtmlEntities(wpPost.title.rendered),
+        src: fallbackImages[imageIndex],
+        width: 800,
+        height: 600
+      }
+    }
+
     return {
       id: `wp-${wpPost._site?.id}-${wpPost.id}`,
-      title: wpPost.title.rendered,
+      title: decodeHtmlEntities(wpPost.title.rendered),
       handle: wpPost.slug,
-      excerpt: wpPost.excerpt.rendered.replace(/<[^>]*>/g, '').trim(),
-      content: wpPost.content.rendered,
+      excerpt: decodeHtmlEntities(wpPost.excerpt.rendered.replace(/<[^>]*>/g, '').trim()),
+      content: wpPost.content.rendered, // Keep HTML in content
       date: wpPost.date,
       categories: categories.map(cat => ({
         id: cat.id.toString(),
-        name: cat.name,
+        name: decodeHtmlEntities(cat.name),
         handle: cat.slug,
         href: `/category/${cat.slug}`,
         thumbnail: '',
@@ -329,40 +427,17 @@ export class MultiWordPressIntegration {
       })),
       author: {
         id: author?.id.toString() || '1',
-        name: author?.name || 'Unknown Author',
+        name: decodeHtmlEntities(author?.name || 'Unknown Author'),
         handle: author?.slug || 'unknown',
-        description: author?.description || '',
+        description: decodeHtmlEntities(author?.description || ''),
         avatar: {
           src: author?.avatar_urls?.['96'] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-          alt: author?.name || 'Author',
+          alt: decodeHtmlEntities(author?.name || 'Author'),
           width: 96,
           height: 96
         }
       },
-      featuredImage: featuredImage ? {
-        src: featuredImage.source_url,
-        alt: featuredImage.alt_text || wpPost.title.rendered,
-        width: featuredImage.media_details?.width || 800,
-        height: featuredImage.media_details?.height || 600
-      } : (() => {
-        // Fallback: Try to extract first image from content
-        const imgMatch = wpPost.content.rendered.match(/<img[^>]+src="([^">]+)"/)
-        if (imgMatch && imgMatch[1]) {
-          return {
-            alt: wpPost.title.rendered,
-            src: imgMatch[1],
-            width: 800,
-            height: 600
-          }
-        }
-        // Final fallback
-        return {
-          alt: wpPost.title.rendered,
-          src: 'https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-          width: 800,
-          height: 600
-        }
-      })(),
+      featuredImage: getFeaturedImage(),
       likeCount: 0,
       liked: false,
       bookmarkCount: 0,
@@ -377,7 +452,7 @@ export class MultiWordPressIntegration {
       galleryImgs: [],
       tags: tags.map(tag => ({
         id: tag.id.toString(),
-        name: tag.name,
+        name: decodeHtmlEntities(tag.name),
         handle: tag.slug,
         color: 'blue'
       }))

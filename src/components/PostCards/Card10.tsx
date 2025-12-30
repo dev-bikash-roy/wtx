@@ -16,12 +16,12 @@ interface Props {
 
 const Card10: FC<Props> = ({ className, post, ratio = 'aspect-square sm:aspect-11/12' }) => {
   const [isHover, setIsHover] = useState(false)
-  
+
   // Check if post exists before destructuring
   if (!post) {
     return null;
   }
-  
+
   const { categories, bookmarked } = post
 
   return (
@@ -39,6 +39,17 @@ const Card10: FC<Props> = ({ className, post, ratio = 'aspect-square sm:aspect-1
       </div>
 
       <PostCardMeta2 meta={post} className="mt-4" />
+
+      {post.aiSummary && (
+        <div className="mt-2 px-1">
+          <p className="line-clamp-2 text-xs text-neutral-500 dark:text-neutral-400">
+            <span className="me-1 inline-block rounded bg-primary-50 px-1 py-0.5 text-[9px] uppercase font-bold text-primary-600 dark:bg-primary-900/20 dark:text-primary-400">
+              AI
+            </span>
+            {post.aiSummary}
+          </p>
+        </div>
+      )}
     </div>
   )
 }
