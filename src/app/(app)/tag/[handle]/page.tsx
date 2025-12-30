@@ -69,7 +69,7 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
         {posts.length === 0 && (
           <div className="mt-8 text-center">
             <p className="text-neutral-500 dark:text-neutral-400">
-              No posts found for tag "{tag.name}". Try browsing other tags or categories.
+              No posts found for tag &quot;{tag.name}&quot;. Try browsing other tags or categories.
             </p>
           </div>
         )}
