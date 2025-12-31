@@ -13,10 +13,16 @@ export const metadata: Metadata = {
   description: 'Stay informed with WTX News. Unbiased reporting, in-depth analysis, and the latest stories from around the word.',
   keywords: ['WTX News', 'Global News', 'Politics', 'Sports', 'Lifestyle', 'Breaking News'],
   icons: {
-    icon: 'https://wtxnews.com/wp-content/uploads/2025/12/WTX-News-Icon-1.png',
-    shortcut: 'https://wtxnews.com/wp-content/uploads/2025/12/WTX-News-Icon-1.png',
-    apple: 'https://wtxnews.com/wp-content/uploads/2025/12/WTX-News-Icon-1.png',
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
+  manifest: '/manifest.json',
   other: {
     'google-adsense-account': 'ca-pub-4115163205031252',
   },
@@ -32,6 +38,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        {/* Favicon links for better compatibility */}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1e40af" />
       </head>
       <body className="bg-white text-base text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200" style={{ fontFamily: "'Be Vietnam Pro', sans-serif" }}>
         {/* Google Analytics */}

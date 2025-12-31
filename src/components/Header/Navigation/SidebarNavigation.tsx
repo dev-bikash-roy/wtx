@@ -101,7 +101,7 @@ const SidebarNavigation: React.FC<Props> = ({ data }) => {
   }
 
   return (
-    <div>
+    <div className="flex flex-col h-screen max-w-[100vw] overflow-y-auto pb-20">
       <p className="text-sm/relaxed">
         Discover the most outstanding articles on all topics of life. Write your stories and share them
       </p>
@@ -109,6 +109,23 @@ const SidebarNavigation: React.FC<Props> = ({ data }) => {
         <SocialsList />
       </div>
       <div className="mt-5">{renderSearchForm()}</div>
+
+      {/* Scrollable Top Headers */}
+      <div className="mt-5 w-full overflow-x-auto pb-2">
+        <div className="flex gap-2 px-2 whitespace-nowrap">
+          {data?.slice(0, 5).map((item, index) => (
+            <Link
+              key={index}
+              href={item.href || '#'}
+              onClick={handleClose}
+              className="inline-block rounded-full bg-neutral-100 px-4 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
+            >
+              {item.name}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       <ul className="flex flex-col gap-y-1 px-2 py-6">{data?.map(_renderItem)}</ul>
       <Divider className="mb-6" />
 

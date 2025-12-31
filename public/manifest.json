@@ -1,0 +1,26 @@
+{
+  "name": "WTX News - Global News, Politics, Sports & Lifestyle",
+  "short_name": "WTX News",
+  "description": "Stay informed with WTX News. Unbiased reporting, in-depth analysis, and the latest stories from around the world.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e40af",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

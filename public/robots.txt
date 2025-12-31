@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://wtx-henna.vercel.app/sitemap.xml
+
+# Allow favicon and icons
+Allow: /favicon.ico
+Allow: /icon.png
+Allow: /apple-icon.png
+Allow: /manifest.json
