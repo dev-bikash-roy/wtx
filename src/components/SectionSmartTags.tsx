@@ -36,13 +36,13 @@ const SectionSmartTags: FC<{ className?: string }> = ({ className = '' }) => {
                         <h2 className="text-3xl font-semibold">Trending Questions</h2>
                     </div>
                     <span className="block text-neutral-500 dark:text-neutral-400 mt-2 text-lg">
-                        What people are asking about today's news
+                        What people are asking about today&apos;s news
                     </span>
                 </div>
                 <div className="flex-grow">
                     <div className="flex flex-col gap-3">
                         {tags.map((tag) => (
-                            target.relatedQuestion ? (
+                            tag.relatedQuestion ? (
                                 <Link
                                     key={tag.id}
                                     href={`/tag/${tag.handle}`} // Assuming AnalyzedTag extends TTag which has handle

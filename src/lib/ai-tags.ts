@@ -9,6 +9,7 @@ const openai = new OpenAI({
 export interface AnalyzedTag {
     id: string
     name: string
+    handle: string
     count: number
     isTrending: boolean
     relatedQuestion?: string
@@ -51,7 +52,10 @@ export async function analyzeTags(): Promise<AnalyzedTag[]> {
         return tags.map(tag => {
             const aiAnalysis = aiResults.find((r: any) => String(r.id) === String(tag.id) || r.name === tag.name)
             return {
-                ...tag,
+                id: tag.id,
+                name: tag.name,
+                handle: tag.handle,
+                count: tag.count || 0,
                 isTrending: aiAnalysis ? aiAnalysis.isTrending : false,
                 relatedQuestion: aiAnalysis ? aiAnalysis.relatedQuestion : undefined
             }
