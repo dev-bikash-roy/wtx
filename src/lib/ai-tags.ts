@@ -1,10 +1,8 @@
 
+
 import OpenAI from 'openai'
 import { getTags } from '@/data/categories'
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-})
 
 export interface AnalyzedTag {
     id: string
@@ -17,6 +15,16 @@ export interface AnalyzedTag {
 
 export async function analyzeTags(): Promise<AnalyzedTag[]> {
     try {
+        // Initialize OpenAI client
+        if (!process.env.OPENAI_API_KEY) {
+            console.warn('OPENAI_API_KEY not set, skipping tag analysis')
+            return []
+        }
+
+        const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        })
+
         // 1. Fetch tags from WordPress
         const tags = await getTags()
 
