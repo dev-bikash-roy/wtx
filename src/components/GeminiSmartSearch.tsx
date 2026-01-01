@@ -39,7 +39,7 @@ const GeminiSmartSearch = ({ posts }: GeminiSmartSearchProps) => {
             const context = posts.slice(0, 20).map(p => ({
                 title: p.title,
                 content: p.excerpt || p.title,
-                handle: p.handle || p.slug // Ensure we pass the handle/slug
+                handle: p.handle // Ensure we pass the handle/slug
             }))
 
             const response = await fetch('/api/chat/google', {
