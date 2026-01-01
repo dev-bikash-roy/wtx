@@ -11,7 +11,7 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
       name: 'Regions',
       type: 'dropdown',
       children: [
-        { id: 'england', href: '/category/england-news', name: 'England' },
+        { id: 'england', href: '/england-news', name: 'England' },
         { id: 'scotland', href: '/category/scotland-uk-news', name: 'Scotland' },
         { id: 'wales', href: '/category/wales-uk-news', name: 'Wales' },
         { id: 'ireland', href: '/category/ireland', name: 'Ireland' },
