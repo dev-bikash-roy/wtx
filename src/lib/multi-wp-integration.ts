@@ -354,19 +354,51 @@ export class MultiWordPressIntegration {
 
     // Better image extraction and fallback logic
     const getFeaturedImage = () => {
+      // Helper function to validate URL
+      const isValidUrl = (url: string): boolean => {
+        if (!url || typeof url !== 'string') return false
+
+        // Check if URL contains multiple image paths concatenated
+        const jpgCount = (url.match(/\.jpg/gi) || []).length
+        const pngCount = (url.match(/\.png/gi) || []).length
+        const webpCount = (url.match(/\.webp/gi) || []).length
+        const totalImageExtensions = jpgCount + pngCount + webpCount
+
+        // If more than one image extension, it's likely concatenated URLs
+        if (totalImageExtensions > 1) {
+          console.warn('Detected concatenated image URLs:', url)
+          return false
+        }
+
+        // Basic URL validation
+        try {
+          new URL(url)
+          return true
+        } catch {
+          return false
+        }
+      }
+
       // First priority: WordPress featured image
       if (featuredImage && featuredImage.source_url) {
-        return {
-          src: featuredImage.source_url,
-          alt: decodeHtmlEntities(featuredImage.alt_text || wpPost.title.rendered),
-          width: featuredImage.media_details?.width || 800,
-          height: featuredImage.media_details?.height || 600
+        const sourceUrl = featuredImage.source_url
+
+        // Validate the source URL
+        if (isValidUrl(sourceUrl)) {
+          return {
+            src: sourceUrl,
+            alt: decodeHtmlEntities(featuredImage.alt_text || wpPost.title.rendered),
+            width: featuredImage.media_details?.width || 800,
+            height: featuredImage.media_details?.height || 600
+          }
+        } else {
+          console.warn(`Invalid featured image URL for post ${wpPost.id}:`, sourceUrl)
         }
       }
 
       // Second priority: Extract first image from content
       const imgMatch = wpPost.content.rendered.match(/<img[^>]+src="([^">]+)"[^>]*alt="([^"]*)"/)
-      if (imgMatch && imgMatch[1]) {
+      if (imgMatch && imgMatch[1] && isValidUrl(imgMatch[1])) {
         return {
           alt: decodeHtmlEntities(imgMatch[2] || wpPost.title.rendered),
           src: imgMatch[1],
@@ -377,7 +409,7 @@ export class MultiWordPressIntegration {
 
       // Third priority: Try to extract any image from content (without alt)
       const simpleImgMatch = wpPost.content.rendered.match(/<img[^>]+src="([^">]+)"/)
-      if (simpleImgMatch && simpleImgMatch[1]) {
+      if (simpleImgMatch && simpleImgMatch[1] && isValidUrl(simpleImgMatch[1])) {
         return {
           alt: decodeHtmlEntities(wpPost.title.rendered),
           src: simpleImgMatch[1],

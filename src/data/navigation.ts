@@ -12,9 +12,9 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
       type: 'dropdown',
       children: [
         { id: 'england', href: '/england-news', name: 'England' },
-        { id: 'scotland', href: '/category/scotland-uk-news', name: 'Scotland' },
-        { id: 'wales', href: '/category/wales-uk-news', name: 'Wales' },
-        { id: 'ireland', href: '/category/ireland', name: 'Ireland' },
+        { id: 'scotland', href: '/scotland-news', name: 'Scotland' },
+        { id: 'wales', href: '/wales-news', name: 'Wales' },
+        { id: 'ireland', href: '/ireland-news', name: 'Ireland' },
       ],
     },
     {
@@ -33,7 +33,7 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
     },
     {
       id: 'sport',
-      href: '/category/sport',
+      href: '/sports-news',
       name: 'Sport',
       type: 'dropdown',
       children: [

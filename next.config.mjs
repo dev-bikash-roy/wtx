@@ -107,6 +107,16 @@ const nextConfig = {
         hostname: '*.heraldscotland.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'beautiful-jemison.213-165-92-225.plesk.page',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.irishexaminer.com',
+        pathname: '/**',
+      },
     ],
   },
 
