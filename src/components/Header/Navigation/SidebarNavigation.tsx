@@ -113,7 +113,7 @@ const SidebarNavigation: React.FC<Props> = ({ data }) => {
       {/* Scrollable Top Headers */}
       <div className="mt-5 w-full overflow-x-auto pb-2">
         <div className="flex gap-2 px-2 whitespace-nowrap">
-          {data?.slice(0, 5).map((item, index) => (
+          {data?.slice(0, 4).map((item, index) => (
             <Link
               key={index}
               href={item.href || '#'}
