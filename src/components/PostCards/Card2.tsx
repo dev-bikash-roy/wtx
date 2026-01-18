@@ -49,7 +49,7 @@ const Card2: FC<Props> = ({ className, post, size = 'normal' }) => {
           src={featuredImage}
           alt={title}
         />
-        <Link href={`/post/${handle}`} className="absolute inset-0 z-0"></Link>
+        <Link href={`/news/${handle}`} className="absolute inset-0 z-0"></Link>
         <PostTypeFeaturedIcon
           className="absolute bottom-3 left-3"
           postType={postType}
@@ -72,7 +72,7 @@ const Card2: FC<Props> = ({ className, post, size = 'normal' }) => {
               size === 'large' ? 'text-base sm:text-lg md:text-xl' : 'text-base'
             )}
           >
-            <Link href={`/post/${handle}`} className="line-clamp-2" title={title}>
+            <Link href={`/news/${handle}`} className="line-clamp-2" title={title}>
               {title}
             </Link>
           </h2>

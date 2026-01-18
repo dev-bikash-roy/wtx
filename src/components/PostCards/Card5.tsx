@@ -19,12 +19,12 @@ const Card5: FC<Props> = ({ className, post }) => {
         className
       )}
     >
-      <Link href={`/post/${handle}`} className="absolute inset-0 rounded-lg"></Link>
+      <Link href={`/news/${handle}`} className="absolute inset-0 rounded-lg"></Link>
 
       <div className="flex flex-col">
         <CategoryBadgeList categories={categories} />
         <h2 className="my-4 block text-base font-semibold text-neutral-800 dark:text-neutral-300" title={title}>
-          <Link href={`/post/${handle}`} className="line-clamp-2" title={title}>
+          <Link href={`/news/${handle}`} className="line-clamp-2" title={title}>
             {title}
           </Link>
         </h2>

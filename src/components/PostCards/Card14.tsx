@@ -56,7 +56,7 @@ const Card14: FC<Props> = ({ className, ratio = 'aspect-1/1', post }) => {
         </div>
       </div>
 
-      <Link href={`/post/${handle}`} className="absolute inset-0" />
+      <Link href={`/news/${handle}`} className="absolute inset-0" />
     </div>
   )
 }

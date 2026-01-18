@@ -131,6 +131,25 @@ const nextConfig = {
   // Ensure proper trailing slash handling
   trailingSlash: false,
 
+  async redirects() {
+    return [
+      {
+        source: '/post/:slug*',
+        destination: '/news/:slug*',
+        permanent: true,
+      },
+    ]
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: '/news/:slug*',
+        destination: '/post/:slug*',
+      },
+    ]
+  },
+
   // Headers for better caching and favicon handling
   async headers() {
     return [

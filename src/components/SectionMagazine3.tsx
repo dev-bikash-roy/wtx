@@ -19,8 +19,8 @@ const SectionMagazine3: FC<Props> = ({ posts, heading, className, subHeading, di
         heading={heading}
         subHeading={subHeading}
         dimHeading={dimHeading}
-        tabActive="development"
-        tabs={['development', 'design', 'illustration', 'photography']}
+        tabActive=""
+        tabs={[]}
       />
 
       {!posts.length && <span>Nothing we found!</span>}

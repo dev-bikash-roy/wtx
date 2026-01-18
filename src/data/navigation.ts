@@ -2,13 +2,8 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
   return [
     {
       id: 'uk-news',
-      href: '/',
-      name: 'UK News',
-    },
-    {
-      id: 'regions',
       href: '#',
-      name: 'Regions',
+      name: 'UK News',
       type: 'dropdown',
       children: [
         { id: 'england', href: '/england-news', name: 'England' },
@@ -18,17 +13,17 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
       ],
     },
     {
-      id: 'news',
-      href: '/category/news',
-      name: 'News',
+      id: 'latest-news-nav',
+      href: '/latest-news',
+      name: 'Latest News',
       type: 'dropdown',
       children: [
-        { id: 'latest-news', href: '/latest-news', name: 'Latest News' },
         { id: 'live-news-coverage', href: '/tag/live-news', name: 'Live News Coverage' },
-        { id: 'uk-politics', href: '/category/uk-politics', name: 'UK Politics' },
+        { id: 'uk-politics', href: '/uk-politics', name: 'UK Politics' },
         { id: 'money-news', href: '/category/money-news', name: 'Money News' },
         { id: 'local-economy', href: '/tag/local-economy', name: 'Local Economy' },
         { id: 'bank-of-england', href: '/tag/bank-of-england', name: 'Bank of England' },
+        { id: 'uk-eu-relationship', href: '/tag/uk-eu-relationship', name: 'UK & EU relationship' },
       ],
     },
     {
@@ -42,16 +37,12 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
         { id: 'f1', href: '/category/f1', name: 'F1' },
         { id: 'rugby', href: '/category/rugby', name: 'Rugby' },
         { id: 'cricket', href: '/category/cricket', name: 'Cricket' },
-        { id: 'snooker', href: '/category/snooker', name: 'Snooker' },
         { id: 'wwe', href: '/category/wwe', name: 'WWE' },
-        { id: 'boxing', href: '/category/boxing', name: 'Boxing' },
-        { id: 'mma', href: '/category/mma', name: 'MMA' },
-        { id: 'winter-sports', href: '/category/winter-sports', name: 'Winter sports' },
       ],
     },
     {
       id: 'entertainment',
-      href: '/category/entertainment',
+      href: '/entertainment',
       name: 'Entertainment',
       type: 'dropdown',
       children: [
@@ -62,7 +53,7 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
     },
     {
       id: 'travel',
-      href: '/category/travel',
+      href: '/travel',
       name: 'Travel',
       type: 'dropdown',
       children: [
@@ -74,19 +65,18 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
         { id: 'fitness-retreats', href: '/tag/fitness-retreats', name: 'Fitness retreats' },
         { id: 'day-trips', href: '/tag/day-trips', name: 'Day Trips' },
         { id: 'spa-retreats', href: '/tag/spa-retreats', name: 'Spa retreats' },
-      ],
-    },
-    {
-      id: 'lifestyle',
-      href: '#',
-      name: 'Lifestyle',
-      type: 'dropdown',
-      children: [
         { id: 'influencers', href: '/category/influencers', name: 'Influencers' },
         { id: 'photography', href: '/tag/photography', name: 'Photography' },
         { id: 'cooking', href: '/tag/cooking', name: 'Cooking' },
-        { id: 'opinions', href: '/tag/opinions', name: 'Opinions' },
-        { id: 'fashion', href: '/category/fashion', name: 'Fashion' },
+      ],
+    },
+
+    {
+      id: 'fashion',
+      href: '/fashion',
+      name: 'Fashion',
+      type: 'dropdown',
+      children: [
         { id: 'styling', href: '/tag/styling', name: 'Styling' },
         { id: 'what-to-wear', href: '/tag/what-to-wear', name: 'What to Wear' },
         { id: 'budget-outfits', href: '/tag/budget-outfits', name: 'Budget Outfits' },
@@ -96,7 +86,7 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
     },
     {
       id: 'money-expert',
-      href: '/category/money-expert',
+      href: '/money-expert',
       name: 'Money Expert',
       type: 'dropdown',
       children: [

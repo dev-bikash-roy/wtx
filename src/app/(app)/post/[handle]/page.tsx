@@ -1,3 +1,4 @@
+import JsonLd from '@/components/JsonLd'
 import WidgetAbout from '@/components/WidgetAbout'
 import WidgetArchive from '@/components/WidgetArchive'
 import WidgetAuthors from '@/components/WidgetAuthors'
@@ -29,19 +30,39 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: {
+      canonical: `https://wtxnews.co.uk/news/${handle}`,
+    },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: `https://wtxnews.co.uk/news/${handle}`,
+      type: 'article',
+      images: [
+        {
+          url: post.featuredImage?.src || 'https://wtxnews.co.uk/wtx-logo.png', // Fallback image
+          width: post.featuredImage?.width || 1200,
+          height: post.featuredImage?.height || 630,
+          alt: post.title,
+        },
+      ],
+      publishedTime: post.date,
+      modifiedTime: post.modified || post.date,
+      authors: [post.author.name],
+    },
   }
 }
 
 const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const { handle } = await params
   const post = await getPostByHandleWithWordPress(handle)
-  
+
   if (!post) {
     return <div>Post not found</div>
   }
-  
+
   const comments = await getCommentsByPostId(post.id)
-  
+
   // Get all posts including WordPress posts
   const allPosts = await getAllPostsWithWordPress({ perPage: 50 })
   const relatedPosts = allPosts.slice(0, 6)
@@ -52,18 +73,46 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const widgetCategories = (await getCategories()).slice(0, 6)
   const widgetTags = (await getTags()).slice(0, 8)
   const widgetAuthors = (await getAuthors()).slice(0, 4)
-  
+
   // Get related posts from the same category
   const postCategory = post?.categories?.[0]
-  const relatedByCategory = postCategory 
-    ? allPosts.filter(p => 
-        p.id !== post.id && 
-        p.categories.some(cat => cat.name === postCategory.name)
-      ).slice(0, 4)
+  const relatedByCategory = postCategory
+    ? allPosts.filter(p =>
+      p.id !== post.id &&
+      p.categories.some(cat => cat.name === postCategory.name)
+    ).slice(0, 4)
     : []
 
   return (
     <>
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        headline: post.title,
+        image: [
+          post.featuredImage?.src
+        ],
+        datePublished: post.date,
+        dateModified: post.modified || post.date,
+        author: [{
+          '@type': 'Person',
+          name: post.author.name,
+          url: `https://wtxnews.co.uk/author/${post.author.handle}`
+        }],
+        publisher: {
+          '@type': 'Organization',
+          name: 'WTX News',
+          logo: {
+            '@type': 'ImageObject',
+            url: 'https://wtxnews.co.uk/wtx-logo.png'
+          }
+        },
+        description: post.excerpt,
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': `https://wtxnews.co.uk/news/${post.handle}`
+        }
+      }} />
       <div className="single-post-page">
         <SingleHeaderContainer post={post} />
 
@@ -75,16 +124,16 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
             <div className="space-y-7 lg:sticky lg:top-7">
               {/* Most engaging widgets first */}
               <WidgetNewsletter />
-              
+
               {/* Content discovery widgets */}
               {relatedByCategory.length > 0 && (
-                <WidgetRelatedByCategory 
-                  posts={relatedByCategory} 
-                  categoryName={postCategory?.name} 
+                <WidgetRelatedByCategory
+                  posts={relatedByCategory}
+                  categoryName={postCategory?.name}
                 />
               )}
               <WidgetPopularPosts posts={widgetPopularPosts} />
-              
+
               {/* Show fewer widgets on mobile */}
               <div className="block lg:hidden">
                 <WidgetTags tags={widgetTags} />
@@ -92,7 +141,7 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
                   <WidgetSocialFollow />
                 </div>
               </div>
-              
+
               {/* Desktop-only widgets */}
               <div className="hidden lg:block space-y-7">
                 <WidgetRecentPosts posts={widgetRecentPosts} />

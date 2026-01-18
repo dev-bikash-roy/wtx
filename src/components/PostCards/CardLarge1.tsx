@@ -44,7 +44,7 @@ const CardLarge1: FC<Props> = ({ className, post, onClickNext, onClickPrev }) =>
           <CategoryBadgeList categories={categories} />
 
           <h2 className="nc-card-title text-base font-semibold sm:text-xl lg:text-2xl">
-            <Link href={`/post/${handle}`} className="line-clamp-2" title={title}>
+            <Link href={`/news/${handle}`} className="line-clamp-2" title={title}>
               {title}
             </Link>
           </h2>
@@ -79,7 +79,7 @@ const CardLarge1: FC<Props> = ({ className, post, onClickNext, onClickPrev }) =>
         </div>
       </div>
       <div className="w-full md:w-4/5 lg:w-2/3">
-        <Link href={`/post/${handle}`} className="nc-CardLarge1__right relative block">
+        <Link href={`/news/${handle}`} className="nc-CardLarge1__right relative block">
           <NcImage
             containerClassName="relative aspect-w-16 aspect-h-12 sm:aspect-h-9 md:aspect-h-14 lg:aspect-h-10 2xl:aspect-h-9"
             className="absolute inset-0 rounded-3xl object-cover"

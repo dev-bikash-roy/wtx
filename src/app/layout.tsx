@@ -60,12 +60,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
 
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'NewsMediaOrganization',
+              name: 'WTX News',
+              url: 'https://wtxnews.co.uk',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://wtxnews.co.uk/wtx-logo.png',
+                width: 600,
+                height: 60
+              },
+              sameAs: [
+                'https://www.facebook.com/wtxnews',
+                'https://twitter.com/wtxnews',
+                'https://www.instagram.com/wtxnews'
+              ]
+            })
+          }}
+        />
+
         <AuthProvider>
           <ThemeProvider>
             <div>{children}</div>
           </ThemeProvider>
         </AuthProvider>
       </body>
-    </html>
+    </html >
   )
 }

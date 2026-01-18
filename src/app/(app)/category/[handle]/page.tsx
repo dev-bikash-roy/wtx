@@ -1,3 +1,4 @@
+import JsonLd from '@/components/JsonLd'
 import ArchiveSortByListBox from '@/components/ArchiveSortByListBox'
 import ModalCategories from '@/components/ModalCategories'
 import ModalTags from '@/components/ModalTags'
@@ -24,6 +25,23 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
   return {
     title: category?.name,
     description: category?.description,
+    alternates: {
+      canonical: `https://wtxnews.co.uk/category/${handle}`,
+    },
+    openGraph: {
+      title: category?.name,
+      description: category?.description,
+      url: `https://wtxnews.co.uk/category/${handle}`,
+      type: 'website',
+      images: [
+        {
+          url: category.thumbnail?.src || 'https://wtxnews.co.uk/wtx-logo.png',
+          width: category.thumbnail?.width || 1200,
+          height: category.thumbnail?.height || 630,
+          alt: category.name,
+        }
+      ],
+    },
   }
 }
 
@@ -53,6 +71,24 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   return (
     <div className={`page-category-${handle}`}>
       <PageHeader category={category} />
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: 'https://wtxnews.co.uk'
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: category.name,
+            item: `https://wtxnews.co.uk/category/${category.handle}`
+          }
+        ]
+      }} />
 
       <div className="container pt-10 lg:pt-20">
         {/* FEATURED POSTS SLIDER */}

@@ -58,7 +58,7 @@ const Card8: FC<Props> = ({ className, post, ratio = 'aspect-3/4 sm:aspect-2/1' 
         />
 
         <Link
-          href={`/post/${handle}`}
+          href={`/news/${handle}`}
           className="absolute inset-x-0 top-1/3 bottom-0 bg-linear-to-t from-black opacity-60 transition-opacity duration-300 group-hover:top-0 group-hover:opacity-70"
         />
 
@@ -70,7 +70,7 @@ const Card8: FC<Props> = ({ className, post, ratio = 'aspect-3/4 sm:aspect-2/1' 
       </div>
 
       <div className="absolute inset-x-0 bottom-0 flex flex-col p-4 sm:p-6">
-        <Link href={`/post/${handle}`} className="absolute inset-0" />
+        <Link href={`/news/${handle}`} className="absolute inset-0" />
         <CategoryBadgeList categories={categories} />
         <h2 className="mt-4 block text-lg font-semibold text-neutral-50 sm:text-2xl">
           <p className="line-clamp-2" title={title}>

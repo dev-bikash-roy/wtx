@@ -47,7 +47,7 @@ const Card6: FC<Props> = ({ className, post }) => {
         <div className="space-y-3">
           <CategoryBadgeList categories={categories} />
           <h2 className="post-card-title block max-w-sm text-sm font-semibold sm:text-base">
-            <Link href={`/post/${handle}`} className="line-clamp-1" title={title}>
+            <Link href={`/news/${handle}`} className="line-clamp-1" title={title}>
               {title}
             </Link>
           </h2>
@@ -60,7 +60,7 @@ const Card6: FC<Props> = ({ className, post }) => {
         </div>
       </div>
 
-      <Link href={`/post/${handle}`} className="relative block size-40 shrink-0">
+      <Link href={`/news/${handle}`} className="relative block size-40 shrink-0">
         <Image
           sizes="(max-width: 600px) 50vw, 33vw"
           className="size-full rounded-2xl object-cover brightness-100 transition-[filter] duration-300 group-hover:brightness-75"

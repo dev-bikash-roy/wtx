@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://wtx-henna.vercel.app/sitemap.xml
+Sitemap: https://wtxnews.co.uk/sitemap.xml
 
 # Allow favicon and icons
 Allow: /favicon.ico

@@ -1,23 +1,59 @@
+'use client'
+
 import PostCardMeta from '@/components/PostCardMeta/PostCardMeta'
 import { TPost } from '@/data/posts'
 import { HeadingWithSubProps } from '@/shared/Heading'
 import clsx from 'clsx'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import PostCardMeta3 from './PostCardMeta/PostCardMeta3'
 import SectionTabHeader from './SectionTabHeader'
+import { fetchPostsByTagAction } from '@/app/actions'
 
 type Props = Pick<HeadingWithSubProps, 'subHeading' | 'dimHeading'> & {
   posts: TPost[]
   className?: string
   heading?: string
+  tabs?: string[]
+  tags?: string[]
 }
 
-const SectionMagazine6: FC<Props> = ({ posts, heading, className, subHeading, dimHeading }) => {
+const SectionMagazine6: FC<Props> = ({
+  posts: initialPosts,
+  heading,
+  className,
+  subHeading,
+  dimHeading,
+  tabs = ['Travel holidays in the UK', 'Nature holidays', 'Cabin holidays', 'Hiking holidays', 'Weekend Spa getaways'],
+  tags = ['uk-holidays', 'nature-holidays', 'cabin-holidays', 'hiking-holidays', 'weekend-spa-getaways']
+}) => {
+  const [activeTab, setActiveTab] = useState(tabs[0])
+  const [currentPosts, setCurrentPosts] = useState<TPost[]>(initialPosts)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleTabChange = async (tab: string) => {
+    setActiveTab(tab)
+    const index = tabs.indexOf(tab)
+    if (index === -1) return
+
+    const tagSlug = tags[index]
+    if (!tagSlug) return
+
+    setIsLoading(true)
+    try {
+      const newPosts = await fetchPostsByTagAction(tagSlug) as TPost[]
+      setCurrentPosts(newPosts)
+    } catch (error) {
+      console.error('Failed to fetch posts for tab:', tab, error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const renderMain = () => {
-    const { featuredImage, author, title, date, excerpt, handle, readingTime } = posts[0]
-    const subPosts = posts.slice(1)
+    const { featuredImage, author, title, date, excerpt, handle, readingTime } = currentPosts[0]
+    const subPosts = currentPosts.slice(1)
     return (
       <main className="relative">
         {/* Image */}
@@ -37,7 +73,7 @@ const SectionMagazine6: FC<Props> = ({ posts, heading, className, subHeading, di
           <div className="group dark absolute flex max-w-2xl flex-col justify-end p-5 md:w-1/2 lg:w-2/3 lg:p-14">
             <div className="">
               <h2 className="text-base font-semibold text-white hover:text-neutral-300 md:text-xl lg:text-2xl xl:text-3xl">
-                <Link href={`/post/${handle}`} className="line-clamp-3">
+                <Link href={`/news/${handle}`} className="line-clamp-3">
                   {title}
                 </Link>
               </h2>
@@ -57,7 +93,7 @@ const SectionMagazine6: FC<Props> = ({ posts, heading, className, subHeading, di
               {subPosts.map((post, i) => (
                 <div key={i} className="block py-5 lg:py-7">
                   <h2 className="nc-card-title text-sm font-semibold lg:text-base">
-                    <Link href={`/post/${post.handle}`} className="line-clamp-2">
+                    <Link href={`/news/${post.handle}`} className="line-clamp-2">
                       {post.title}
                     </Link>
                   </h2>
@@ -77,10 +113,18 @@ const SectionMagazine6: FC<Props> = ({ posts, heading, className, subHeading, di
         heading={heading}
         subHeading={subHeading}
         dimHeading={dimHeading}
-        tabActive="development"
-        tabs={['development', 'design', 'illustration', 'photography']}
+        tabActive={activeTab}
+        tabs={tabs}
+        onChangeTab={handleTabChange}
       />
-      {posts[0] && renderMain()}
+
+      {isLoading ? (
+        <div className="flex h-96 w-full items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
+        </div>
+      ) : (
+        currentPosts[0] && renderMain()
+      )}
     </div>
   )
 }

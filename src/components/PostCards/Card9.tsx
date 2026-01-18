@@ -43,7 +43,7 @@ const Card9: FC<Props> = ({ className, post, ratio = 'aspect-3/4' }) => {
     return (
       <div className="mt-3.5 text-neutral-300">
         <h2 className="block text-lg/6 font-semibold text-white">
-          <Link href={`/post/${handle}`} title={title}>
+          <Link href={`/news/${handle}`} title={title}>
             {title}
           </Link>
         </h2>
@@ -63,7 +63,7 @@ const Card9: FC<Props> = ({ className, post, ratio = 'aspect-3/4' }) => {
     <div className={clsx('group post-card-9 relative flex flex-col overflow-hidden rounded-3xl', className)}>
       <div className={`relative flex w-full items-start ${ratio}`}></div>
 
-      <Link href={`/post/${handle}`} className="absolute inset-0">
+      <Link href={`/news/${handle}`} className="absolute inset-0">
         <Image
           fill
           alt={title}

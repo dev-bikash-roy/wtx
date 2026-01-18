@@ -142,6 +142,7 @@ export interface TemplatePost {
   // Add content field
   content?: string
   date: string
+  modified?: string
   readingTime: number
   commentCount: number
   viewCount: number

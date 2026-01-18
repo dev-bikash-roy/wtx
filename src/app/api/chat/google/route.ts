@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       {
         "answer": "Your direct answer here...",
         "references": [
-          { "title": "Article Title", "url": "/post/article-slug" }
+          { "title": "Article Title", "url": "/news/article-slug" }
         ]
       }
     `
