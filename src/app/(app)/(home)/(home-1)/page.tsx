@@ -144,12 +144,11 @@ const Page = async () => {
         posts={getPostsOrFallback(moneyExpertPosts, 5)}
       />
 
-      {/* 9. Explore the UK */}
       <SectionMagazine6
         heading="Explore the UK"
         subHeading="Recent updates from across the UK"
         tabs={["Today's Main News", "UK News", "UK Politics"]}
-        categories={['todays-main-news-story-uk', 'uk-news', 'uk-politics']}
+        tags={['todays-main-news-story-uk', 'uk-news', 'uk-politics']}
         posts={getPostsOrFallback(exploreUKPosts, 5)}
       />
 
