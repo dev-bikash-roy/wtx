@@ -97,7 +97,7 @@ const Page = async () => {
             <div className="space-y-16">
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">Keir Starmer Watch</h2>
-                    <p className="text-neutral-500 dark:text-neutral-400 mt-2">Tracking the Prime Minister's moves</p>
+                    <p className="text-neutral-500 dark:text-neutral-400 mt-2">Tracking the Prime Minister&apos;s moves</p>
                 </div>
 
                 <SectionGridPosts
