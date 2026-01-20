@@ -71,11 +71,11 @@ const Page = async () => {
   return (
     <div className="relative container space-y-20 pb-20 lg:space-y-24 lg:pb-24">
 
-      {/* 0. Jump to a section - Sub Menu */}
+      {/* 0. Today's main headlines - Sub Menu */}
       <div className="pt-10 lg:pt-16">
         <SectionSliderNewCategories
-          heading="Jump to a section"
-          subHeading="Sub Menu for the page"
+          heading="Today's main headlines"
+          subHeading="Quick access to key sections"
           categories={categoriesWithPosts}
           categoryCardType="card4"
         />
