@@ -6,6 +6,7 @@ import { FC } from 'react'
 import HamburgerBtnMenu from './HamburgerBtnMenu'
 import MegaMenuPopover from './MegaMenuPopover'
 import SearchModal from './SearchModal'
+import MobileCategoryStrip from './MobileCategoryStrip'
 
 interface HeaderProps {
   bottomBorder?: boolean
@@ -39,14 +40,14 @@ const Header: FC<HeaderProps> = async ({ bottomBorder, className }) => {
             {navigation.map((item) => (
               <div key={item.id} className="hidden lg:block">
                 {item.children ? (
-                  <MegaMenuPopover 
-                    megamenu={item} 
-                    featuredPosts={featuredPosts} 
-                    className="hidden lg:block" 
+                  <MegaMenuPopover
+                    megamenu={item}
+                    featuredPosts={featuredPosts}
+                    className="hidden lg:block"
                   />
                 ) : (
-                  <a 
-                    href={item.href} 
+                  <a
+                    href={item.href}
                     className="px-4 py-2 text-sm font-medium text-neutral-700 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-500"
                   >
                     {item.name}
@@ -54,12 +55,13 @@ const Header: FC<HeaderProps> = async ({ bottomBorder, className }) => {
                 )}
               </div>
             ))}
-            
+
             <div className="ms-2.5 flex lg:hidden">
               <HamburgerBtnMenu />
             </div>
           </div>
         </div>
+        <MobileCategoryStrip data={navigation} />
       </div>
     </div>
   )

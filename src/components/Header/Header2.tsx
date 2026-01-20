@@ -6,6 +6,7 @@ import { FC } from 'react'
 import HamburgerBtnMenu from './HamburgerBtnMenu'
 import Navigation from './Navigation/Navigation'
 import SearchModal from './SearchModal'
+import MobileCategoryStrip from './MobileCategoryStrip'
 
 interface Props {
   bottomBorder?: boolean
@@ -44,7 +45,11 @@ const Header2: FC<Props> = async ({ bottomBorder, className }) => {
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="container">
+        <MobileCategoryStrip data={navigationMenu} />
+      </div>
+    </div >
   )
 }
 
