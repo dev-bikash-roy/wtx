@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
 interface AdminStats {
@@ -17,7 +17,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     if (!user?.firebaseUser) return;
 
     try {
@@ -37,11 +37,11 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.firebaseUser]);
 
   useEffect(() => {
     fetchStats();
-  }, [user]);
+  }, [fetchStats]);
 
   if (loading) {
     return (
