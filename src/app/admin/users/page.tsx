@@ -2,7 +2,7 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import ButtonPrimary from "@/shared/ButtonPrimary";
 
 interface User {
@@ -20,7 +20,7 @@ export default function UsersPage() {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState("all");
 
-    const fetchUsers = async () => {
+    const fetchUsers = useCallback(async () => {
         if (!user?.firebaseUser) return;
 
         try {
@@ -38,11 +38,11 @@ export default function UsersPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [user?.firebaseUser]);
 
     useEffect(() => {
         fetchUsers();
-    }, [user]);
+    }, [fetchUsers]);
 
     const handleUpdate = async (targetUid: string, field: "role" | "plan", value: string) => {
         if (!user?.firebaseUser) return;

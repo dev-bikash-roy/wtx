@@ -5,6 +5,7 @@ import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase/config'
 import { useState } from 'react'
 import ButtonPrimary from '@/shared/ButtonPrimary'
+import Link from 'next/link'
 
 export default function MakeAdmin() {
   const { user, refreshProfile } = useAuth()
@@ -91,9 +92,9 @@ export default function MakeAdmin() {
         </div>
 
         <div className="mt-6 text-center">
-          <a href="/" className="text-primary-600 hover:underline">
+          <Link href="/" className="text-primary-600 hover:underline">
             ← Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     </div>

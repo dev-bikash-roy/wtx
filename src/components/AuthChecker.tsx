@@ -23,7 +23,7 @@ export default function AuthChecker({
   try {
     const auth = useAuth()
     user = auth.user
-    isLoading = auth.isLoading
+    isLoading = auth.loading
   } catch (error) {
     // Auth context not available during build
     console.log('Auth context not available in AuthChecker')

@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface Category {
     slug: string;
@@ -15,7 +15,7 @@ export default function CategoriesPage() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchCategories = async () => {
+    const fetchCategories = useCallback(async () => {
         if (!user?.firebaseUser) return;
 
         try {
@@ -33,11 +33,11 @@ export default function CategoriesPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [user?.firebaseUser]);
 
     useEffect(() => {
         fetchCategories();
-    }, [user]);
+    }, [fetchCategories]);
 
     const handleUpdate = async (slug: string, field: "accessLevel", value: string) => {
         if (!user?.firebaseUser) return;
@@ -57,7 +57,7 @@ export default function CategoriesPage() {
 
             if (res.ok) {
                 setCategories((prev) =>
-                    prev.map((c) => (c.slug === slug ? { ...c, [field]: value } : c))
+                    prev.map((c) => (c.slug === slug ? { ...c, [field]: value as "free" | "paid" } : c))
                 );
             }
         } catch (error) {

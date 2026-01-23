@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface Post {
   slug: string;
@@ -16,7 +16,7 @@ export default function PostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     if (!user?.firebaseUser) return;
 
     try {
@@ -34,11 +34,11 @@ export default function PostsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.firebaseUser]);
 
   useEffect(() => {
     fetchPosts();
-  }, [user]);
+  }, [fetchPosts]);
 
   const handleUpdate = async (slug: string, field: "accessLevel", value: string) => {
     if (!user?.firebaseUser) return;
@@ -58,7 +58,7 @@ export default function PostsPage() {
 
       if (res.ok) {
         setPosts((prev) =>
-          prev.map((p) => (p.slug === slug ? { ...p, [field]: value } : p))
+          prev.map((p) => (p.slug === slug ? { ...p, [field]: value as "free" | "paid" } : p))
         );
       }
     } catch (error) {

@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/shared/Button'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '@/lib/firebase/config'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
@@ -13,33 +15,34 @@ export default function AdminLogin() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  
-  // Handle auth context safely
-  let login: ((email: string, password: string) => Promise<any>) = async () => null
-  
-  try {
-    const auth = useAuth()
-    login = auth.login
-  } catch (error) {
-    // Auth context not available during build
-    console.log('Auth context not available in admin login')
-  }
+  const { loginWithGoogle } = useAuth()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
     try {
-      const user = await login(email, password)
-      if (user) {
-        router.push('/admin')
-      } else {
-        setError('Invalid email or password')
-      }
-    } catch (err) {
-      setError('An error occurred during login. Please try again.')
+      await signInWithEmailAndPassword(auth, email, password)
+      router.push('/admin')
+    } catch (err: any) {
       console.error('Login error:', err)
+      setError('Invalid email or password')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    setLoading(true)
+    setError('')
+    
+    try {
+      await loginWithGoogle()
+      router.push('/admin')
+    } catch (err: any) {
+      console.error('Google login error:', err)
+      setError('Failed to login with Google')
     } finally {
       setLoading(false)
     }
@@ -54,7 +57,30 @@ export default function AdminLogin() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        {/* Google Login Button */}
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          className="mb-6 flex w-full rounded-lg bg-primary-50 px-4 py-3 transition-transform hover:translate-y-0.5 dark:bg-neutral-800 disabled:opacity-50"
+        >
+          <svg fill="currentColor" viewBox="0 0 24 24" className="size-5 shrink-0">
+            <path d="M12.545,10.239v3.821h5.445c-0.712,2.335-3.486,3.821-5.445,3.821c-3.283,0-5.958-2.681-5.958-5.958s2.675-5.958,5.958-5.958c1.356,0,2.572,0.434,3.529,1.162l2.615-2.615C17.062,2.956,14.93,1.93,12.545,1.93c-5.529,0-10,4.471-10,10s4.471,10,10,10c4.762,0,9.088-3.082,9.888-7.884c0.09-0.545,0.112-1.089,0.112-1.639h-10V10.239z" />
+          </svg>
+          <p className="grow text-center text-sm font-medium text-neutral-700 dark:text-neutral-300">
+            {loading ? 'Signing in...' : 'Continue with Google'}
+          </p>
+        </button>
+
+        {/* OR Divider */}
+        <div className="relative text-center mb-6">
+          <span className="relative z-10 inline-block bg-white px-4 text-sm font-medium dark:bg-neutral-900 dark:text-neutral-400">
+            OR
+          </span>
+          <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 border border-neutral-100 dark:border-neutral-800"></div>
+        </div>
+
+        <form className="space-y-6" onSubmit={handleEmailLogin}>
           {error && (
             <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
               <div className="flex">
