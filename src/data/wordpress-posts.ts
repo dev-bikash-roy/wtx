@@ -57,21 +57,23 @@ export async function getPostByHandleWithWordPress(handle: string): Promise<TPos
 
   // Try WordPress posts
   try {
-    // 1. Check local cache (MongoDB) for existing post with summary
-    const dbConnect = (await import('@/db/connection')).default
-    await dbConnect()
+    // 1. Check local cache (Firestore) for existing post with summary
+    const { getDocs, query, collection, where, addDoc, updateDoc, serverTimestamp } = await import('firebase/firestore')
+    const { db } = await import('@/lib/firebase/config')
 
-    const PostModel = (await import('@/db/models/Post')).default
+    // We treat Firestore "posts" collection as the cache if it has aiSummary
+    const postsRef = collection(db, 'posts')
+    const q = query(postsRef, where('slug', '==', handle), where('status', '==', 'published'))
+    const snap = await getDocs(q)
 
-    if (PostModel) {
-      const cachedPost = await PostModel.findOne({ slug: handle })
-      if (cachedPost && cachedPost.aiSummary) {
-        // Fetch fresh content from WP to ensure it's up to date, but use cached summary
-        // Or just return cached post? Let's fetch WP to map to TPost structure correctly,
-        // then attach summary.
+    let cachedDoc = null
+    if (!snap.empty) {
+      cachedDoc = snap.docs[0]
+      const data = cachedDoc.data()
+      if (data.aiSummary) {
         const wpPost = await multiWP.getPostBySlug(handle)
         if (wpPost) {
-          wpPost.aiSummary = cachedPost.aiSummary
+          wpPost.aiSummary = data.aiSummary
           return wpPost
         }
       }
@@ -83,30 +85,30 @@ export async function getPostByHandleWithWordPress(handle: string): Promise<TPos
     if (wpPost) {
       // 3. Generate Summary if missing
       const { generateSummary } = await import('@/lib/ai-summary')
-      // We use the content for summary generation
-      // NOTE: wpPost.content might contain HTML. The summarizer should handle it or we strip it.
-      // The summarizer prompt says "article content", ideally plain text.
-      // Let's strip simple tags for better cost/quality.
       const plainText = wpPost.content?.replace(/<[^>]*>/g, '') || ''
-
       const summary = await generateSummary(plainText)
 
-      if (summary && PostModel) {
-        // 4. Save to DB
-        // We verify if it exists again or use upsert
-        await PostModel.findOneAndUpdate(
-          { slug: handle },
-          {
+      if (summary) {
+        // 4. Save to Firestore
+        if (cachedDoc) {
+          await updateDoc(cachedDoc.ref, { aiSummary: summary, updatedAt: serverTimestamp() })
+        } else {
+          // Create new doc in Firestore as a "shadow" post for caching summary? 
+          // Or fully import it? Let's just store metadata for now to avoid duplication conflict logic complexity
+          // Actually, the original code did 'upsert' into PostModel. 
+          // We can insert a new document into 'posts' collection with proper fields.
+          await addDoc(postsRef, {
             slug: handle,
             title: wpPost.title,
-            // We save minimum required fields to satisfy schema
             content: wpPost.content || '',
-            author: wpPost.author.id,
+            author: wpPost.author.id, // This might need mapping if not matching our auth user IDs
             status: 'published',
-            aiSummary: summary
-          },
-          { upsert: true, new: true }
-        )
+            aiSummary: summary,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+            source: 'wordpress_cache' // Tag it so we know it's cache
+          })
+        }
 
         wpPost.aiSummary = summary
       }

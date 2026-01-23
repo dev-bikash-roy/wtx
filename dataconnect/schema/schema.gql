@@ -1,0 +1,47 @@
+type User @table {
+  username: String!
+  email: String!
+  passwordHash: String!
+  createdAt: Timestamp!
+  role: String!
+  displayName: String
+  bio: String
+  profilePictureUrl: String
+  lastLoginAt: Timestamp
+}
+
+type Article @table {
+  title: String!
+  content: String!
+  slug: String!
+  publishedAt: Timestamp!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  status: String!
+  summary: String
+  imageUrl: String
+  tags: [String]
+  category: Category
+  author: User
+}
+
+type Comment @table {
+  content: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  parentId: UUID
+  author: User
+  article: Article
+}
+
+type Category @table {
+  name: String!
+  slug: String!
+  description: String
+}
+
+type SavedArticle @table(key: ["user", "article"]) {
+  savedAt: Timestamp!
+  user: User!
+  article: Article!
+}

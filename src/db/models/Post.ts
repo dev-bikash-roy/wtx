@@ -13,6 +13,7 @@ export interface IPost extends Document {
   createdAt: Date;
   updatedAt: Date;
   aiSummary?: string;
+  accessLevel: 'free' | 'paid';
 }
 
 const PostSchema: Schema = new Schema(
@@ -31,6 +32,11 @@ const PostSchema: Schema = new Schema(
     tags: [{ type: String }],
     author: { type: String, required: true },
     aiSummary: { type: String },
+    accessLevel: {
+      type: String,
+      enum: ['free', 'paid'],
+      default: 'free'
+    }
   },
   {
     timestamps: true,

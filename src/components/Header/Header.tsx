@@ -7,6 +7,7 @@ import HamburgerBtnMenu from './HamburgerBtnMenu'
 import MegaMenuPopover from './MegaMenuPopover'
 import SearchModal from './SearchModal'
 import MobileCategoryStrip from './MobileCategoryStrip'
+import AuthButtons from './AuthButtons'
 
 interface HeaderProps {
   bottomBorder?: boolean
@@ -55,6 +56,11 @@ const Header: FC<HeaderProps> = async ({ bottomBorder, className }) => {
                 )}
               </div>
             ))}
+
+            {/* Auth buttons */}
+            <div className="ms-2.5 hidden lg:block">
+              <AuthButtons />
+            </div>
 
             <div className="ms-2.5 flex lg:hidden">
               <HamburgerBtnMenu />

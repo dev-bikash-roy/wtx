@@ -20,46 +20,48 @@ export function middleware(request: NextRequest) {
   
   console.log('Middleware checking path:', pathname)
   
-  // Define protected routes
-  const protectedPaths = [
-    '/dashboard',
-    '/dashboard/',
-    '/dashboard/posts',
-    '/dashboard/submit-post',
-    '/dashboard/edit-profile',
-    '/dashboard/billing-address',
-    '/dashboard/subscription',
+  // Skip middleware for auth pages to prevent redirect loops
+  if (pathname.startsWith('/login') || 
+      pathname.startsWith('/signup') || 
+      pathname.startsWith('/admin/login') ||
+      pathname.startsWith('/make-admin') ||
+      pathname.startsWith('/test-auth')) {
+    console.log('Skipping middleware for auth page')
+    return NextResponse.next()
+  }
+  
+  // Define admin-only routes
+  const adminPaths = [
     '/admin',
     '/admin/',
     '/admin/posts',
-    '/admin/categories',
+    '/admin/categories', 
     '/admin/users',
-    '/admin/settings'
+    '/admin/settings',
+    '/admin/dashboard'
   ]
   
-  // Check if the current path is protected
-  const isProtectedRoute = protectedPaths.some(path => 
+  // Define user protected routes (require login but not admin)
+  const userProtectedPaths = [
+    '/profile',
+    '/dashboard'
+  ]
+  
+  // Check if the current path requires admin access
+  const isAdminRoute = adminPaths.some(path => 
     pathname === path || pathname.startsWith(path + '/')
   )
   
-  console.log('Is protected route:', isProtectedRoute)
+  // Check if the current path requires user login
+  const isUserProtectedRoute = userProtectedPaths.some(path => 
+    pathname === path || pathname.startsWith(path + '/')
+  )
   
-  // For protected routes, check if user is authenticated
-  if (isProtectedRoute) {
-    // Check for auth token in cookies
-    const authToken = request.cookies.get('auth-token')?.value
-    console.log('Auth token from cookie:', authToken)
-    
-    if (!authToken) {
-      // Redirect to login page
-      const loginUrl = new URL('/admin/login', request.url)
-      loginUrl.searchParams.set('redirect', pathname)
-      console.log('Redirecting to login')
-      return NextResponse.redirect(loginUrl)
-    }
-  }
+  console.log('Is admin route:', isAdminRoute)
+  console.log('Is user protected route:', isUserProtectedRoute)
   
-  // For all other routes, continue with normal processing
-  console.log('Continuing with request')
+  // For now, let's disable middleware protection and let the components handle it
+  // This prevents redirect loops while Firebase auth loads
+  console.log('Continuing with request - auth handled by components')
   return NextResponse.next()
 }

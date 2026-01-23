@@ -1,3 +1,4 @@
+import PremiumGuard from '@/components/PremiumGuard'
 import JsonLd from '@/components/JsonLd'
 import WidgetAbout from '@/components/WidgetAbout'
 import WidgetArchive from '@/components/WidgetArchive'
@@ -118,7 +119,9 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
 
         <div className="container mt-12 flex flex-col lg:flex-row">
           <div className="w-full lg:w-3/5 xl:w-2/3 xl:pe-20">
-            <SingleContentContainer post={post} comments={comments} />
+            <PremiumGuard postCategories={post.categories}>
+              <SingleContentContainer post={post} comments={comments} />
+            </PremiumGuard>
           </div>
           <div className="mt-12 w-full lg:mt-0 lg:w-2/5 lg:ps-10 xl:w-1/3 xl:ps-0">
             <div className="space-y-7 lg:sticky lg:top-7">

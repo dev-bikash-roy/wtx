@@ -1,0 +1,38 @@
+mutation CreateUser @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users.") {
+  user_insert(data: {
+    username: "newuser",
+    email: "newuser@example.com",
+    passwordHash: "hashed_password",
+    role: "member",
+    createdAt_expr: "request.time"
+  })
+}
+
+query ListArticles @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  articles {
+    id
+    title
+    content
+    publishedAt
+  }
+}
+
+mutation UpdateArticle($id: UUID!, $content: String) @auth(level: USER) {
+  article_update(
+    key: { id: $id }
+    data: {
+      content: $content
+      updatedAt_expr: "request.time"
+    }
+  )
+}
+
+query GetUser @auth(level: USER) {
+  user(key: { id_expr: "auth.uid" }) {
+    id
+    username
+    email
+    bio
+    profilePictureUrl
+  }
+}

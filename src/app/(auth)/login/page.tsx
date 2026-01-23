@@ -9,103 +9,71 @@ import type { JSX } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect, Suspense } from 'react'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '@/lib/firebase/config'
 
 const socials: {
   name: string
   href: string
   icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
+  action?: string
 }[] = [
-  {
-    name: 'Continue with Facebook',
-    href: '#',
-    icon: (props) => (
-      <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-        <path
-          fillRule="evenodd"
-          d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-          clipRule="evenodd"
-        />
-      </svg>
-    ),
-  },
-  {
-    name: 'Continue with X',
-    href: '#',
-    icon: (props) => (
-      <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-        <path d="M13.6823 10.6218L20.2391 3H18.6854L12.9921 9.61788L8.44486 3H3.2002L10.0765 13.0074L3.2002 21H4.75404L10.7663 14.0113L15.5685 21H20.8131L13.6819 10.6218H13.6823ZM11.5541 13.0956L10.8574 12.0991L5.31391 4.16971H7.70053L12.1742 10.5689L12.8709 11.5655L18.6861 19.8835H16.2995L11.5541 13.096V13.0956Z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'Continue with GitHub',
-    href: '#',
-    icon: (props) => (
-      <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-        <path
-          fillRule="evenodd"
-          d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-          clipRule="evenodd"
-        />
-      </svg>
-    ),
-  },
-]
+    {
+      name: 'Continue with Google',
+      href: '#',
+      action: 'google',
+      icon: (props) => (
+        <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
+          <path d="M12.545,10.239v3.821h5.445c-0.712,2.335-3.486,3.821-5.445,3.821c-3.283,0-5.958-2.681-5.958-5.958s2.675-5.958,5.958-5.958c1.356,0,2.572,0.434,3.529,1.162l2.615-2.615C17.062,2.956,14.93,1.93,12.545,1.93c-5.529,0-10,4.471-10,10s4.471,10,10,10c4.762,0,9.088-3.082,9.888-7.884c0.09-0.545,0.112-1.089,0.112-1.639h-10V10.239z" />
+        </svg>
+      ),
+    },
+  ]
 
 const LoginPageContent = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  
-  // Handle auth context safely
-  let login: ((email: string, password: string) => Promise<any>) = async () => null
-  let user: any = null
-  
-  try {
-    const auth = useAuth()
-    login = auth.login
-    user = auth.user
-  } catch (error) {
-    // Auth context not available during build
-    console.log('Auth context not available')
-  }
-  
-  const redirect = searchParams.get('redirect') || '/dashboard/posts'
-  
-  // If user is already logged in, redirect to dashboard
+  const { user, loginWithGoogle } = useAuth()
+
+  const redirect = searchParams.get('redirect') || '/profile' // Changed from '/dashboard/posts' to '/profile'
+
+  // If user is already logged in, redirect
   useEffect(() => {
     if (user) {
-      console.log('User already logged in, redirecting to:', redirect)
       router.push(redirect)
     }
   }, [user, router, redirect])
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true)
+    setError('')
+    try {
+      await loginWithGoogle()
+      // Redirect happens in useEffect
+    } catch (err: any) {
+      console.error(err)
+      setError(err.message || 'Failed to login with Google')
+      setIsLoading(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
-    
+
     const formData = new FormData(e.currentTarget)
     const email = formData.get('email') as string
     const password = formData.get('password') as string
-    
-    console.log('Form submitted with:', { email, password })
-    
+
     try {
-      const userData = await login(email, password)
-      console.log('Login result:', userData)
-      
-      if (userData) {
-        console.log('Login successful, redirecting to:', redirect)
-        router.push(redirect)
-      } else {
-        setError('Invalid email or password')
-      }
-    } catch (err) {
-      setError('An error occurred during login')
+      await signInWithEmailAndPassword(auth, email, password)
+      // Redirect happens in useEffect
+    } catch (err: any) {
       console.error(err)
-    } finally {
+      setError('Invalid email or password')
       setIsLoading(false)
     }
   }
@@ -119,14 +87,17 @@ const LoginPageContent = () => {
       <div className="mx-auto max-w-md space-y-6">
         <div className="grid gap-3">
           {socials.map((item, index) => (
-            <Link
+            <button
               key={index}
-              href={item.href}
+              type="button"
+              onClick={() => {
+                if (item.action === 'google') handleGoogleLogin()
+              }}
               className="flex w-full rounded-lg bg-primary-50 px-4 py-3 transition-transform hover:translate-y-0.5 dark:bg-neutral-800"
             >
               <item.icon className="size-5 shrink-0" />
               <p className="grow text-center text-sm font-medium text-neutral-700 dark:text-neutral-300">{item.name}</p>
-            </Link>
+            </button>
           ))}
         </div>
         {/* OR */}

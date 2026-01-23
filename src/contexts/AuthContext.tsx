@@ -1,157 +1,148 @@
-'use client'
+"use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  onAuthStateChanged,
+  User as FirebaseUser,
+  signOut,
+  signInWithPopup,
+  GoogleAuthProvider
+} from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, db } from "@/lib/firebase/config";
+import { useRouter } from "next/navigation";
 
-interface User {
-  id: string
-  name: string
-  email: string
-  role: string
-  avatar?: string
+// Define the shape of our User Profile stored in Firestore
+export interface UserProfile {
+  uid: string;
+  email: string;
+  displayName?: string;
+  photoURL?: string;
+  role: "user" | "admin";
+  plan: "free" | "paid";
+  createdAt: Date;
+  lastLoginAt: Date;
+}
+
+// Combined User type for ease of use
+export interface AuthUser {
+  firebaseUser: FirebaseUser;
+  profile: UserProfile | null;
 }
 
 interface AuthContextType {
-  user: User | null
-  login: (email: string, password: string) => Promise<User | null>
-  logout: () => void
-  isLoading: boolean
+  user: AuthUser | null;
+  loading: boolean;
+  logout: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: true,
+  logout: async () => { },
+  loginWithGoogle: async () => { },
+  refreshProfile: async () => { },
+});
 
-// Helper function to set cookie
-function setCookie(name: string, value: string, days: number) {
-  if (typeof document === 'undefined') return
-  const expires = new Date()
-  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`
-}
+export const useAuth = () => useContext(AuthContext);
 
-// Helper function to get cookie
-function getCookie(name: string): string | undefined {
-  if (typeof document === 'undefined') return undefined
-  const nameEQ = name + "="
-  const ca = document.cookie.split(';')
-  for(let i = 0; i < ca.length; i++) {
-    let c = ca[i]
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length)
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length)
-  }
-  return undefined
-}
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-// Helper function to erase cookie
-function eraseCookie(name: string) {
-  if (typeof document === 'undefined') return
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`
-}
+  const fetchUserProfile = async (uid: string): Promise<UserProfile | null> => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists()) {
+        return userDoc.data() as UserProfile;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      return null;
+    }
+  };
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isMounted, setIsMounted] = useState(false)
-  const router = useRouter()
+  const createUserProfile = async (firebaseUser: FirebaseUser): Promise<UserProfile> => {
+    const userProfile: UserProfile = {
+      uid: firebaseUser.uid,
+      email: firebaseUser.email || "",
+      displayName: firebaseUser.displayName || "",
+      photoURL: firebaseUser.photoURL || "",
+      role: "user",
+      plan: "free",
+      createdAt: new Date(),
+      lastLoginAt: new Date(),
+    };
+
+    await setDoc(doc(db, "users", firebaseUser.uid), userProfile);
+    return userProfile;
+  };
+
+  const updateLastLogin = async (uid: string) => {
+    try {
+      await setDoc(doc(db, "users", uid), { lastLoginAt: new Date() }, { merge: true });
+    } catch (error) {
+      console.error("Error updating last login:", error);
+    }
+  };
+
+  const refreshProfile = async () => {
+    if (user?.firebaseUser) {
+      const profile = await fetchUserProfile(user.firebaseUser.uid);
+      setUser({ ...user, profile });
+    }
+  };
 
   useEffect(() => {
-    setIsMounted(true)
-    // Check if user is logged in on initial load
-    checkAuthStatus()
-  }, [])
-
-  const checkAuthStatus = async () => {
-    try {
-      const token = getCookie('auth-token')
-      console.log('Checking auth status, token:', token)
-      
-      if (token) {
-        // Verify token with API
-        const response = await fetch('/api/auth', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        let profile = await fetchUserProfile(firebaseUser.uid);
         
-        if (response.ok) {
-          const data = await response.json()
-          console.log('Auth check successful, user:', data.user)
-          setUser(data.user)
+        // If profile doesn't exist, create it
+        if (!profile) {
+          profile = await createUserProfile(firebaseUser);
         } else {
-          console.log('Auth check failed, clearing token')
-          // Token is invalid, clear it
-          eraseCookie('auth-token')
-        }
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const login = async (email: string, password: string): Promise<User | null> => {
-    try {
-      console.log('Attempting login with:', email)
-      
-      const response = await fetch('/api/auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      })
-      
-      console.log('Login response status:', response.status)
-      
-      if (response.ok) {
-        const data = await response.json()
-        console.log('Login successful, data:', data)
-        
-        // Store user data
-        setUser(data.user)
-        setCookie('auth-token', data.token, 1) // Set cookie for 1 day
-        
-        // Also store in localStorage for persistence
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('auth-token', data.token)
-          localStorage.setItem('auth-user', JSON.stringify(data.user))
+          // Update last login
+          await updateLastLogin(firebaseUser.uid);
         }
         
-        return data.user
+        setUser({ firebaseUser, profile });
       } else {
-        const errorData = await response.json()
-        console.log('Login failed:', errorData.error)
-        return null
+        setUser(null);
       }
+      setLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const loginWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      // Profile will be handled by onAuthStateChanged
     } catch (error) {
-      console.error('Login failed:', error)
-      return null
+      console.error("Error signing in with Google", error);
+      throw error;
     }
-  }
+  };
 
-  const logout = () => {
-    console.log('Logging out')
-    setUser(null)
-    eraseCookie('auth-token')
-    router.push('/login')
-  }
-
-  // Prevent rendering on server to avoid hydration mismatch
-  if (!isMounted) {
-    return <div style={{ visibility: 'hidden' }}>{children}</div>
-  }
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      router.push("/");
+    } catch (error) {
+      console.error("Error signing out", error);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
-      {children}
+    <AuthContext.Provider value={{ user, loading, logout, loginWithGoogle, refreshProfile }}>
+      {!loading && children}
     </AuthContext.Provider>
-  )
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
-}
+  );
+};

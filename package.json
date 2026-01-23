@@ -10,11 +10,14 @@
     "test:db": "tsx src/db/test-connection.ts"
   },
   "dependencies": {
+    "@dataconnect/admin-generated": "file:src/dataconnect-admin-generated",
+    "@dataconnect/generated": "file:src/dataconnect-generated",
     "@google/generative-ai": "^0.24.1",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@hugeicons/core-free-icons": "^1.0.14",
     "@hugeicons/react": "^1.0.5",
+    "@opentelemetry/api": "^1.9.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.16",
@@ -42,6 +45,8 @@
     "embla-carousel-react": "^8.6.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "15.3.3",
+    "firebase": "^12.8.0",
+    "firebase-admin": "^13.6.0",
     "framer-motion": "^12.16.0",
     "he": "^1.2.0",
     "lodash": "^4.17.21",

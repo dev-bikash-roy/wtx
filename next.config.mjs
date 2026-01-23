@@ -125,6 +125,9 @@ const nextConfig = {
     optimizeCss: true,
   },
 
+  // External packages for server components
+  serverExternalPackages: ['firebase-admin'],
+
   // Ensure proper asset handling
   assetPrefix: '',
 
