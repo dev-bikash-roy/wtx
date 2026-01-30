@@ -13,8 +13,53 @@ import { Metadata } from 'next'
 import GeminiSmartSearch from '@/components/GeminiSmartSearch'
 
 export const metadata: Metadata = {
-    title: 'UK Politics News | WTX News',
-    description: 'Latest UK Politics, Westminster, Downing Street & Party News from WTX News',
+    title: 'UK Politics News - Westminster, Parliament & Government | WTX News',
+    description: 'Latest UK Politics news from Westminster, Downing Street, Parliament and political parties. Follow breaking political developments, government policies, and parliamentary debates.',
+    keywords: ['UK politics', 'Westminster news', 'UK Parliament', 'Downing Street', 'UK government', 'political parties UK', 'Keir Starmer', 'UK political news', 'British politics', 'Parliament news'],
+
+    // Open Graph for social media sharing
+    openGraph: {
+        title: 'UK Politics News - Westminster, Parliament & Government | WTX News',
+        description: 'Latest UK Politics news from Westminster, Downing Street, Parliament and political parties.',
+        url: 'https://wtxnews.co.uk/uk-politics',
+        siteName: 'WTX News',
+        locale: 'en_GB',
+        type: 'website',
+        images: [{
+            url: 'https://wtxnews.co.uk/og-image-politics.jpg',
+            width: 1200,
+            height: 630,
+            alt: 'UK Politics News - WTX News',
+        }],
+    },
+
+    // Twitter Card metadata
+    twitter: {
+        card: 'summary_large_image',
+        title: 'UK Politics News - Westminster, Parliament & Government',
+        description: 'Latest UK Politics news from Westminster, Downing Street, Parliament and political parties.',
+        images: ['https://wtxnews.co.uk/og-image-politics.jpg'],
+        site: '@wtxnews',
+        creator: '@wtxnews',
+    },
+
+    // Canonical URL
+    alternates: {
+        canonical: 'https://wtxnews.co.uk/uk-politics',
+    },
+
+    // Robots directives
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
+    },
 }
 
 const Page = async () => {
@@ -60,6 +105,48 @@ const Page = async () => {
 
     return (
         <div className="relative container space-y-20 pb-20 lg:space-y-24 lg:pb-24">
+            {/* Structured Data for SEO */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        '@context': 'https://schema.org',
+                        '@type': 'CollectionPage',
+                        name: 'UK Politics News - Westminster, Parliament & Government',
+                        description: 'Latest UK Politics news from Westminster, Downing Street, Parliament and political parties.',
+                        url: 'https://wtxnews.co.uk/uk-politics',
+                        publisher: {
+                            '@type': 'NewsMediaOrganization',
+                            name: 'WTX News',
+                            logo: {
+                                '@type': 'ImageObject',
+                                url: 'https://wtxnews.co.uk/wtx-logo.png',
+                            }
+                        },
+                        breadcrumb: {
+                            '@type': 'BreadcrumbList',
+                            itemListElement: [
+                                {
+                                    '@type': 'ListItem',
+                                    position: 1,
+                                    name: 'Home',
+                                    item: 'https://wtxnews.co.uk'
+                                },
+                                {
+                                    '@type': 'ListItem',
+                                    position: 2,
+                                    name: 'UK Politics',
+                                    item: 'https://wtxnews.co.uk/uk-politics'
+                                }
+                            ]
+                        }
+                    })
+                }}
+            />
+
+            {/* H1 for SEO - visually hidden but accessible */}
+            <h1 className="sr-only">UK Politics News</h1>
+
             {/* 1. Today’s political headlines */}
             <SectionLargeSlider
                 heading="Today’s political headlines"

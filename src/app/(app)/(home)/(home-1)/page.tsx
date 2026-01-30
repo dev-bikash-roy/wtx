@@ -15,7 +15,53 @@ import { getAuthors } from '@/data/authors'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  description: 'WTX News - Global News, Politics, Sports & Lifestyle',
+  title: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
+  description: 'Stay informed with WTX News. Latest UK breaking news, politics, sports, entertainment, and lifestyle. Unbiased reporting and in-depth analysis from across the United Kingdom.',
+  keywords: ['UK news', 'breaking news UK', 'British news', 'UK politics', 'UK sports', 'UK entertainment', 'UK lifestyle', 'WTX News', 'latest news UK', 'UK current affairs'],
+
+  // Open Graph for social media sharing
+  openGraph: {
+    title: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
+    description: 'Stay informed with WTX News. Latest UK breaking news, politics, sports, entertainment, and lifestyle.',
+    url: 'https://wtxnews.co.uk',
+    siteName: 'WTX News',
+    locale: 'en_GB',
+    type: 'website',
+    images: [{
+      url: 'https://wtxnews.co.uk/og-image-home.jpg',
+      width: 1200,
+      height: 630,
+      alt: 'WTX News - UK Breaking News',
+    }],
+  },
+
+  // Twitter Card metadata
+  twitter: {
+    card: 'summary_large_image',
+    title: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
+    description: 'Stay informed with WTX News. Latest UK breaking news, politics, sports, entertainment, and lifestyle.',
+    images: ['https://wtxnews.co.uk/og-image-home.jpg'],
+    site: '@wtxnews',
+    creator: '@wtxnews',
+  },
+
+  // Canonical URL
+  alternates: {
+    canonical: 'https://wtxnews.co.uk',
+  },
+
+  // Robots directives
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 }
 
 const Page = async () => {
@@ -70,6 +116,39 @@ const Page = async () => {
 
   return (
     <div className="relative container space-y-20 pb-20 lg:space-y-24 lg:pb-24">
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
+            description: 'Stay informed with WTX News. Latest UK breaking news, politics, sports, entertainment, and lifestyle.',
+            url: 'https://wtxnews.co.uk',
+            publisher: {
+              '@type': 'NewsMediaOrganization',
+              name: 'WTX News',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://wtxnews.co.uk/wtx-logo.png',
+              }
+            },
+            breadcrumb: {
+              '@type': 'BreadcrumbList',
+              itemListElement: [{
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://wtxnews.co.uk'
+              }]
+            }
+          })
+        }}
+      />
+
+      {/* H1 for SEO - visually hidden but accessible */}
+      <h1 className="sr-only">Latest UK News & Breaking Stories</h1>
 
       {/* 0. Today's main headlines - Sub Menu */}
       <div className="pt-10 lg:pt-16">
