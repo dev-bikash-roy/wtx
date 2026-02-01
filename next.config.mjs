@@ -117,6 +117,16 @@ const nextConfig = {
         hostname: 'www.irishexaminer.com',
         pathname: '/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'www.bbc.co.uk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.bbc.co.uk',
+        pathname: '/**',
+      },
     ],
   },
 

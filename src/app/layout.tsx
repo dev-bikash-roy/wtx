@@ -30,11 +30,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Google Site Verification */}
         <meta name="google-site-verification" content="QwBfcIRPBl0Bk1l9FRWzhttOp7BIQwfwCkceCSwCPTg" />
-        
+
         {/* Bing/Microsoft Site Verification */}
         <meta name="msvalidate.01" content="9996F9B1FA4005AF1E60F7688E0556A2" />
 
