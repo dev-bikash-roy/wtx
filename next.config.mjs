@@ -127,6 +127,11 @@ const nextConfig = {
         hostname: 'www.bbc.co.uk',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.euronews.com',
+        pathname: '/**',
+      },
     ],
   },
 

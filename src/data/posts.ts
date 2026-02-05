@@ -6,12 +6,12 @@ export async function getPostsDefault(): Promise<TemplatePost[]> {
   try {
     // Fetch real posts from WordPress API
     const posts = await fetchWPPosts(20, 1)
-    
+
     // If we have real posts, return them
     if (posts.length > 0) {
       return posts
     }
-    
+
     // Fallback to mock data if API fails
     return getMockPosts()
   } catch (error) {
@@ -26,16 +26,16 @@ export async function getPostsVideo(): Promise<TemplatePost[]> {
     // Instead of searching for specific video tags that don't exist,
     // let's fetch regular posts and return them as video posts
     // This prevents the "No tag found" errors
-    
+
     console.log('Fetching posts for video section...')
     const posts = await fetchWPPosts(20, 1)
-    
+
     if (posts.length > 0) {
       // Take the first few posts and return them
       // In a real implementation, you might want to filter for posts with video content
       return posts.slice(0, 6) // Return 6 posts for video section
     }
-    
+
     // Fallback to mock data if API fails
     return getMockVideoPosts()
   } catch (error) {
@@ -50,29 +50,29 @@ export async function getPostsAudio(): Promise<TemplatePost[]> {
     // Instead of fetching audio posts, fetch posts from specific categories
     // This addresses the user's request to replace audio posts with other category posts
     const posts = await fetchWPPosts(20, 1)
-    
+
     // Filter for posts in various categories to provide variety
-    const techPosts = posts.filter(post => 
+    const techPosts = posts.filter(post =>
       post.categories.some(cat => cat.handle === 'technology')
     )
-    
+
     // If we have tech posts, return them
     if (techPosts.length > 0) {
       return techPosts.slice(0, 10) // Limit to 10 posts
     }
-    
+
     // Try other categories if technology doesn't have enough posts
     const categoriesToTry = ['business', 'health', 'science', 'entertainment']
     for (const categoryHandle of categoriesToTry) {
-      const categoryPosts = posts.filter(post => 
+      const categoryPosts = posts.filter(post =>
         post.categories.some(cat => cat.handle === categoryHandle)
       )
-      
+
       if (categoryPosts.length > 0) {
         return categoryPosts.slice(0, 10) // Limit to 10 posts
       }
     }
-    
+
     // If no specific category posts found, return a selection of general posts
     return posts.slice(0, 10)
   } catch (error) {
@@ -86,26 +86,26 @@ export async function getPostsGallery(): Promise<TemplatePost[]> {
   try {
     // Fetch real posts from WordPress API
     const posts = await fetchWPPosts(20, 1)
-    
+
     // Filter for gallery posts
     const galleryPosts = posts.filter(post => post.postType === 'gallery')
-    
+
     // If we have real gallery posts, return them
     if (galleryPosts.length > 0) {
       return galleryPosts
     }
-    
+
     // Try to find posts with gallery tags
-    const galleryTagPosts = posts.filter(post => 
-      post.tags && post.tags.some(tag => 
+    const galleryTagPosts = posts.filter(post =>
+      post.tags && post.tags.some(tag =>
         tag.handle.includes('gallery') || tag.handle.includes('photo') || tag.handle.includes('image')
       )
     )
-    
+
     if (galleryTagPosts.length > 0) {
       return galleryTagPosts.slice(0, 10) // Limit to 10 posts
     }
-    
+
     // Fallback to mock data if API fails or no gallery posts found
     return getMockGalleryPosts()
   } catch (error) {
@@ -780,32 +780,99 @@ export async function getPostByHandle(handle: string) {
   const posts = await getAllPosts()
   const post = posts.find((post) => post.handle === handle)
   if (!post) {
-    // only for demo purposes, if the post is not found, return the first post
-    console.warn(`Post with handle "${handle}" not found. Returning the first post as a fallback.`)
-    return posts[0]
+    console.warn(`Post with handle "${handle}" not found in local posts.`)
+    return null // Return null instead of fallback to first post
   }
   return post
 }
 
 export async function getCommentsByPostId(postId: string) {
-  // For now, return mock comments
+  // For now, return mock comments with realistic content
   return [
     {
       id: 1,
       author: {
         id: 'author-1',
-        name: 'John Doe',
-        handle: 'john-doe',
+        name: 'Sarah Mitchell',
+        handle: 'sarah-mitchell',
         avatar: {
-          src: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=3922&auto=format&fit=crop',
-          alt: 'John Doe',
+          src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=3687&auto=format&fit=crop',
+          alt: 'Sarah Mitchell',
           width: 1920,
           height: 1080,
         },
       },
       date: '2025-06-10',
-      content: 'This is a sample comment.',
-      like: { count: 5, isLiked: false },
+      content: 'Great article! This really puts things into perspective. I appreciate the thorough research and balanced viewpoint.',
+      like: { count: 12, isLiked: false },
+    },
+    {
+      id: 2,
+      author: {
+        id: 'author-2',
+        name: 'James Anderson',
+        handle: 'james-anderson',
+        avatar: {
+          src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=3687&auto=format&fit=crop',
+          alt: 'James Anderson',
+          width: 1920,
+          height: 1080,
+        },
+      },
+      date: '2025-06-10',
+      content: 'Interesting read, though I think there are some points that could have been explored further. Would love to see a follow-up on this topic.',
+      like: { count: 8, isLiked: false },
+    },
+    {
+      id: 3,
+      author: {
+        id: 'author-3',
+        name: 'Emma Thompson',
+        handle: 'emma-thompson',
+        avatar: {
+          src: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=3540&auto=format&fit=crop',
+          alt: 'Emma Thompson',
+          width: 1920,
+          height: 1080,
+        },
+      },
+      date: '2025-06-11',
+      content: 'Thanks for sharing this! I had no idea about some of these details. Definitely bookmarking this for future reference.',
+      like: { count: 15, isLiked: true },
+    },
+    {
+      id: 4,
+      author: {
+        id: 'author-4',
+        name: 'Michael Chen',
+        handle: 'michael-chen',
+        avatar: {
+          src: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=3687&auto=format&fit=crop',
+          alt: 'Michael Chen',
+          width: 1920,
+          height: 1080,
+        },
+      },
+      date: '2025-06-11',
+      content: 'Well written and informative. The examples provided really help illustrate the main points effectively.',
+      like: { count: 6, isLiked: false },
+    },
+    {
+      id: 5,
+      author: {
+        id: 'author-5',
+        name: 'Olivia Rodriguez',
+        handle: 'olivia-rodriguez',
+        avatar: {
+          src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=3688&auto=format&fit=crop',
+          alt: 'Olivia Rodriguez',
+          width: 1920,
+          height: 1080,
+        },
+      },
+      date: '2025-06-12',
+      content: 'This is exactly what I was looking for! Clear, concise, and very helpful. Keep up the excellent work!',
+      like: { count: 20, isLiked: true },
     },
   ]
 }

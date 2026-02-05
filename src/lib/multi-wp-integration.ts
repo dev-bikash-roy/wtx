@@ -444,7 +444,7 @@ export class MultiWordPressIntegration {
     return {
       id: `wp-${wpPost._site?.id}-${wpPost.id}`,
       title: decodeHtmlEntities(wpPost.title.rendered),
-      handle: wpPost.slug,
+      handle: `${wpPost._site?.id}-${wpPost.slug}`,
       excerpt: decodeHtmlEntities(wpPost.excerpt.rendered.replace(/<[^>]*>/g, '').trim()),
       content: wpPost.content.rendered, // Keep HTML in content
       date: wpPost.date,
@@ -516,10 +516,41 @@ export class MultiWordPressIntegration {
   }
 
   // Get a specific post by slug from any WordPress site
-  async getPostBySlug(slug: string): Promise<TPost | null> {
-    for (const site of this.sites) {
+  async getPostBySlug(handle: string): Promise<TPost | null> {
+    console.log('[getPostBySlug] Received handle:', handle)
+
+    // Check if handle includes site ID (format: siteId-slug)
+    const handleParts = handle.split('-')
+    let targetSiteId: string | null = null
+    let actualSlug = handle
+
+    // If handle contains a dash, check if the first part is a valid site ID
+    if (handleParts.length >= 2) {
+      const potentialSiteId = handleParts[0]
+      console.log('[getPostBySlug] Checking if first part is site ID:', potentialSiteId)
+      const site = this.sites.find(s => s.id === potentialSiteId)
+      if (site) {
+        targetSiteId = potentialSiteId
+        actualSlug = handleParts.slice(1).join('-') // Rest is the actual slug
+        console.log('[getPostBySlug] Found site ID:', targetSiteId, 'Actual slug:', actualSlug)
+      } else {
+        console.log('[getPostBySlug] Not a valid site ID, treating entire handle as slug')
+      }
+    }
+
+    // If we have a specific site ID, only search that site
+    const sitesToSearch = targetSiteId
+      ? this.sites.filter(s => s.id === targetSiteId)
+      : this.sites
+
+    console.log('[getPostBySlug] Searching', sitesToSearch.length, 'site(s)')
+
+    for (const site of sitesToSearch) {
       try {
-        const response = await fetch(`${site.apiBase}/posts?slug=${slug}&_embed=1`, {
+        const url = `${site.apiBase}/posts?slug=${actualSlug}&_embed=1`
+        console.log('[getPostBySlug] Fetching from:', site.name, 'URL:', url)
+
+        const response = await fetch(url, {
           headers: {
             'User-Agent': 'NextJS-Blog-Integration/1.0'
           }
@@ -527,8 +558,10 @@ export class MultiWordPressIntegration {
 
         if (response.ok) {
           const posts: WordPressPost[] = await response.json()
+          console.log('[getPostBySlug] Found', posts.length, 'post(s) from', site.name)
           if (posts.length > 0) {
             const post = posts[0]
+            console.log('[getPostBySlug] Returning post:', post.title.rendered, 'from site:', site.name)
             post._site = {
               id: site.id,
               name: site.name,
@@ -542,6 +575,7 @@ export class MultiWordPressIntegration {
       }
     }
 
+    console.log('[getPostBySlug] No post found for handle:', handle)
     return null
   }
 

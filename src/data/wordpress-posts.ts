@@ -47,49 +47,73 @@ export async function getAllPostsWithWordPress(options: {
 
 // Get post by handle/slug from both local and WordPress
 export async function getPostByHandleWithWordPress(handle: string): Promise<TPost | null> {
+  console.log('[getPostByHandleWithWordPress] Received handle:', handle)
+
   // First try local posts
   const { getPostByHandle } = await import('./posts')
   const localPost = await getPostByHandle(handle)
 
   if (localPost) {
+    console.log('[getPostByHandleWithWordPress] Found local post')
     return localPost
   }
 
   // Try WordPress posts
   try {
+    // Extract actual slug from handle (remove site ID prefix if present)
+    // Handle format: "siteId-actual-slug" or just "actual-slug"
+    let actualSlug = handle
+    const handleParts = handle.split('-')
+
+    // Check if first part is a valid site ID
+    if (handleParts.length >= 2) {
+      const potentialSiteId = handleParts[0]
+      // Known site IDs: wtxnews, wtxblog
+      if (potentialSiteId === 'wtxnews' || potentialSiteId === 'wtxblog') {
+        actualSlug = handleParts.slice(1).join('-')
+        console.log('[getPostByHandleWithWordPress] Extracted slug:', actualSlug, 'from handle:', handle)
+      }
+    }
+
     // 1. Check local cache (Firestore) for existing post with summary
     const { getDocs, query, collection, where, addDoc, updateDoc, serverTimestamp } = await import('firebase/firestore')
     const { db } = await import('@/lib/firebase/config')
 
     // We treat Firestore "posts" collection as the cache if it has aiSummary
+    // Query using the actual slug (without site ID)
     const postsRef = collection(db, 'posts')
-    const q = query(postsRef, where('slug', '==', handle), where('status', '==', 'published'))
+    const q = query(postsRef, where('slug', '==', actualSlug), where('status', '==', 'published'))
     const snap = await getDocs(q)
 
     let cachedDoc = null
     if (!snap.empty) {
       cachedDoc = snap.docs[0]
       const data = cachedDoc.data()
+      console.log('[getPostByHandleWithWordPress] Found cached post:', data.title)
       if (data.aiSummary) {
+        // Fetch fresh data from WordPress but use cached AI summary
         const wpPost = await multiWP.getPostBySlug(handle)
         if (wpPost) {
           wpPost.aiSummary = data.aiSummary
+          console.log('[getPostByHandleWithWordPress] Returning WordPress post with cached summary')
           return wpPost
         }
       }
     }
 
     // 2. Fetch from WordPress
+    console.log('[getPostByHandleWithWordPress] Fetching from WordPress with handle:', handle)
     const wpPost = await multiWP.getPostBySlug(handle)
 
     if (wpPost) {
+      console.log('[getPostByHandleWithWordPress] Got WordPress post:', wpPost.title)
       // 3. Generate Summary if missing
       const { generateSummary } = await import('@/lib/ai-summary')
       const plainText = wpPost.content?.replace(/<[^>]*>/g, '') || ''
       const summary = await generateSummary(plainText)
 
       if (summary) {
-        // 4. Save to Firestore
+        // 4. Save to Firestore using actual slug (without site ID)
         if (cachedDoc) {
           await updateDoc(cachedDoc.ref, { aiSummary: summary, updatedAt: serverTimestamp() })
         } else {
@@ -98,7 +122,7 @@ export async function getPostByHandleWithWordPress(handle: string): Promise<TPos
           // Actually, the original code did 'upsert' into PostModel. 
           // We can insert a new document into 'posts' collection with proper fields.
           await addDoc(postsRef, {
-            slug: handle,
+            slug: actualSlug, // Store without site ID prefix
             title: wpPost.title,
             content: wpPost.content || '',
             author: wpPost.author.id, // This might need mapping if not matching our auth user IDs
@@ -116,6 +140,7 @@ export async function getPostByHandleWithWordPress(handle: string): Promise<TPos
       return wpPost
     }
 
+    console.log('[getPostByHandleWithWordPress] No post found')
     return null
   } catch (error) {
     console.error('Error fetching WordPress post:', error)
