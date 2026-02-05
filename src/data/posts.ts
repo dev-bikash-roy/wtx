@@ -776,7 +776,7 @@ export async function getAllPosts() {
   return posts.flat().sort(() => Math.random() - 0.5)
 }
 
-export async function getPostByHandle(handle: string) {
+export async function getPostByHandle(handle: string): Promise<TemplatePost | null> {
   const posts = await getAllPosts()
   const post = posts.find((post) => post.handle === handle)
   if (!post) {
