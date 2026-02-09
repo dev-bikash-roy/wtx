@@ -3,9 +3,35 @@ const nextConfig = {
   // Enable source maps for better debugging
   productionBrowserSourceMaps: true,
 
-  // Ensure proper handling of static assets
+  // External packages for server components
+  serverExternalPackages: ['firebase-admin'],
+
+  // Ensure proper asset handling
+  assetPrefix: '',
+
+  // Ensure proper trailing slash handling
+  trailingSlash: false,
+
+  // Performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
+  },
+
+  // Optimize bundle
+  compress: true,
+
+
+  // Ensure proper handling of CSS and static assets
+  experimental: {
+    optimizeCss: true,
+  },
+
+  // Optimize images
   images: {
-    minimumCacheTTL: 2678400 * 6, // 3 months
+    minimumCacheTTL: 2678400 * 6, // 6 months
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       {
         protocol: 'https',
@@ -134,20 +160,6 @@ const nextConfig = {
       },
     ],
   },
-
-  // Ensure proper handling of CSS and static assets
-  experimental: {
-    optimizeCss: true,
-  },
-
-  // External packages for server components
-  serverExternalPackages: ['firebase-admin'],
-
-  // Ensure proper asset handling
-  assetPrefix: '',
-
-  // Ensure proper trailing slash handling
-  trailingSlash: false,
 
   async redirects() {
     return [
