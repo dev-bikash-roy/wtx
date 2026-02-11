@@ -7,7 +7,7 @@ import ThemeProvider from './theme-provider'
 import { AuthProvider } from '@/contexts/AuthContext'
 
 const beVietnamPro = Be_Vietnam_Pro({
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '600', '700'],
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-be-vietnam-pro',
@@ -40,6 +40,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Preconnect to critical origins */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
+        {/* Post Image Sources */}
+        <link rel="preconnect" href="https://wtxnews.com" />
+        <link rel="preconnect" href="https://blog.wtxnews.co.uk" />
+        <link rel="preconnect" href="https://ichef.bbci.co.uk" />
+
         {/* Google Site Verification */}
         <meta name="google-site-verification" content="QwBfcIRPBl0Bk1l9FRWzhttOp7BIQwfwCkceCSwCPTg" />
 

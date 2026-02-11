@@ -1,9 +1,11 @@
-import Footer from '@/components/Footer/Footer'
 import Header from '@/components/Header/Header'
 import Header2 from '@/components/Header/Header2'
-import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import Banner from '@/shared/banner'
 import React, { ReactNode } from 'react'
+import dynamic from 'next/dynamic'
+
+const Footer = dynamic(() => import('@/components/Footer/Footer'))
+const AsideSidebarNavigation = dynamic(() => import('@/components/aside-sidebar-navigation'))
 
 interface Props {
   children: ReactNode

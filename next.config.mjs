@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Enable source maps for better debugging
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
 
   // External packages for server components
   serverExternalPackages: ['firebase-admin'],
@@ -19,7 +19,6 @@ const nextConfig = {
 
   // Optimize bundle
   compress: true,
-
 
   // Ensure proper handling of CSS and static assets
   experimental: {
@@ -180,9 +179,18 @@ const nextConfig = {
     ]
   },
 
-  // Headers for better caching and favicon handling
+  // Headers for optimization and security
   async headers() {
     return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Link',
+            value: '<https://www.googletagmanager.com>; rel=preconnect, <https://www.google-analytics.com>; rel=preconnect',
+          },
+        ],
+      },
       {
         source: '/favicon.ico',
         headers: [

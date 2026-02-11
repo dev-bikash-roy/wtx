@@ -7,8 +7,9 @@ import SectionMagazine3 from '@/components/SectionMagazine3'
 import SectionTrending from '@/components/SectionTrending'
 import SectionTrendingTags from '@/components/SectionTrendingTags'
 import SectionSliderPosts from '@/components/SectionSliderPosts'
-import SectionMagazine6 from '@/components/SectionMagazine6'
-import SectionSubscribe2 from '@/components/SectionSubscribe2'
+import dynamic from 'next/dynamic'
+const SectionMagazine6 = dynamic(() => import('@/components/SectionMagazine6'))
+const SectionSubscribe2 = dynamic(() => import('@/components/SectionSubscribe2'))
 import { getCategoriesWithPosts } from '@/data/categories'
 import { getAllPostsWithWordPress, getWordPressPostsByCategory } from '@/data/wordpress-posts'
 import { getAuthors } from '@/data/authors'
@@ -66,50 +67,64 @@ export const metadata: Metadata = {
 
 const Page = async () => {
   // --- 1. Fetch Posts for specific sections ---
+  const [
+    latestNewsPosts,
+    latestNewsDefault,
+    trendingPosts,
+    editorsPicksPosts,
+    englandPosts,
+    scotlandPosts,
+    walesPosts,
+    irelandPosts,
+    celebPosts,
+    latestSportsPosts,
+    moneyExpertPosts,
+    exploreUKPosts,
+    defaultPosts,
+    categoriesWithPosts
+  ] = await Promise.all([
+    // 1. Latest news today (Tag: uk-featured-news)
+    getAllPostsWithWordPress({ tags: ['uk-featured-news'], perPage: 5 }),
+    getAllPostsWithWordPress({ perPage: 5 }), // Fallback
 
-  // 1. Latest news today (Tag: uk-featured-news)
-  const latestNewsPosts = await getAllPostsWithWordPress({ tags: ['uk-featured-news'], perPage: 5 })
-  const latestNewsDefault = await getAllPostsWithWordPress({ perPage: 5 }) // Fallback
+    // 2. Trending news
+    getAllPostsWithWordPress({ perPage: 6 }),
 
-  // 2. Trending news (5 most popular tags - visually represented by generic trending for now or latest)
-  const trendingPosts = await getAllPostsWithWordPress({ perPage: 6 })
+    // 3. Editors picks (Tag: editors-picks)
+    getAllPostsWithWordPress({ tags: ['editors-picks'], perPage: 5 }),
 
-  // 3. Editors picks (Tag: editors-picks)
-  const editorsPicksPosts = await getAllPostsWithWordPress({ tags: ['editors-picks'], perPage: 5 })
+    // 4. What's happening near you (Regions)
+    getWordPressPostsByCategory('england-news', 3),
+    getWordPressPostsByCategory('scotland-uk-news', 3),
+    getWordPressPostsByCategory('wales-uk-news', 3),
+    getWordPressPostsByCategory('ireland-news', 3),
 
-  // 4. What's happening near you (Regions: England, Scotland, Wales, Ireland)
-  const englandPosts = await getWordPressPostsByCategory('england-news', 3)
-  const scotlandPosts = await getWordPressPostsByCategory('scotland-uk-news', 3)
-  const walesPosts = await getWordPressPostsByCategory('wales-uk-news', 3)
-  const irelandPosts = await getWordPressPostsByCategory('ireland-news', 3)
+    // 5. Celebs & Showbiz (Tag: uk-entertainment)
+    getAllPostsWithWordPress({ tags: ['uk-entertainment'], perPage: 8 }),
 
-  // 5. Celebs & Showbiz (Tag: uk-entertainment)
-  const celebPosts = await getAllPostsWithWordPress({ tags: ['uk-entertainment'], perPage: 8 })
+    // 6. Latest Sports News (Category: sport)
+    getWordPressPostsByCategory('sport', 6),
 
-  // 6. Latest Sports News (Category: sport)
-  const latestSportsPosts = await getWordPressPostsByCategory('sport', 6)
+    // 7. Money Saving Expert (Category: money-expert)
+    getWordPressPostsByCategory('money-expert', 5),
 
-  // 7. Money Saving Expert (Category: money-expert)
-  const moneyExpertPosts = await getWordPressPostsByCategory('money-expert', 5)
+    // 8. Explore the UK
+    getAllPostsWithWordPress({
+      categories: ['travel'],
+      tags: ['uk-holidays', 'nature-holidays', 'cabin-holidays', 'hiking-holidays', 'weekend-spa-getaways'],
+      perPage: 5
+    }),
 
-  // 8. Explore the UK (Category: travel + Tags: uk-holidays, etc.)
-  const exploreUKPosts = await getAllPostsWithWordPress({
-    categories: ['travel'],
-    tags: ['uk-holidays', 'nature-holidays', 'cabin-holidays', 'hiking-holidays', 'weekend-spa-getaways'],
-    perPage: 5
-  })
-
-  // Reuse posts if specific ones are empty (Fallback logic)
-  const defaultPosts = await getAllPostsWithWordPress({ perPage: 20 })
+    // Fallback and categories
+    getAllPostsWithWordPress({ perPage: 20 }),
+    getCategoriesWithPosts()
+  ])
 
   const getPostsOrFallback = (posts: any[], count: number) => {
     if (posts && posts.length >= count) return posts.slice(0, count);
     if (posts && posts.length > 0) return posts; // Return whatever we have
     return defaultPosts.slice(0, count); // Complete fallback
   }
-
-  // Fetch other data
-  const categoriesWithPosts = await getCategoriesWithPosts()
 
   // Filter categories for "Editors picks" filters (Just picking some random popular ones for UI)
   const editorCategories = categoriesWithPosts.slice(0, 4)

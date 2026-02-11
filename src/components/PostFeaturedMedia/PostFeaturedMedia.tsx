@@ -12,9 +12,10 @@ interface Props {
   className?: string
   post: TPost
   isHover?: boolean
+  priority?: boolean
 }
 
-const PostFeaturedMedia: FC<Props> = ({ className, post, isHover = false }) => {
+const PostFeaturedMedia: FC<Props> = ({ className, post, isHover = false, priority = false }) => {
   const { featuredImage, postType, videoUrl, galleryImgs, audioUrl, handle, title } = post
 
   const renderPostGallery = () => {
@@ -72,15 +73,16 @@ const PostFeaturedMedia: FC<Props> = ({ className, post, isHover = false }) => {
     if (!featuredImage?.src || featuredImage.src.trim() === "") {
       return null;
     }
-    
+
     return (
       <Link href={`/news/${handle}`}>
-        <Image 
-          alt={featuredImage.alt || title} 
-          fill 
-          className="object-cover" 
-          src={featuredImage.src} 
+        <Image
+          alt={featuredImage.alt || title}
+          fill
+          className="object-cover"
+          src={featuredImage.src}
           sizes="(max-width: 600px) 100vw, 50vw"
+          priority={priority}
           onError={(e) => {
             // Fallback to a default image if the original fails to load
             const target = e.target as HTMLImageElement;

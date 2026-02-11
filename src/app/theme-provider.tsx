@@ -73,11 +73,6 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     }
   }, [])
 
-  // Prevent rendering on server to avoid hydration mismatch
-  if (!isMounted) {
-    return <div style={{ visibility: 'hidden' }}>{children}</div>
-  }
-
   return (
     <ThemeContext.Provider
       value={{
