@@ -1,6 +1,7 @@
 import { CustomLink } from '@/data/types'
 import Logo from '@/shared/Logo'
 import SocialsList1 from '@/shared/SocialsList1'
+import Link from 'next/link'
 import React from 'react'
 
 export interface WidgetFooterMenu {
@@ -64,13 +65,12 @@ const Footer: React.FC = () => {
         <ul className="mt-5 space-y-4">
           {menu.menus.map((item, index) => (
             <li key={index}>
-              <a
-                key={index}
+              <Link
                 className="text-neutral-600 hover:text-black dark:text-neutral-300 dark:hover:text-white"
                 href={item.href}
               >
                 {item.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -96,22 +96,31 @@ const Footer: React.FC = () => {
           </div>
           {widgetMenus.map(renderWidgetMenuItem)}
         </div>
-        
+
         <div className="mt-16 border-t border-neutral-200 pt-8 dark:border-neutral-700">
           <div className="container flex flex-col items-center justify-between md:flex-row">
             <p className="text-sm text-neutral-600 dark:text-neutral-300">
               © {new Date().getFullYear()} WTX News. All rights reserved.
             </p>
             <div className="mt-4 flex space-x-6 md:mt-0">
-              <a href="/privacy" className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
+              <Link
+                href="/privacy"
+                className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+              >
                 Privacy Policy
-              </a>
-              <a href="/terms" className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
+              </Link>
+              <Link
+                href="/terms"
+                className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+              >
                 Terms of Service
-              </a>
-              <a href="/contact" className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white">
+              </Link>
+              <Link
+                href="/contact"
+                className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+              >
                 Contact Us
-              </a>
+              </Link>
             </div>
           </div>
         </div>

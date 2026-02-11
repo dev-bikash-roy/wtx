@@ -24,7 +24,7 @@ const Card2: FC<Props> = ({ className, post, size = 'normal' }) => {
   if (!post) {
     return null;
   }
-  
+
   const {
     title,
     featuredImage,
@@ -44,7 +44,7 @@ const Card2: FC<Props> = ({ className, post, size = 'normal' }) => {
       <div className="relative z-0 block h-0 w-full shrink-0 grow pt-[75%] sm:pt-[55%]">
         <Image
           fill
-          sizes="(max-width: 600px) 100vw, 50vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
           className="size-full rounded-2xl object-cover brightness-100 transition-[filter] duration-300 group-hover:brightness-75"
           src={featuredImage}
           alt={title}

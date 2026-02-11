@@ -42,6 +42,7 @@ const SocialsList1: FC<Props> = ({ className, socials = socialsDemo }) => {
           key={index}
           target="_blank"
           rel="noopener noreferrer"
+          title={item.name}
         >
           <HugeiconsIcon icon={item.icon} size={20} />
           {item.name}

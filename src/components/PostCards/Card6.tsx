@@ -22,7 +22,7 @@ const Card6: FC<Props> = ({ className, post }) => {
   if (!post) {
     return null;
   }
-  
+
   const {
     title,
     handle,
@@ -62,7 +62,7 @@ const Card6: FC<Props> = ({ className, post }) => {
 
       <Link href={`/news/${handle}`} className="relative block size-40 shrink-0">
         <Image
-          sizes="(max-width: 600px) 50vw, 33vw"
+          sizes="160px"
           className="size-full rounded-2xl object-cover brightness-100 transition-[filter] duration-300 group-hover:brightness-75"
           fill
           src={featuredImage}

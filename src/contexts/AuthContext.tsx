@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         let profile = await fetchUserProfile(firebaseUser.uid);
-        
+
         // If profile doesn't exist, create it
         if (!profile) {
           profile = await createUserProfile(firebaseUser);
@@ -109,7 +109,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // Update last login
           await updateLastLogin(firebaseUser.uid);
         }
-        
+
         setUser({ firebaseUser, profile });
       } else {
         setUser(null);
@@ -142,7 +142,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ user, loading, logout, loginWithGoogle, refreshProfile }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}

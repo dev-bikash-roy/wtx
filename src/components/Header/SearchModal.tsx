@@ -114,14 +114,14 @@ const SearchModal: FC<Props> = ({ type = 'type1' }) => {
     return (
       <>
         <div className="hidden md:block">
-          <Button outline className="w-full justify-between px-4!" onClick={() => setOpen(true)}>
+          <Button outline aria-label="Search" title="Search" className="w-full justify-between px-4!" onClick={() => setOpen(true)}>
             <span className="text-sm/6 font-normal text-neutral-500 dark:text-neutral-400">Type to search...</span>
             <HugeiconsIcon icon={Search01Icon} size={24} className="ms-auto" />
           </Button>
         </div>
 
         <div className="-ms-1 md:hidden">
-          <ButtonCircle plain onClick={() => setOpen(true)}>
+          <ButtonCircle plain aria-label="Search" title="Search" onClick={() => setOpen(true)}>
             <HugeiconsIcon icon={Search01Icon} size={24} />
           </ButtonCircle>
         </div>
@@ -131,7 +131,7 @@ const SearchModal: FC<Props> = ({ type = 'type1' }) => {
 
   const buttonOpenModal1 = () => {
     return (
-      <ButtonCircle plain onClick={() => setOpen(true)}>
+      <ButtonCircle plain aria-label="Search" title="Search" onClick={() => setOpen(true)}>
         <HugeiconsIcon icon={Search01Icon} size={24} />
       </ButtonCircle>
     )
