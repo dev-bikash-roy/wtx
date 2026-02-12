@@ -83,6 +83,7 @@ const PostFeaturedMedia: FC<Props> = ({ className, post, isHover = false, priori
           src={featuredImage.src}
           sizes="(max-width: 600px) 100vw, 50vw"
           priority={priority}
+          fetchPriority={priority ? "high" : "auto"}
           onError={(e) => {
             // Fallback to a default image if the original fails to load
             const target = e.target as HTMLImageElement;

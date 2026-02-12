@@ -2,12 +2,27 @@
 
 import { useAuth } from '@/contexts/AuthContext'
 import Link from 'next/link'
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon, UserIcon } from '@heroicons/react/24/outline'
 
+// Trigger auth loading when user interacts with auth buttons
+function triggerAuthIntent() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('auth-intent'))
+  }
+}
+
 export default function AuthButtons() {
   const { user, loading, logout } = useAuth()
+
+  // Trigger auth loading on mount if on auth page
+  useEffect(() => {
+    const authRoutes = ['/login', '/signup', '/dashboard', '/profile', '/admin']
+    if (authRoutes.some(route => window.location.pathname.startsWith(route))) {
+      triggerAuthIntent()
+    }
+  }, [])
 
   if (loading) {
     return (
@@ -118,12 +133,14 @@ export default function AuthButtons() {
     <div className="flex items-center gap-2">
       <Link
         href="/login"
+        onClick={triggerAuthIntent}
         className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-neutral-700 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-500"
       >
         Login
       </Link>
       <Link
         href="/signup"
+        onClick={triggerAuthIntent}
         className="inline-flex items-center px-3 py-1.5 rounded-md bg-primary-600 text-sm font-medium text-white hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600"
       >
         Sign up

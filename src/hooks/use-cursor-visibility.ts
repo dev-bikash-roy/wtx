@@ -53,8 +53,11 @@ export function useCursorVisibility({
   const updateRect = React.useCallback(() => {
     const element = elementRef?.current ?? document.body
 
-    const { x, y, width, height } = element.getBoundingClientRect()
-    setRect({ x, y, width, height })
+    // Use requestAnimationFrame to batch DOM reads and prevent forced reflow
+    window.requestAnimationFrame(() => {
+      const { x, y, width, height } = element.getBoundingClientRect()
+      setRect({ x, y, width, height })
+    })
   }, [elementRef])
 
   React.useEffect(() => {

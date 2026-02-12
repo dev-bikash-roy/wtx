@@ -108,7 +108,8 @@ export class MultiWordPressIntegration {
       const params = new URLSearchParams({
         per_page: perPage.toString(),
         page: page.toString(),
-        _embed: '1',
+        _fields: 'id,date,slug,title,excerpt,content,author,featured_media,categories,tags,_embedded',
+        _embed: 'author,wp:featuredmedia,wp:term',
         orderby: 'date',
         order: 'desc'
       })
@@ -231,7 +232,8 @@ export class MultiWordPressIntegration {
         const params = new URLSearchParams({
           per_page: perPage.toString(),
           page: page.toString(),
-          _embed: '1',
+          _fields: 'id,date,slug,title,excerpt,content,author,featured_media,categories,tags,_embedded',
+          _embed: 'author,wp:featuredmedia,wp:term',
           orderby: 'date',
           order: 'desc'
         })
@@ -547,7 +549,7 @@ export class MultiWordPressIntegration {
 
     for (const site of sitesToSearch) {
       try {
-        const url = `${site.apiBase}/posts?slug=${actualSlug}&_embed=1`
+        const url = `${site.apiBase}/posts?slug=${actualSlug}&_fields=id,date,slug,title,excerpt,content,author,featured_media,categories,tags,_embedded&_embed=author,wp:featuredmedia,wp:term`
         console.log('[getPostBySlug] Fetching from:', site.name, 'URL:', url)
 
         const response = await fetch(url, {

@@ -1,15 +1,15 @@
 import SectionLargeSlider from '@/components/SectionLargeSlider'
-import SectionGridPosts from '@/components/SectionGridPosts'
 import SectionSliderNewCategories from '@/components/SectionSliderNewCategories'
 import SectionMagazine1 from '@/components/SectionMagazine1'
 import SectionMagazine2 from '@/components/SectionMagazine2'
-import SectionMagazine3 from '@/components/SectionMagazine3'
 import SectionTrending from '@/components/SectionTrending'
 import SectionTrendingTags from '@/components/SectionTrendingTags'
-import SectionSliderPosts from '@/components/SectionSliderPosts'
 import dynamic from 'next/dynamic'
 const SectionMagazine6 = dynamic(() => import('@/components/SectionMagazine6'))
 const SectionSubscribe2 = dynamic(() => import('@/components/SectionSubscribe2'))
+const SectionGridPosts = dynamic(() => import('@/components/SectionGridPosts'))
+const SectionSliderPosts = dynamic(() => import('@/components/SectionSliderPosts'))
+const SectionMagazine3 = dynamic(() => import('@/components/SectionMagazine3'))
 import { getCategoriesWithPosts } from '@/data/categories'
 import { getAllPostsWithWordPress, getWordPressPostsByCategory } from '@/data/wordpress-posts'
 import { getAuthors } from '@/data/authors'
@@ -83,40 +83,40 @@ const Page = async () => {
     defaultPosts,
     categoriesWithPosts
   ] = await Promise.all([
-    // 1. Latest news today (Tag: uk-featured-news)
-    getAllPostsWithWordPress({ tags: ['uk-featured-news'], perPage: 5 }),
-    getAllPostsWithWordPress({ perPage: 5 }), // Fallback
+    // 1. Latest news today (Tag: uk-featured-news) - reduced from 5 to 3
+    getAllPostsWithWordPress({ tags: ['uk-featured-news'], perPage: 3 }),
+    getAllPostsWithWordPress({ perPage: 3 }), // Fallback
 
-    // 2. Trending news
-    getAllPostsWithWordPress({ perPage: 6 }),
+    // 2. Trending news - reduced from 6 to 4
+    getAllPostsWithWordPress({ perPage: 4 }),
 
-    // 3. Editors picks (Tag: editors-picks)
-    getAllPostsWithWordPress({ tags: ['editors-picks'], perPage: 5 }),
+    // 3. Editors picks (Tag: editors-picks) - reduced from 5 to 3
+    getAllPostsWithWordPress({ tags: ['editors-picks'], perPage: 3 }),
 
-    // 4. What's happening near you (Regions)
-    getWordPressPostsByCategory('england-news', 3),
-    getWordPressPostsByCategory('scotland-uk-news', 3),
-    getWordPressPostsByCategory('wales-uk-news', 3),
-    getWordPressPostsByCategory('ireland-news', 3),
+    // 4. What's happening near you (Regions) - reduced from 3 to 2 each
+    getWordPressPostsByCategory('england-news', 2),
+    getWordPressPostsByCategory('scotland-uk-news', 2),
+    getWordPressPostsByCategory('wales-uk-news', 2),
+    getWordPressPostsByCategory('ireland-news', 2),
 
-    // 5. Celebs & Showbiz (Tag: uk-entertainment)
-    getAllPostsWithWordPress({ tags: ['uk-entertainment'], perPage: 8 }),
+    // 5. Celebs & Showbiz (Tag: uk-entertainment) - reduced from 8 to 6
+    getAllPostsWithWordPress({ tags: ['uk-entertainment'], perPage: 6 }),
 
-    // 6. Latest Sports News (Category: sport)
-    getWordPressPostsByCategory('sport', 6),
+    // 6. Latest Sports News (Category: sport) - reduced from 6 to 4
+    getWordPressPostsByCategory('sport', 4),
 
-    // 7. Money Saving Expert (Category: money-expert)
-    getWordPressPostsByCategory('money-expert', 5),
+    // 7. Money Saving Expert (Category: money-expert) - reduced from 5 to 3
+    getWordPressPostsByCategory('money-expert', 3),
 
-    // 8. Explore the UK
+    // 8. Explore the UK - reduced from 5 to 3
     getAllPostsWithWordPress({
       categories: ['travel'],
       tags: ['uk-holidays', 'nature-holidays', 'cabin-holidays', 'hiking-holidays', 'weekend-spa-getaways'],
-      perPage: 5
+      perPage: 3
     }),
 
-    // Fallback and categories
-    getAllPostsWithWordPress({ perPage: 20 }),
+    // Fallback and categories - reduced from 20 to 12
+    getAllPostsWithWordPress({ perPage: 12 }),
     getCategoriesWithPosts()
   ])
 

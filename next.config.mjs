@@ -187,7 +187,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Link',
-            value: '<https://www.googletagmanager.com>; rel=preconnect, <https://www.google-analytics.com>; rel=preconnect',
+            value: '<https://www.googletagmanager.com>; rel=preconnect, <https://wtxnews.com>; rel=preconnect',
           },
         ],
       },

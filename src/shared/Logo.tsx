@@ -13,7 +13,7 @@ const Logo: React.FC<Props> = ({ className, size = 'h-12 w-auto sm:h-14' }) => {
     <Link href="/" className={clsx('inline-block shrink-0', className)}>
       <div className={clsx(size, 'relative')}>
         <Image
-          src="https://wtxnews.com/wp-content/uploads/2025/12/WTX-News-Icon-1.png"
+          src="/wtx-logo.png"
           alt="WTX News"
           fill
           className="object-contain"

@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 import Script from 'next/script'
 import { Be_Vietnam_Pro } from 'next/font/google'
 import ThemeProvider from './theme-provider'
-import { AuthProvider } from '@/contexts/AuthContext'
+import { LazyAuthProvider } from '@/contexts/LazyAuthProvider'
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['400', '600', '700'],
@@ -40,15 +40,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preconnect to critical origins */}
+        {/* Preconnect to critical origins only - reduced from 7 to 3 */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
-        {/* Post Image Sources */}
         <link rel="preconnect" href="https://wtxnews.com" />
-        <link rel="preconnect" href="https://blog.wtxnews.co.uk" />
-        <link rel="preconnect" href="https://ichef.bbci.co.uk" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 
         {/* Google Site Verification */}
         <meta name="google-site-verification" content="QwBfcIRPBl0Bk1l9FRWzhttOp7BIQwfwCkceCSwCPTg" />
@@ -64,17 +60,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="theme-color" content="#1e40af" />
       </head>
       <body className={`${beVietnamPro.variable} bg-white text-base text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200`} style={{ fontFamily: 'var(--font-be-vietnam-pro), sans-serif' }}>
-        {/* Google Analytics */}
+        {/* Google Analytics - Lazy loaded */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-SZQJ2R3C2R"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-SZQJ2R3C2R');
+            gtag('config', 'G-SZQJ2R3C2R', {
+              page_path: window.location.pathname,
+            });
           `}
         </Script>
 
@@ -101,11 +99,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        <AuthProvider>
+        <LazyAuthProvider>
           <ThemeProvider>
             <div>{children}</div>
           </ThemeProvider>
-        </AuthProvider>
+        </LazyAuthProvider>
       </body>
     </html >
   )
