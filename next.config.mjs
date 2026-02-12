@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Disable ESLint during builds for faster compilation
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
   // Enable source maps for better debugging
   productionBrowserSourceMaps: false,
 

@@ -4,13 +4,13 @@ import { Metadata } from 'next'
 import Script from 'next/script'
 import { Be_Vietnam_Pro } from 'next/font/google'
 import ThemeProvider from './theme-provider'
-import { LazyAuthProvider } from '@/contexts/LazyAuthProvider'
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['400', '600', '700'],
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-be-vietnam-pro',
+  preload: true,
 })
 
 export const metadata: Metadata = {
@@ -99,11 +99,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        <LazyAuthProvider>
-          <ThemeProvider>
-            <div>{children}</div>
-          </ThemeProvider>
-        </LazyAuthProvider>
+        <ThemeProvider>
+          <div>{children}</div>
+        </ThemeProvider>
       </body>
     </html >
   )

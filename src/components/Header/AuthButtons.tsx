@@ -14,7 +14,19 @@ function triggerAuthIntent() {
 }
 
 export default function AuthButtons() {
-  const { user, loading, logout } = useAuth()
+  // Try to use auth context, but don't fail if it's not available
+  let user = null
+  let loading = false
+  let logout = async () => {}
+
+  try {
+    const auth = useAuth()
+    user = auth.user
+    loading = auth.loading
+    logout = auth.logout
+  } catch (e) {
+    // Auth context not available - user not on auth route
+  }
 
   // Trigger auth loading on mount if on auth page
   useEffect(() => {

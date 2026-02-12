@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
 import ProtectedRoute from '@/components/ProtectedRoute'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const user = {
   name: 'John Doe',
@@ -39,9 +40,10 @@ export default function Layout({ children }: { children: ReactNode }) {
   const pageTitle = navigation.find((item) => isActive(item.href))?.name ?? 'Dashboard'
 
   return (
-    <ProtectedRoute requiredRole="admin">
-      <>
-        <div className="min-h-screen">
+    <AuthProvider>
+      <ProtectedRoute requiredRole="admin">
+        <>
+          <div className="min-h-screen">
           <Disclosure as="nav">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex h-20 justify-between">
@@ -164,5 +166,6 @@ export default function Layout({ children }: { children: ReactNode }) {
         </div>
       </>
     </ProtectedRoute>
+    </AuthProvider>
   )
 }
