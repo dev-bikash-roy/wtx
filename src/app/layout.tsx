@@ -1,5 +1,6 @@
 import '@/styles/tailwind.css'
 import '@/app/globals.css'
+import '@/app/mobile-optimizations.css'
 import { Metadata } from 'next'
 import Script from 'next/script'
 import { Be_Vietnam_Pro } from 'next/font/google'
@@ -45,6 +46,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://wtxnews.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        
+        {/* Mobile-specific optimizations */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <meta name="format-detection" content="telephone=no" />
 
         {/* Google Site Verification */}
         <meta name="google-site-verification" content="QwBfcIRPBl0Bk1l9FRWzhttOp7BIQwfwCkceCSwCPTg" />

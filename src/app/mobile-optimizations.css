@@ -1,0 +1,64 @@
+/* Mobile Performance Optimizations */
+
+@media (max-width: 767px) {
+  /* ONLY apply these optimizations on mobile */
+  
+  /* Reduce animation complexity on mobile only */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  /* Simplify shadows on mobile */
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
+  }
+  
+  /* Reduce blur effects on mobile */
+  .backdrop-blur-lg,
+  .backdrop-blur-xl {
+    backdrop-filter: blur(4px) !important;
+  }
+  
+  /* Optimize font rendering on mobile */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+  }
+  
+  /* Reduce image quality slightly for faster load on mobile */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+  
+  /* Defer non-critical content on mobile */
+  .below-fold {
+    content-visibility: auto;
+    contain-intrinsic-size: 500px;
+  }
+}
+
+/* Desktop Optimizations */
+@media (min-width: 768px) {
+  /* Keep full animations and effects on desktop */
+  
+  /* Optimize font rendering */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Use GPU acceleration for transforms */
+  .transform {
+    will-change: transform;
+  }
+  
+  /* Optimize scrolling */
+  * {
+    scroll-behavior: smooth;
+  }
+}

@@ -15,6 +15,9 @@ import { getAllPostsWithWordPress, getWordPressPostsByCategory } from '@/data/wo
 import { getAuthors } from '@/data/authors'
 import { Metadata } from 'next'
 
+// Enable ISR - revalidate every 5 minutes
+export const revalidate = 300
+
 export const metadata: Metadata = {
   title: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
   description: 'Stay informed with WTX News. Latest UK breaking news, politics, sports, entertainment, and lifestyle. Unbiased reporting and in-depth analysis from across the United Kingdom.',
@@ -66,7 +69,83 @@ export const metadata: Metadata = {
 }
 
 const Page = async () => {
-  // --- 1. Fetch Posts for specific sections ---
+  // Detect if request is from mobile (server-side)
+  const { headers } = await import('next/headers')
+  const headersList = await headers()
+  const userAgent = headersList.get('user-agent') || ''
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
+
+  // MOBILE: Fetch minimal data for faster load
+  if (isMobile) {
+    const [
+      latestNewsPosts,
+      trendingPosts,
+      categoriesWithPosts
+    ] = await Promise.all([
+      // Only 3 latest posts
+      getAllPostsWithWordPress({ tags: ['uk-featured-news'], perPage: 3 }),
+      // Only 4 trending posts
+      getAllPostsWithWordPress({ perPage: 4 }),
+      // Categories
+      getCategoriesWithPosts()
+    ])
+
+    return (
+      <div className="relative container space-y-16 pb-16 lg:space-y-20 lg:pb-20">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebPage',
+              name: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
+              description: 'Stay informed with WTX News. Latest UK breaking news, politics, sports, entertainment, and lifestyle.',
+              url: 'https://wtxnews.co.uk',
+              publisher: {
+                '@type': 'NewsMediaOrganization',
+                name: 'WTX News',
+                logo: {
+                  '@type': 'ImageObject',
+                  url: 'https://wtxnews.co.uk/wtx-logo.png',
+                }
+              }
+            })
+          }}
+        />
+
+        <h1 className="sr-only">Latest UK News & Breaking Stories</h1>
+
+        {/* Mobile: Only show essential sections */}
+        <div className="pt-10">
+          <SectionSliderNewCategories
+            heading="Today's headlines"
+            subHeading="Quick access"
+            categories={categoriesWithPosts.slice(0, 6)}
+            categoryCardType="card4"
+          />
+        </div>
+
+        <SectionLargeSlider
+          heading="Latest news"
+          subHeading="Top stories"
+          posts={latestNewsPosts.slice(0, 3)}
+        />
+
+        <SectionTrending
+          heading="Trending"
+          subHeading="Popular now"
+          posts={trendingPosts.slice(0, 4)}
+        />
+
+        {/* Load more content on scroll - client component */}
+        <div className="text-center py-8">
+          <p className="text-sm text-neutral-500">Scroll for more stories</p>
+        </div>
+      </div>
+    )
+  }
+
+  // DESKTOP: Full content load
   const [
     latestNewsPosts,
     latestNewsDefault,
