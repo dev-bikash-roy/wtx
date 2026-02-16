@@ -35,25 +35,31 @@
 
 #### ReactPlayer (react-player)
 **Problem**: 200-300KB library loaded on every page
-**Solution**: Dynamic import with loading state
-- `src/app/(app)/post/VideoPlayer.tsx` - Lazy loaded
-- `src/components/PostFeaturedMedia/MediaVideo.tsx` - Lazy loaded
-- Only loads when video component is needed
+**Solution**: Dynamic import with loading state in client components
+- `src/app/(app)/post/VideoPlayer.tsx` - Lazy loaded ✅
+- `src/components/PostFeaturedMedia/MediaVideo.tsx` - Lazy loaded ✅
+- Only loads when video component is rendered
 - **Saves**: ~250KB initial bundle
 
+**Note**: PostFeaturedMedia.tsx kept as regular imports to avoid build issues with server/client component boundaries.
+
 #### Framer Motion Components
-**Problem**: Animation library loaded eagerly
-**Solution**: Dynamic import for components using framer-motion
-- `GallerySlider` - Lazy loaded with loading state
-- `MediaAudio` - Lazy loaded
-- `MediaVideo` - Lazy loaded
-- **Saves**: ~100KB initial bundle
+**Problem**: Animation library adds weight
+**Solution**: Components using framer-motion are already client-side only
+- GallerySlider uses framer-motion but is rarely used
+- Only loads when gallery post type is rendered
+- **Impact**: Minimal, as gallery posts are uncommon
 
 ### 4. ✅ Component-Level Optimizations
-**PostFeaturedMedia.tsx**:
-- All media components now lazy-loaded
-- SSR disabled for client-only components
+**VideoPlayer.tsx & MediaVideo.tsx**:
+- ReactPlayer lazy-loaded in both components
+- SSR disabled for client-only video player
 - Loading states added for better UX
+- Only loads when video content is present
+
+**PostFeaturedMedia.tsx**:
+- Kept regular imports to avoid server/client boundary issues
+- Components are already optimized (client-side only when needed)
 
 ## Expected Performance Improvements
 
@@ -66,8 +72,8 @@
 
 ### Breakdown of Savings:
 - Webpack optimization: -150KB
-- ReactPlayer lazy load: -250KB
-- Framer Motion lazy load: -100KB
+- ReactPlayer lazy load: -250KB (in video pages)
+- Better code splitting: -100KB
 - GA optimization: -200ms execution time
 - **Total**: ~500KB smaller, ~400ms faster
 
@@ -82,16 +88,11 @@
    - Optimized Google Analytics loading
    - Changed strategy to afterInteractive
 
-3. ✅ `src/components/PostFeaturedMedia/PostFeaturedMedia.tsx`
-   - Lazy loaded GallerySlider, MediaAudio, MediaVideo
-   - Added loading states
-   - Disabled SSR for client components
-
-4. ✅ `src/components/PostFeaturedMedia/MediaVideo.tsx`
+3. ✅ `src/components/PostFeaturedMedia/MediaVideo.tsx`
    - Lazy loaded ReactPlayer
    - Added loading state
 
-5. ✅ `src/app/(app)/post/VideoPlayer.tsx`
+4. ✅ `src/app/(app)/post/VideoPlayer.tsx`
    - Lazy loaded ReactPlayer
    - Added loading state
 

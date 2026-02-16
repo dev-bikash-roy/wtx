@@ -6,6 +6,7 @@ import { SpeakerWaveIcon, SpeakerXMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { FC, useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
+import type ReactPlayerType from 'react-player'
 
 // Lazy load ReactPlayer - heavy library
 const ReactPlayer = dynamic(() => import('react-player'), {
@@ -25,7 +26,7 @@ const MediaVideo: FC<Props> = ({ videoUrl, isHover, handle }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isRendered, setIsRendered] = useState(false)
   let __timeOut: NodeJS.Timeout | null = null
-  const playerRef = useRef<ReactPlayer | null>(null)
+  const playerRef = useRef<ReactPlayerType | null>(null)
 
   useEffect(() => {
     if (isHover) {
