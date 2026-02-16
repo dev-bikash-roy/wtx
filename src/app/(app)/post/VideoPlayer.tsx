@@ -1,7 +1,17 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import ReactPlayer from 'react-player'
+import dynamic from 'next/dynamic'
+
+// Lazy load ReactPlayer - it's a heavy library
+const ReactPlayer = dynamic(() => import('react-player'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center bg-neutral-100 dark:bg-neutral-800">
+      <div className="animate-pulse text-neutral-500">Loading video...</div>
+    </div>
+  ),
+})
 
 const VideoPlayer = ({ videoUrl }: { videoUrl: string }) => {
   const [isRendered, setIsRendered] = useState(false)

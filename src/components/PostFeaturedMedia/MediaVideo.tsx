@@ -5,7 +5,13 @@ import SpinLoading from '@/shared/spin-loading'
 import { SpeakerWaveIcon, SpeakerXMarkIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { FC, useEffect, useRef, useState } from 'react'
-import ReactPlayer from 'react-player'
+import dynamic from 'next/dynamic'
+
+// Lazy load ReactPlayer - heavy library
+const ReactPlayer = dynamic(() => import('react-player'), {
+  ssr: false,
+  loading: () => <SpinLoading />,
+})
 
 interface Props {
   videoUrl: string

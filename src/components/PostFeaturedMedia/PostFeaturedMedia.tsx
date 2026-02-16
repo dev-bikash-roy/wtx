@@ -3,10 +3,16 @@ import clsx from 'clsx'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
+import dynamic from 'next/dynamic'
 import PostTypeFeaturedIcon from '../PostTypeFeaturedIcon'
-import GallerySlider from './GallerySlider'
-import MediaAudio from './MediaAudio'
-import MediaVideo from './MediaVideo'
+
+// Lazy load heavy components with framer-motion
+const GallerySlider = dynamic(() => import('./GallerySlider'), {
+  loading: () => <div className="animate-pulse bg-neutral-200 dark:bg-neutral-700" />,
+  ssr: false
+})
+const MediaAudio = dynamic(() => import('./MediaAudio'), { ssr: false })
+const MediaVideo = dynamic(() => import('./MediaVideo'), { ssr: false })
 
 interface Props {
   className?: string

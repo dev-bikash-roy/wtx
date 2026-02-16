@@ -37,15 +37,14 @@ export const metadata: Metadata = {
   other: {
     'google-adsense-account': 'ca-pub-4115163205031252',
   },
+  // Explicitly set charset
+  metadataBase: new URL('https://wtxnews.co.uk'),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Character encoding - MUST be in first 1024 bytes */}
-        <meta charSet="utf-8" />
-        
         {/* Preconnect to critical origins only - reduced from 7 to 3 */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://wtxnews.com" crossOrigin="anonymous" />
@@ -71,23 +70,43 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1e40af" />
+        
+        {/* Inline critical script to prevent flash - non-blocking */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'dark-mode') {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body className={`${beVietnamPro.variable} bg-white text-base text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200`} style={{ fontFamily: 'var(--font-be-vietnam-pro), sans-serif' }}>
-        {/* Google Analytics - Lazy loaded */}
+        {/* Google Analytics - Load after everything else */}
+        <Script
+          id="gtag-base"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-SZQJ2R3C2R', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-SZQJ2R3C2R"
-          strategy="lazyOnload"
+          strategy="afterInteractive"
         />
-        <Script id="google-analytics" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-SZQJ2R3C2R', {
-              page_path: window.location.pathname,
-            });
-          `}
-        </Script>
 
         <script
           type="application/ld+json"

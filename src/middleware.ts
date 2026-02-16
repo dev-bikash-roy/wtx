@@ -18,13 +18,24 @@ export const config = {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Create response with charset header
+  const response = NextResponse.next()
+  
+  // Add charset to Content-Type header for all HTML responses
+  // This is critical for passing the charset validation
+  if (!pathname.startsWith('/api') && 
+      !pathname.startsWith('/_next') && 
+      !pathname.match(/\.(jpg|jpeg|png|gif|svg|ico|webp|css|js|woff|woff2|ttf|eot)$/)) {
+    response.headers.set('Content-Type', 'text/html; charset=utf-8')
+  }
+
   // Skip middleware for auth pages to prevent redirect loops
   if (pathname.startsWith('/login') ||
     pathname.startsWith('/signup') ||
     pathname.startsWith('/admin/login') ||
     pathname.startsWith('/make-admin') ||
     pathname.startsWith('/test-auth')) {
-    return NextResponse.next()
+    return response
   }
 
   // Define admin-only routes
@@ -53,16 +64,6 @@ export function middleware(request: NextRequest) {
   const isUserProtectedRoute = userProtectedPaths.some(path =>
     pathname === path || pathname.startsWith(path + '/')
   )
-
-  // Add charset to Content-Type header for all HTML responses
-  const response = NextResponse.next()
-  
-  // Only add charset for HTML pages (not API routes, images, etc.)
-  if (!pathname.startsWith('/api') && 
-      !pathname.startsWith('/_next') && 
-      !pathname.match(/\.(jpg|jpeg|png|gif|svg|ico|webp|css|js)$/)) {
-    response.headers.set('Content-Type', 'text/html; charset=utf-8')
-  }
 
   return response
 }

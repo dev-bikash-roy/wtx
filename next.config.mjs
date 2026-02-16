@@ -29,6 +29,8 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['@heroicons/react', '@headlessui/react', 'framer-motion', 'lodash'],
+    // Reduce client-side JavaScript
+    optimizeServerReact: true,
   },
   
   // Reduce JavaScript bundle size
@@ -42,6 +44,40 @@ const nextConfig = {
     'lodash': {
       transform: 'lodash/{{member}}',
     },
+  },
+  
+  // Webpack optimization for smaller bundles
+  webpack: (config, { isServer }) => {
+    // Optimize bundle splitting
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Vendor chunk for node_modules
+            vendor: {
+              name: 'vendor',
+              chunks: 'all',
+              test: /node_modules/,
+              priority: 20,
+            },
+            // Common chunk for shared code
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              priority: 10,
+              reuseExistingChunk: true,
+              enforce: true,
+            },
+          },
+        },
+      };
+    }
+    return config;
   },
 
   // Optimize images
@@ -259,8 +295,12 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/:path*',
         headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/html; charset=utf-8',
+          },
           {
             key: 'Link',
             value: '<https://www.googletagmanager.com>; rel=preconnect, <https://wtxnews.com>; rel=preconnect',
@@ -277,11 +317,6 @@ const nextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
-        ],
-      },
-      {
-        source: '/:path*',
-        headers: [
           {
             key: 'Cache-Control',
             value: 'public, max-age=3600, stale-while-revalidate=86400',
