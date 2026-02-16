@@ -28,6 +28,20 @@ const nextConfig = {
   // Ensure proper handling of CSS and static assets
   experimental: {
     optimizeCss: true,
+    optimizePackageImports: ['@heroicons/react', '@headlessui/react', 'framer-motion', 'lodash'],
+  },
+  
+  // Reduce JavaScript bundle size
+  modularizeImports: {
+    '@heroicons/react/24/outline': {
+      transform: '@heroicons/react/24/outline/{{member}}',
+    },
+    '@heroicons/react/24/solid': {
+      transform: '@heroicons/react/24/solid/{{member}}',
+    },
+    'lodash': {
+      transform: 'lodash/{{member}}',
+    },
   },
 
   // Optimize images
@@ -164,6 +178,61 @@ const nextConfig = {
         hostname: 'images.euronews.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'static.euronews.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.euronews.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.cnn.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'media.cnn.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.independent.co.uk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.telegraph.co.uk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.standard.co.uk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.thesun.co.uk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.dailymail.co.uk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.mirror.co.uk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'wtxnews.co.uk',
+        pathname: '/**',
+      },
     ],
   },
 
@@ -196,6 +265,27 @@ const nextConfig = {
             key: 'Link',
             value: '<https://www.googletagmanager.com>; rel=preconnect, <https://wtxnews.com>; rel=preconnect',
           },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+        ],
+      },
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600, stale-while-revalidate=86400',
+          },
         ],
       },
       {
@@ -227,6 +317,15 @@ const nextConfig = {
       },
       {
         source: '/manifest.json',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/_next/static/:path*',
         headers: [
           {
             key: 'Cache-Control',

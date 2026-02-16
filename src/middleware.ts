@@ -54,7 +54,15 @@ export function middleware(request: NextRequest) {
     pathname === path || pathname.startsWith(path + '/')
   )
 
-  // For now, let's disable middleware protection and let the components handle it
-  // This prevents redirect loops while Firebase auth loads
-  return NextResponse.next()
+  // Add charset to Content-Type header for all HTML responses
+  const response = NextResponse.next()
+  
+  // Only add charset for HTML pages (not API routes, images, etc.)
+  if (!pathname.startsWith('/api') && 
+      !pathname.startsWith('/_next') && 
+      !pathname.match(/\.(jpg|jpeg|png|gif|svg|ico|webp|css|js)$/)) {
+    response.headers.set('Content-Type', 'text/html; charset=utf-8')
+  }
+
+  return response
 }

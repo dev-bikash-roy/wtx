@@ -1,15 +1,35 @@
-import SectionLargeSlider from '@/components/SectionLargeSlider'
-import SectionSliderNewCategories from '@/components/SectionSliderNewCategories'
-import SectionMagazine1 from '@/components/SectionMagazine1'
-import SectionMagazine2 from '@/components/SectionMagazine2'
-import SectionTrending from '@/components/SectionTrending'
-import SectionTrendingTags from '@/components/SectionTrendingTags'
 import dynamic from 'next/dynamic'
-const SectionMagazine6 = dynamic(() => import('@/components/SectionMagazine6'))
-const SectionSubscribe2 = dynamic(() => import('@/components/SectionSubscribe2'))
-const SectionGridPosts = dynamic(() => import('@/components/SectionGridPosts'))
-const SectionSliderPosts = dynamic(() => import('@/components/SectionSliderPosts'))
-const SectionMagazine3 = dynamic(() => import('@/components/SectionMagazine3'))
+
+// Above-the-fold components - load immediately
+import SectionSliderNewCategories from '@/components/SectionSliderNewCategories'
+import SectionLargeSlider from '@/components/SectionLargeSlider'
+import SectionTrending from '@/components/SectionTrending'
+
+// Below-the-fold components - lazy load for better initial performance
+const SectionTrendingTags = dynamic(() => import('@/components/SectionTrendingTags'), {
+  loading: () => <div className="h-32 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
+})
+const SectionMagazine1 = dynamic(() => import('@/components/SectionMagazine1'), {
+  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
+})
+const SectionMagazine2 = dynamic(() => import('@/components/SectionMagazine2'), {
+  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
+})
+const SectionMagazine6 = dynamic(() => import('@/components/SectionMagazine6'), {
+  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
+})
+const SectionSubscribe2 = dynamic(() => import('@/components/SectionSubscribe2'), {
+  loading: () => <div className="h-64 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
+})
+const SectionGridPosts = dynamic(() => import('@/components/SectionGridPosts'), {
+  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
+})
+const SectionSliderPosts = dynamic(() => import('@/components/SectionSliderPosts'), {
+  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
+})
+const SectionMagazine3 = dynamic(() => import('@/components/SectionMagazine3'), {
+  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
+})
 import { getCategoriesWithPosts } from '@/data/categories'
 import { getAllPostsWithWordPress, getWordPressPostsByCategory } from '@/data/wordpress-posts'
 import { getAuthors } from '@/data/authors'

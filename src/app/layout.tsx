@@ -12,6 +12,8 @@ const beVietnamPro = Be_Vietnam_Pro({
   display: 'swap',
   variable: '--font-be-vietnam-pro',
   preload: true,
+  fallback: ['system-ui', 'arial'],
+  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = {
@@ -41,11 +43,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Character encoding - MUST be in first 1024 bytes */}
+        <meta charSet="utf-8" />
+        
         {/* Preconnect to critical origins only - reduced from 7 to 3 */}
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="preconnect" href="https://wtxnews.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://wtxnews.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        
+        {/* Preload critical assets */}
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap" />
         
         {/* Mobile-specific optimizations */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
