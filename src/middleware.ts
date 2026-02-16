@@ -18,24 +18,13 @@ export const config = {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Create response with charset header
-  const response = NextResponse.next()
-  
-  // Add charset to Content-Type header for all HTML responses
-  // This is critical for passing the charset validation
-  if (!pathname.startsWith('/api') && 
-      !pathname.startsWith('/_next') && 
-      !pathname.match(/\.(jpg|jpeg|png|gif|svg|ico|webp|css|js|woff|woff2|ttf|eot)$/)) {
-    response.headers.set('Content-Type', 'text/html; charset=utf-8')
-  }
-
   // Skip middleware for auth pages to prevent redirect loops
   if (pathname.startsWith('/login') ||
     pathname.startsWith('/signup') ||
     pathname.startsWith('/admin/login') ||
     pathname.startsWith('/make-admin') ||
     pathname.startsWith('/test-auth')) {
-    return response
+    return NextResponse.next()
   }
 
   // Define admin-only routes
@@ -65,5 +54,7 @@ export function middleware(request: NextRequest) {
     pathname === path || pathname.startsWith(path + '/')
   )
 
-  return response
+  // For now, let's disable middleware protection and let the components handle it
+  // This prevents redirect loops while Firebase auth loads
+  return NextResponse.next()
 }
