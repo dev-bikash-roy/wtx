@@ -32,8 +32,10 @@ export const metadata: Metadata = {
     ],
   },
   manifest: '/manifest.json',
+  metadataBase: new URL('https://wtxnews.co.uk'),
   other: {
     'google-adsense-account': 'ca-pub-4115163205031252',
+    'charset': 'utf-8',
   },
 }
 
@@ -41,6 +43,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Character encoding - MUST be first for Lighthouse */}
+        <meta charSet="utf-8" />
+        
         {/* Preconnect to critical origins only - reduced from 7 to 3 */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://wtxnews.com" />
@@ -65,12 +70,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="theme-color" content="#1e40af" />
       </head>
       <body className={`${beVietnamPro.variable} bg-white text-base text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200`} style={{ fontFamily: 'var(--font-be-vietnam-pro), sans-serif' }}>
-        {/* Google Analytics - Lazy loaded */}
+        {/* Google Analytics - Deferred */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-SZQJ2R3C2R"
-          strategy="lazyOnload"
+          strategy="worker"
         />
-        <Script id="google-analytics" strategy="lazyOnload">
+        <Script id="google-analytics" strategy="worker">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}

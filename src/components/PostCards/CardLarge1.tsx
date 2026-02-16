@@ -86,8 +86,9 @@ const CardLarge1: FC<Props> = ({ className, post, onClickNext, onClickPrev }) =>
             src={featuredImage}
             alt={title}
             fill
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 66vw, 1080px"
             priority
+            quality={85}
           />
           {/* META TYPE */}
           <PostTypeFeaturedIcon postType={post.postType} className="absolute end-5 top-5" />
