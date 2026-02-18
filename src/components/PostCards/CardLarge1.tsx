@@ -16,9 +16,10 @@ interface Props {
   post: TPost
   onClickNext?: () => void
   onClickPrev?: () => void
+  priority?: boolean
 }
 
-const CardLarge1: FC<Props> = ({ className, post, onClickNext, onClickPrev }) => {
+const CardLarge1: FC<Props> = ({ className, post, onClickNext, onClickPrev, priority = false }) => {
   const {
     featuredImage,
     title,
@@ -87,7 +88,7 @@ const CardLarge1: FC<Props> = ({ className, post, onClickNext, onClickPrev }) =>
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 66vw, 1080px"
-            priority
+            priority={priority}
             quality={85}
           />
           {/* META TYPE */}

@@ -35,6 +35,9 @@ const SingleContentContainer: FC<Props> = ({ post, comments, className }) => {
 
   const { tags, author, content, likeCount, commentCount, liked, handle, aiSummary } = post
 
+  console.log('[SingleContentContainer] Post content length:', content?.length || 0)
+  console.log('[SingleContentContainer] Post title:', post.title)
+
   // Fix: Add null checks for optional properties
   const safeContent = content || ''
   const safeTags = tags || []

@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ButtonPrimary from "@/shared/ButtonPrimary";
@@ -16,11 +16,24 @@ export default function PremiumGuard({ postCategories, children }: Props) {
     const [isLocked, setIsLocked] = useState(false);
     const [checking, setChecking] = useState(true);
 
+    // Memoize category handles to prevent infinite loop
+    const categoryHandles = useMemo(
+        () => postCategories.map(cat => cat.handle).join(','),
+        [postCategories]
+    );
+
     useEffect(() => {
         const checkAccess = async () => {
             try {
-                // Fetch permissions (could be cached in context or separate hook in future)
-                const res = await fetch('/api/categories/permissions');
+                // Add timeout to prevent infinite "Checking access..."
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+
+                const res = await fetch('/api/categories/permissions', {
+                    signal: controller.signal,
+                });
+                clearTimeout(timeoutId);
+
                 const permissions = res.ok ? await res.json() : {};
 
                 // Check if any category of the post is Paid
@@ -33,7 +46,8 @@ export default function PremiumGuard({ postCategories, children }: Props) {
                     }
                 }
             } catch (e) {
-                console.error(e);
+                // If fetch fails or times out, default to showing content
+                console.warn('Failed to check permissions, defaulting to open access:', e);
             } finally {
                 setChecking(false);
             }
@@ -42,7 +56,7 @@ export default function PremiumGuard({ postCategories, children }: Props) {
         if (!loading) {
             checkAccess();
         }
-    }, [user, loading, postCategories]);
+    }, [user, loading, categoryHandles]);
 
     if (loading || checking) {
         return <div className="animate-pulse p-4">Checking access...</div>;

@@ -1,10 +1,17 @@
+'use client'
+
 import { TNavigationItem } from '@/data/navigation'
 import { TPost } from '@/data/posts'
 import { Link } from '@/shared/link'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
-import Card20 from '../PostCards/Card20'
+import dynamic from 'next/dynamic'
+
+const MegaMenuPanelContent = dynamic(() => import('./MegaMenuPanelContent'), {
+  loading: () => <div className="h-64 bg-white dark:bg-neutral-900" />,
+  ssr: false,
+})
 
 export default function MegaMenuPopover({
   megamenu,
@@ -41,25 +48,7 @@ export default function MegaMenuPopover({
             transition
             className="header-popover-full-panel absolute inset-x-0 top-full z-40 w-full transition duration-200 data-closed:translate-y-1 data-closed:opacity-0"
           >
-            <div className="bg-white shadow-lg dark:bg-neutral-900">
-              <div className="container">
-                <div className="flex py-12 text-sm">
-                  <div className="grid flex-1 grid-cols-4 gap-6 pe-10 xl:gap-8 2xl:pe-14">
-                    {megamenu.children?.map((menuChild, index) => (
-                      <div key={index}>
-                        <p className="font-medium text-neutral-900 dark:text-neutral-200">{menuChild.name}</p>
-                        <ul className="mt-4 grid space-y-4">{menuChild.children?.map(renderNavlink)}</ul>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="grid w-2/7 grid-cols-1 gap-5 xl:w-4/9 xl:grid-cols-2">
-                    {featuredPosts.map((post, index) => (
-                      <Card20 key={post.id} post={post} className={clsx(index === 0 ? '' : 'hidden xl:block')} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <MegaMenuPanelContent megamenu={megamenu} featuredPosts={featuredPosts} renderNavlink={renderNavlink} />
           </PopoverPanel>
         )}
 

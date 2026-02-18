@@ -1,7 +1,7 @@
 import '@/styles/tailwind.css'
 import '@/app/globals.css'
 import '@/app/mobile-optimizations.css'
-import { Metadata } from 'next'
+import { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { Be_Vietnam_Pro } from 'next/font/google'
 import ThemeProvider from './theme-provider'
@@ -13,6 +13,13 @@ const beVietnamPro = Be_Vietnam_Pro({
   variable: '--font-be-vietnam-pro',
   preload: true,
 })
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#1e40af',
+}
 
 export const metadata: Metadata = {
   title: {
@@ -33,49 +40,27 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   metadataBase: new URL('https://wtxnews.co.uk'),
+  verification: {
+    google: 'QwBfcIRPBl0Bk1l9FRWzhttOp7BIQwfwCkceCSwCPTg',
+    other: {
+      'msvalidate.01': '9996F9B1FA4005AF1E60F7688E0556A2',
+    },
+  },
   other: {
     'google-adsense-account': 'ca-pub-4115163205031252',
-    'charset': 'utf-8',
   },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Character encoding - MUST be first for Lighthouse */}
-        <meta charSet="utf-8" />
-        
-        {/* Preconnect to critical origins only - reduced from 7 to 3 */}
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="preconnect" href="https://wtxnews.com" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-        
-        {/* Mobile-specific optimizations */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <meta name="format-detection" content="telephone=no" />
-
-        {/* Google Site Verification */}
-        <meta name="google-site-verification" content="QwBfcIRPBl0Bk1l9FRWzhttOp7BIQwfwCkceCSwCPTg" />
-
-        {/* Bing/Microsoft Site Verification */}
-        <meta name="msvalidate.01" content="9996F9B1FA4005AF1E60F7688E0556A2" />
-
-        {/* Favicon links for better compatibility */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/icon.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#1e40af" />
-      </head>
       <body className={`${beVietnamPro.variable} bg-white text-base text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200`} style={{ fontFamily: 'var(--font-be-vietnam-pro), sans-serif' }}>
         {/* Google Analytics - Deferred */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-SZQJ2R3C2R"
-          strategy="worker"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="worker">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}

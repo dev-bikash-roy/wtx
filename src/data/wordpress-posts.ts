@@ -37,6 +37,8 @@ export async function getAllPostsWithWordPress(options: {
     const uniquePosts = Array.from(uniquePostsMap.values())
     uniquePosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
+    // TEMPORARILY DISABLED: Strip content to reduce payload size for list views
+    // return uniquePosts.map(post => ({ ...post, content: undefined }))
     return uniquePosts
   } catch (error) {
     console.error('Error fetching WordPress posts:', error)
@@ -49,16 +51,7 @@ export async function getAllPostsWithWordPress(options: {
 export async function getPostByHandleWithWordPress(handle: string): Promise<TPost | null> {
   console.log('[getPostByHandleWithWordPress] Received handle:', handle)
 
-  // First try local posts
-  const { getPostByHandle } = await import('./posts')
-  const localPost = await getPostByHandle(handle)
-
-  if (localPost) {
-    console.log('[getPostByHandleWithWordPress] Found local post')
-    return localPost
-  }
-
-  // Try WordPress posts
+  // Try WordPress posts FIRST (not local mock data)
   try {
     // Extract actual slug from handle (remove site ID prefix if present)
     // Handle format: "siteId-actual-slug" or just "actual-slug"
@@ -107,51 +100,72 @@ export async function getPostByHandleWithWordPress(handle: string): Promise<TPos
 
     if (wpPost) {
       console.log('[getPostByHandleWithWordPress] Got WordPress post:', wpPost.title)
-      // 3. Generate Summary if missing
-      const { generateSummary } = await import('@/lib/ai-summary')
-      const plainText = wpPost.content?.replace(/<[^>]*>/g, '') || ''
-      const summary = await generateSummary(plainText)
+      console.log('[getPostByHandleWithWordPress] Content length:', wpPost.content?.length || 0)
+      console.log('[getPostByHandleWithWordPress] Content preview:', wpPost.content?.substring(0, 200))
 
-      if (summary) {
-        // 4. Save to Firestore using actual slug (without site ID)
-        if (cachedDoc) {
-          await updateDoc(cachedDoc.ref, { aiSummary: summary, updatedAt: serverTimestamp() })
-        } else {
-          // Create new doc in Firestore as a "shadow" post for caching summary? 
-          // Or fully import it? Let's just store metadata for now to avoid duplication conflict logic complexity
-          // Actually, the original code did 'upsert' into PostModel. 
-          // We can insert a new document into 'posts' collection with proper fields.
-          await addDoc(postsRef, {
-            slug: actualSlug, // Store without site ID prefix
-            title: wpPost.title,
-            content: wpPost.content || '',
-            author: wpPost.author.id, // This might need mapping if not matching our auth user IDs
-            status: 'published',
-            aiSummary: summary,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-            source: 'wordpress_cache' // Tag it so we know it's cache
-          })
+
+      // DISABLED: AI summary generation (OpenAI API key not configured)
+      // Uncomment this block when you have a valid OpenAI API key
+      /*
+      // 3. Generate Summary if missing (but don't block if it fails)
+      try {
+        const { generateSummary } = await import('@/lib/ai-summary')
+        const plainText = wpPost.content?.replace(/<[^>]*>/g, '') || ''
+        const summary = await generateSummary(plainText)
+
+        if (summary) {
+          // 4. Save to Firestore using actual slug (without site ID)
+          if (cachedDoc) {
+            await updateDoc(cachedDoc.ref, { aiSummary: summary, updatedAt: serverTimestamp() })
+          } else {
+            await addDoc(postsRef, {
+              slug: actualSlug,
+              title: wpPost.title,
+              content: wpPost.content || '',
+              author: wpPost.author.id,
+              status: 'published',
+              aiSummary: summary,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+              source: 'wordpress_cache'
+            })
+          }
+
+          wpPost.aiSummary = summary
         }
-
-        wpPost.aiSummary = summary
+      } catch (summaryError) {
+        console.error('Error generating AI summary:', summaryError)
+        // Continue without AI summary - don't block the post from displaying
       }
+      */
+
 
       return wpPost
     }
 
-    console.log('[getPostByHandleWithWordPress] No post found')
-    return null
+    console.log('[getPostByHandleWithWordPress] No WordPress post found, trying local posts')
   } catch (error) {
     console.error('Error fetching WordPress post:', error)
-    return null
   }
+
+  // Fallback to local posts ONLY if WordPress fails
+  const { getPostByHandle } = await import('./posts')
+  const localPost = await getPostByHandle(handle)
+
+  if (localPost) {
+    console.log('[getPostByHandleWithWordPress] Found local post as fallback')
+    return localPost
+  }
+
+  console.log('[getPostByHandleWithWordPress] No post found')
+  return null
 }
 
 // Get recent posts from WordPress sites
 export async function getRecentWordPressPosts(limit: number = 5): Promise<TPost[]> {
   try {
     const wpPosts = await multiWP.fetchPostsAsTPost({ perPage: limit })
+    // TEMPORARILY DISABLED: return wpPosts.slice(0, limit).map(post => ({ ...post, content: undefined }))
     return wpPosts.slice(0, limit)
   } catch (error) {
     console.error('Error fetching recent WordPress posts:', error)
@@ -166,6 +180,7 @@ export async function getWordPressPostsByCategory(categorySlug: string, limit: n
       categories: [categorySlug],
       perPage: limit
     })
+    // TEMPORARILY DISABLED: return wpPosts.map(post => ({ ...post, content: undefined }))
     return wpPosts
   } catch (error) {
     console.error('Error fetching WordPress posts by category:', error)
@@ -180,6 +195,7 @@ export async function getWordPressPostsByTag(tagSlug: string, limit: number = 10
       tags: [tagSlug],
       perPage: limit
     })
+    // TEMPORARILY DISABLED: return wpPosts.map(post => ({ ...post, content: undefined }))
     return wpPosts
   } catch (error) {
     console.error('Error fetching WordPress posts by tag:', error)

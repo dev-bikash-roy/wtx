@@ -4,11 +4,14 @@ import Category from "@/db/models/Category";
 
 export async function GET() {
     try {
-        await dbConnect();
-        // Only return non-free categories to save bandwidth, or return all?
-        // Let's return only those that are NOT 'free' to keep packet small, 
-        // or return object { [slug]: accessLevel }
+        const connection = await dbConnect();
+        
+        // If MongoDB is not configured, return empty permissions (all content is free)
+        if (!connection) {
+            return NextResponse.json({});
+        }
 
+        // Only return non-free categories to save bandwidth
         const categories = await Category.find({ accessLevel: { $ne: 'free' } }).select("slug accessLevel");
 
         const permissions: Record<string, string> = {};
@@ -18,7 +21,8 @@ export async function GET() {
 
         return NextResponse.json(permissions);
     } catch (error) {
-        console.error("Error fetching permissions:", error);
-        return NextResponse.json({}, { status: 500 });
+        console.warn("Error fetching permissions, defaulting to open access:", error);
+        // Return empty object instead of 500 error - this makes all content accessible
+        return NextResponse.json({});
     }
 }

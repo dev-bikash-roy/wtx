@@ -17,11 +17,13 @@ const PostCardLikeBtn: FC<Props> = ({ className, likeCount = 0, liked }) => {
 
   // Generate random number if count is 0, to make it look "live" as requested
   useEffect(() => {
-    if (likeCount === 0 || displayCount === 0) {
+    if (likeCount === 0) {
       // Random number between 12 and 195
       setDisplayCount(Math.floor(Math.random() * (195 - 12 + 1)) + 12)
+    } else {
+      setDisplayCount(likeCount)
     }
-  }, [likeCount, displayCount])
+  }, [likeCount])
 
   return (
     <button

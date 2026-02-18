@@ -308,6 +308,9 @@ export class MultiWordPressIntegration {
 
   // Convert WordPress post to your local TPost format
   convertWordPressPostToTPost(wpPost: WordPressPost): TPost {
+    console.log('[convertWordPressPostToTPost] Converting post:', wpPost.title.rendered)
+    console.log('[convertWordPressPostToTPost] Content length:', wpPost.content?.rendered?.length || 0)
+    
     const featuredImage = wpPost._embedded?.['wp:featuredmedia']?.[0]
     const author = wpPost._embedded?.author?.[0]
     const categories = wpPost._embedded?.['wp:term']?.[0] || []
@@ -356,6 +359,9 @@ export class MultiWordPressIntegration {
 
     // Better image extraction and fallback logic
     const getFeaturedImage = () => {
+      console.log('[getFeaturedImage] Processing featured image for post:', wpPost.id)
+      console.log('[getFeaturedImage] Has _embedded featuredmedia:', !!featuredImage)
+      
       // Helper function to validate URL
       const isValidUrl = (url: string): boolean => {
         if (!url || typeof url !== 'string') return false
@@ -368,7 +374,7 @@ export class MultiWordPressIntegration {
 
         // If more than one image extension, it's likely concatenated URLs
         if (totalImageExtensions > 1) {
-          console.warn('Detected concatenated image URLs:', url)
+          console.warn('[getFeaturedImage] Detected concatenated image URLs:', url)
           return false
         }
 
@@ -384,9 +390,11 @@ export class MultiWordPressIntegration {
       // First priority: WordPress featured image
       if (featuredImage && featuredImage.source_url) {
         const sourceUrl = featuredImage.source_url
+        console.log('[getFeaturedImage] Checking featured image source_url:', sourceUrl)
 
         // Validate the source URL
         if (isValidUrl(sourceUrl)) {
+          console.log('[getFeaturedImage] Using valid featured image')
           return {
             src: sourceUrl,
             alt: decodeHtmlEntities(featuredImage.alt_text || wpPost.title.rendered),
@@ -394,13 +402,14 @@ export class MultiWordPressIntegration {
             height: featuredImage.media_details?.height || 600
           }
         } else {
-          console.warn(`Invalid featured image URL for post ${wpPost.id}:`, sourceUrl)
+          console.warn(`[getFeaturedImage] Invalid featured image URL for post ${wpPost.id}:`, sourceUrl)
         }
       }
 
       // Second priority: Extract first image from content
       const imgMatch = wpPost.content.rendered.match(/<img[^>]+src="([^">]+)"[^>]*alt="([^"]*)"/)
       if (imgMatch && imgMatch[1] && isValidUrl(imgMatch[1])) {
+        console.log('[getFeaturedImage] Using image from content')
         return {
           alt: decodeHtmlEntities(imgMatch[2] || wpPost.title.rendered),
           src: imgMatch[1],
@@ -412,6 +421,7 @@ export class MultiWordPressIntegration {
       // Third priority: Try to extract any image from content (without alt)
       const simpleImgMatch = wpPost.content.rendered.match(/<img[^>]+src="([^">]+)"/)
       if (simpleImgMatch && simpleImgMatch[1] && isValidUrl(simpleImgMatch[1])) {
+        console.log('[getFeaturedImage] Using simple image from content')
         return {
           alt: decodeHtmlEntities(wpPost.title.rendered),
           src: simpleImgMatch[1],
@@ -421,6 +431,7 @@ export class MultiWordPressIntegration {
       }
 
       // Final fallback: Use a diverse set of placeholder images based on post ID
+      console.log('[getFeaturedImage] Using fallback placeholder image')
       const fallbackImages = [
         'https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // News/general
         'https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Sports
@@ -443,7 +454,7 @@ export class MultiWordPressIntegration {
       }
     }
 
-    return {
+    const result: TPost = {
       id: `wp-${wpPost._site?.id}-${wpPost.id}`,
       title: decodeHtmlEntities(wpPost.title.rendered),
       handle: `${wpPost._site?.id}-${wpPost.slug}`,
@@ -491,6 +502,15 @@ export class MultiWordPressIntegration {
         color: 'blue'
       }))
     }
+
+    console.log('[convertWordPressPostToTPost] Converted result:')
+    console.log('  - ID:', result.id)
+    console.log('  - Handle:', result.handle)
+    console.log('  - Title:', result.title)
+    console.log('  - Content length:', result.content?.length || 0)
+    console.log('  - Featured image:', result.featuredImage?.src)
+
+    return result
   }
 
   // Fetch and convert posts to TPost format
@@ -545,39 +565,59 @@ export class MultiWordPressIntegration {
       ? this.sites.filter(s => s.id === targetSiteId)
       : this.sites
 
-    console.log('[getPostBySlug] Searching', sitesToSearch.length, 'site(s)')
+    console.log('[getPostBySlug] Searching', sitesToSearch.length, 'site(s) for slug:', actualSlug)
 
     for (const site of sitesToSearch) {
       try {
-        const url = `${site.apiBase}/posts?slug=${actualSlug}&_fields=id,date,slug,title,excerpt,content,author,featured_media,categories,tags,_embedded&_embed=author,wp:featuredmedia,wp:term`
-        console.log('[getPostBySlug] Fetching from:', site.name, 'URL:', url)
+        // Encode the slug to handle special characters
+        const encodedSlug = encodeURIComponent(actualSlug)
+        const url = `${site.apiBase}/posts?slug=${encodedSlug}&_fields=id,date,slug,title,excerpt,content,author,featured_media,categories,tags,_embedded&_embed=author,wp:featuredmedia,wp:term`
+        console.log('[getPostBySlug] Fetching from:', site.name)
+        console.log('[getPostBySlug] URL:', url)
 
         const response = await fetch(url, {
           headers: {
             'User-Agent': 'NextJS-Blog-Integration/1.0'
-          }
+          },
+          cache: 'no-store' // Ensure fresh data
         })
 
         if (response.ok) {
           const posts: WordPressPost[] = await response.json()
-          console.log('[getPostBySlug] Found', posts.length, 'post(s) from', site.name)
+          console.log('[getPostBySlug] Response from', site.name, '- Found', posts.length, 'post(s)')
+          
           if (posts.length > 0) {
             const post = posts[0]
-            console.log('[getPostBySlug] Returning post:', post.title.rendered, 'from site:', site.name)
+            console.log('[getPostBySlug] Post details:')
+            console.log('  - Title:', post.title.rendered)
+            console.log('  - Slug:', post.slug)
+            console.log('  - Content length:', post.content?.rendered?.length || 0)
+            console.log('  - Has featured media:', !!post._embedded?.['wp:featuredmedia']?.[0])
+            
             post._site = {
               id: site.id,
               name: site.name,
               url: site.url
             }
-            return this.convertWordPressPostToTPost(post)
+            
+            const convertedPost = this.convertWordPressPostToTPost(post)
+            console.log('[getPostBySlug] Converted post:')
+            console.log('  - ID:', convertedPost.id)
+            console.log('  - Handle:', convertedPost.handle)
+            console.log('  - Content length:', convertedPost.content?.length || 0)
+            console.log('  - Featured image:', convertedPost.featuredImage?.src)
+            
+            return convertedPost
           }
+        } else {
+          console.log('[getPostBySlug] Response not OK from', site.name, '- Status:', response.status)
         }
       } catch (error) {
-        console.error(`Error fetching post from ${site.name}:`, error)
+        console.error(`[getPostBySlug] Error fetching post from ${site.name}:`, error)
       }
     }
 
-    console.log('[getPostBySlug] No post found for handle:', handle)
+    console.log('[getPostBySlug] No post found for handle:', handle, 'with slug:', actualSlug)
     return null
   }
 

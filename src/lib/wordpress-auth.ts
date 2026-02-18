@@ -29,19 +29,13 @@ export interface WordPressAuthResponse {
 }
 
 // Default WordPress sites configuration
+// ONLY use wtxnews.com - no other domains
 const DEFAULT_WP_SITES: WordPressSite[] = [
   {
     id: 'wtxnews',
     name: 'WTX News',
     url: 'https://wtxnews.com',
     apiBase: 'https://wtxnews.com/wp-json/wp/v2',
-    isActive: true
-  },
-  {
-    id: 'wtxblog',
-    name: 'WTX Blog',
-    url: 'https://blog.wtxnews.co.uk',
-    apiBase: 'https://blog.wtxnews.co.uk/wp-json/wp/v2',
     isActive: true
   }
 ]
