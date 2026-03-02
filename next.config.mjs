@@ -233,6 +233,11 @@ const nextConfig = {
         hostname: 'wtxnews.co.uk',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.mos.cms.futurecdn.net',
+        pathname: '/**',
+      },
     ],
   },
 

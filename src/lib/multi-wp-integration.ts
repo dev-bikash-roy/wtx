@@ -457,7 +457,7 @@ export class MultiWordPressIntegration {
     const result: TPost = {
       id: `wp-${wpPost._site?.id}-${wpPost.id}`,
       title: decodeHtmlEntities(wpPost.title.rendered),
-      handle: `${wpPost._site?.id}-${wpPost.slug}`,
+      handle: wpPost.slug, // Use just the slug without site prefix
       excerpt: decodeHtmlEntities(wpPost.excerpt.rendered.replace(/<[^>]*>/g, '').trim()),
       content: wpPost.content.rendered, // Keep HTML in content
       date: wpPost.date,
@@ -539,60 +539,29 @@ export class MultiWordPressIntegration {
 
   // Get a specific post by slug from any WordPress site
   async getPostBySlug(handle: string): Promise<TPost | null> {
-    console.log('[getPostBySlug] Received handle:', handle)
+    console.log('[getPostBySlug] Searching for slug:', handle)
 
-    // Check if handle includes site ID (format: siteId-slug)
-    const handleParts = handle.split('-')
-    let targetSiteId: string | null = null
-    let actualSlug = handle
-
-    // If handle contains a dash, check if the first part is a valid site ID
-    if (handleParts.length >= 2) {
-      const potentialSiteId = handleParts[0]
-      console.log('[getPostBySlug] Checking if first part is site ID:', potentialSiteId)
-      const site = this.sites.find(s => s.id === potentialSiteId)
-      if (site) {
-        targetSiteId = potentialSiteId
-        actualSlug = handleParts.slice(1).join('-') // Rest is the actual slug
-        console.log('[getPostBySlug] Found site ID:', targetSiteId, 'Actual slug:', actualSlug)
-      } else {
-        console.log('[getPostBySlug] Not a valid site ID, treating entire handle as slug')
-      }
-    }
-
-    // If we have a specific site ID, only search that site
-    const sitesToSearch = targetSiteId
-      ? this.sites.filter(s => s.id === targetSiteId)
-      : this.sites
-
-    console.log('[getPostBySlug] Searching', sitesToSearch.length, 'site(s) for slug:', actualSlug)
-
-    for (const site of sitesToSearch) {
+    // Search all configured WordPress sites for the post
+    for (const site of this.sites) {
       try {
-        // Encode the slug to handle special characters
-        const encodedSlug = encodeURIComponent(actualSlug)
+        const encodedSlug = encodeURIComponent(handle)
         const url = `${site.apiBase}/posts?slug=${encodedSlug}&_fields=id,date,slug,title,excerpt,content,author,featured_media,categories,tags,_embedded&_embed=author,wp:featuredmedia,wp:term`
         console.log('[getPostBySlug] Fetching from:', site.name)
-        console.log('[getPostBySlug] URL:', url)
 
         const response = await fetch(url, {
           headers: {
             'User-Agent': 'NextJS-Blog-Integration/1.0'
           },
-          cache: 'no-store' // Ensure fresh data
+          cache: 'no-store'
         })
 
         if (response.ok) {
           const posts: WordPressPost[] = await response.json()
-          console.log('[getPostBySlug] Response from', site.name, '- Found', posts.length, 'post(s)')
+          console.log('[getPostBySlug] Found', posts.length, 'post(s) from', site.name)
           
           if (posts.length > 0) {
             const post = posts[0]
-            console.log('[getPostBySlug] Post details:')
-            console.log('  - Title:', post.title.rendered)
-            console.log('  - Slug:', post.slug)
-            console.log('  - Content length:', post.content?.rendered?.length || 0)
-            console.log('  - Has featured media:', !!post._embedded?.['wp:featuredmedia']?.[0])
+            console.log('[getPostBySlug] Post:', post.title.rendered)
             
             post._site = {
               id: site.id,
@@ -600,24 +569,15 @@ export class MultiWordPressIntegration {
               url: site.url
             }
             
-            const convertedPost = this.convertWordPressPostToTPost(post)
-            console.log('[getPostBySlug] Converted post:')
-            console.log('  - ID:', convertedPost.id)
-            console.log('  - Handle:', convertedPost.handle)
-            console.log('  - Content length:', convertedPost.content?.length || 0)
-            console.log('  - Featured image:', convertedPost.featuredImage?.src)
-            
-            return convertedPost
+            return this.convertWordPressPostToTPost(post)
           }
-        } else {
-          console.log('[getPostBySlug] Response not OK from', site.name, '- Status:', response.status)
         }
       } catch (error) {
-        console.error(`[getPostBySlug] Error fetching post from ${site.name}:`, error)
+        console.error(`[getPostBySlug] Error fetching from ${site.name}:`, error)
       }
     }
 
-    console.log('[getPostBySlug] No post found for handle:', handle, 'with slug:', actualSlug)
+    console.log('[getPostBySlug] No post found for slug:', handle)
     return null
   }
 

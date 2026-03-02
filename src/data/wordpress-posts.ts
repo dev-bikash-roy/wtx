@@ -49,33 +49,15 @@ export async function getAllPostsWithWordPress(options: {
 
 // Get post by handle/slug from both local and WordPress
 export async function getPostByHandleWithWordPress(handle: string): Promise<TPost | null> {
-  console.log('[getPostByHandleWithWordPress] Received handle:', handle)
+  console.log('[getPostByHandleWithWordPress] Looking for post with handle:', handle)
 
-  // Try WordPress posts FIRST (not local mock data)
   try {
-    // Extract actual slug from handle (remove site ID prefix if present)
-    // Handle format: "siteId-actual-slug" or just "actual-slug"
-    let actualSlug = handle
-    const handleParts = handle.split('-')
-
-    // Check if first part is a valid site ID
-    if (handleParts.length >= 2) {
-      const potentialSiteId = handleParts[0]
-      // Known site IDs: wtxnews, wtxblog
-      if (potentialSiteId === 'wtxnews' || potentialSiteId === 'wtxblog') {
-        actualSlug = handleParts.slice(1).join('-')
-        console.log('[getPostByHandleWithWordPress] Extracted slug:', actualSlug, 'from handle:', handle)
-      }
-    }
-
-    // 1. Check local cache (Firestore) for existing post with summary
-    const { getDocs, query, collection, where, addDoc, updateDoc, serverTimestamp } = await import('firebase/firestore')
+    // 1. Check Firestore cache for existing post with AI summary
+    const { getDocs, query, collection, where } = await import('firebase/firestore')
     const { db } = await import('@/lib/firebase/config')
 
-    // We treat Firestore "posts" collection as the cache if it has aiSummary
-    // Query using the actual slug (without site ID)
     const postsRef = collection(db, 'posts')
-    const q = query(postsRef, where('slug', '==', actualSlug), where('status', '==', 'published'))
+    const q = query(postsRef, where('slug', '==', handle), where('status', '==', 'published'))
     const snap = await getDocs(q)
 
     let cachedDoc = null
@@ -95,51 +77,11 @@ export async function getPostByHandleWithWordPress(handle: string): Promise<TPos
     }
 
     // 2. Fetch from WordPress
-    console.log('[getPostByHandleWithWordPress] Fetching from WordPress with handle:', handle)
+    console.log('[getPostByHandleWithWordPress] Fetching from WordPress')
     const wpPost = await multiWP.getPostBySlug(handle)
 
     if (wpPost) {
-      console.log('[getPostByHandleWithWordPress] Got WordPress post:', wpPost.title)
-      console.log('[getPostByHandleWithWordPress] Content length:', wpPost.content?.length || 0)
-      console.log('[getPostByHandleWithWordPress] Content preview:', wpPost.content?.substring(0, 200))
-
-
-      // DISABLED: AI summary generation (OpenAI API key not configured)
-      // Uncomment this block when you have a valid OpenAI API key
-      /*
-      // 3. Generate Summary if missing (but don't block if it fails)
-      try {
-        const { generateSummary } = await import('@/lib/ai-summary')
-        const plainText = wpPost.content?.replace(/<[^>]*>/g, '') || ''
-        const summary = await generateSummary(plainText)
-
-        if (summary) {
-          // 4. Save to Firestore using actual slug (without site ID)
-          if (cachedDoc) {
-            await updateDoc(cachedDoc.ref, { aiSummary: summary, updatedAt: serverTimestamp() })
-          } else {
-            await addDoc(postsRef, {
-              slug: actualSlug,
-              title: wpPost.title,
-              content: wpPost.content || '',
-              author: wpPost.author.id,
-              status: 'published',
-              aiSummary: summary,
-              createdAt: serverTimestamp(),
-              updatedAt: serverTimestamp(),
-              source: 'wordpress_cache'
-            })
-          }
-
-          wpPost.aiSummary = summary
-        }
-      } catch (summaryError) {
-        console.error('Error generating AI summary:', summaryError)
-        // Continue without AI summary - don't block the post from displaying
-      }
-      */
-
-
+      console.log('[getPostByHandleWithWordPress] Found WordPress post:', wpPost.title)
       return wpPost
     }
 
@@ -148,7 +90,7 @@ export async function getPostByHandleWithWordPress(handle: string): Promise<TPos
     console.error('Error fetching WordPress post:', error)
   }
 
-  // Fallback to local posts ONLY if WordPress fails
+  // Fallback to local posts if WordPress fails
   const { getPostByHandle } = await import('./posts')
   const localPost = await getPostByHandle(handle)
 

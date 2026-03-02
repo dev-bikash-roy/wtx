@@ -28,13 +28,15 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
 const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const { handle } = await params
   const tag = await getTagByHandle(handle)
+  
+  // If tag doesn't exist or has no posts, show not found
+  if (!tag || !tag.posts || tag.posts.length === 0) {
+    return notFound()
+  }
+  
   const posts = tag.posts || []
   const categories = await getCategories()
   const tags = await getTags()
-
-  if (!tag) {
-    return notFound()
-  }
 
   const filterOptions = [
     { name: 'Most recent', value: 'most-recent' },

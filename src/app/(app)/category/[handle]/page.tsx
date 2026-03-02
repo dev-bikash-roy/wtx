@@ -48,6 +48,12 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
 const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const { handle } = await params
   const category = await getCategoryByHandle(handle)
+  
+  // If category doesn't exist or has no posts, show not found
+  if (!category || !category.posts || category.posts.length === 0) {
+    return notFound()
+  }
+  
   const posts = category.posts || []
   const categories = await getCategories()
   const tags = await getTags()
@@ -55,10 +61,6 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   // Get featured posts for this category
   const featuredPosts = posts.slice(0, 5)
   const recentPosts = posts.slice(5, 11)
-
-  if (!category) {
-    return notFound()
-  }
 
   const filterOptions = [
     { name: 'Most recent', value: 'most-recent' },

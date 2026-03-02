@@ -11,15 +11,14 @@ interface Props {
 const Logo: React.FC<Props> = ({ className, size = 'h-12 w-auto sm:h-14' }) => {
   return (
     <Link href="/" className={clsx('inline-block shrink-0', className)}>
-      <div className={clsx(size, 'relative')}>
-        <Image
-          src="/wtx-logo.png"
-          alt="WTX News"
-          fill
-          className="object-contain"
-          priority
-        />
-      </div>
+      <Image
+        src="/wtx-logo.png"
+        alt="WTX News"
+        width={180}
+        height={56}
+        className={clsx(size, 'object-contain')}
+        priority
+      />
     </Link>
   )
 }

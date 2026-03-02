@@ -28,34 +28,36 @@ export async function getCategories(): Promise<TemplateCategory[]> {
   // Fetch real categories from WordPress API
   const categories = await fetchCategories(100)
 
-  // If we have real categories, return them
+  // If we have real categories, filter out categories with 0 posts and return them
   if (categories.length > 0) {
     // Fetch recent posts to find matched images for categories
     const recentPosts = await fetchPosts(50)
 
-    return categories.map((category, index) => {
-      // Find a post that belongs to this category
-      const categoryPost = recentPosts.find(post =>
-        post.categories.some(cat => cat.handle === category.handle)
-      )
+    return categories
+      .filter(category => (category.count || 0) > 0) // Only show categories that have posts
+      .map((category, index) => {
+        // Find a post that belongs to this category
+        const categoryPost = recentPosts.find(post =>
+          post.categories.some(cat => cat.handle === category.handle)
+        )
 
-      // Use post's featured image if available, otherwise fallback to demo
-      const thumbnailResponse = categoryPost?.featuredImage || {
-        src: _demo_category_image_urls[index % _demo_category_image_urls.length],
-        alt: `${category.name} category image`,
-        width: 1920,
-        height: 1080
-      }
+        // Use post's featured image if available, otherwise fallback to demo
+        const thumbnailResponse = categoryPost?.featuredImage || {
+          src: _demo_category_image_urls[index % _demo_category_image_urls.length],
+          alt: `${category.name} category image`,
+          width: 1920,
+          height: 1080
+        }
 
-      return {
-        ...category,
-        description: `Explore articles in the ${category.name} category`,
-        count: category.count || 0,
-        date: new Date().toISOString(),
-        color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
-        thumbnail: thumbnailResponse
-      }
-    })
+        return {
+          ...category,
+          description: `Explore articles in the ${category.name} category`,
+          count: category.count || 0,
+          date: new Date().toISOString(),
+          color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
+          thumbnail: thumbnailResponse
+        }
+      })
   }
 
   // Fallback to mock data if API fails
@@ -364,14 +366,16 @@ export async function getTags(): Promise<TemplateTag[]> {
   // Fetch real tags from WordPress API
   const tags = await fetchTags(100)
 
-  // If we have real tags, return them
+  // If we have real tags, filter out tags with 0 posts and return them
   if (tags.length > 0) {
-    return tags.map((tag, index) => ({
-      ...tag,
-      description: `Explore articles tagged with ${tag.name}`,
-      count: tag.count || 0,
-      color: CATEGORY_COLORS[index % CATEGORY_COLORS.length]
-    }))
+    return tags
+      .filter(tag => (tag.count || 0) > 0) // Only show tags that have posts
+      .map((tag, index) => ({
+        ...tag,
+        description: `Explore articles tagged with ${tag.name}`,
+        count: tag.count || 0,
+        color: CATEGORY_COLORS[index % CATEGORY_COLORS.length]
+      }))
   }
 
   // Fallback to mock data if API fails

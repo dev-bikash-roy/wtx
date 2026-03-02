@@ -8,7 +8,10 @@
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
-    "test:db": "tsx src/db/test-connection.ts"
+    "test:db": "tsx src/db/test-connection.ts",
+    "sync-wp-data": "tsx scripts/sync-wordpress-data.ts",
+    "validate-nav": "tsx scripts/validate-navigation.ts",
+    "get-available": "tsx scripts/get-available-items.ts"
   },
   "dependencies": {
     "@dataconnect/admin-generated": "file:src/dataconnect-admin-generated",
