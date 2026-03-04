@@ -92,14 +92,50 @@ const Page = async () => {
         }}
       />
 
-      {/* H1: England News */}
-      <div className="pt-10 lg:pt-16">
-        <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-4xl mb-4">
-          England News
-        </h1>
-        <p className="text-lg text-neutral-600 dark:text-neutral-400">
-          Latest England news and local updates from cities, counties, and communities across England—breaking stories, politics, crime, transport and more.
-        </p>
+      {/* Hero Banner */}
+      <div className="-mx-4 sm:-mx-6 lg:-mx-8 xl:-mx-10 mb-12 relative overflow-hidden">
+        {/* Dynamic background: use lead story image if available */}
+        {topStories[0]?.featuredImage?.src && (
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${topStories[0].featuredImage.src})` }}
+          />
+        )}
+        {/* Gradient overlay using England's red/white theme */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#C8102E]/95 via-[#C8102E]/80 to-black/60" />
+
+        {/* Content */}
+        <div className="relative z-10 px-4 sm:px-6 lg:px-8 xl:px-10 py-16 lg:py-24">
+          <div className="max-w-3xl">
+            {/* England flag stripe accent */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-1 w-10 bg-white rounded-full" />
+              <span className="text-white/80 text-sm font-semibold tracking-widest uppercase">WTX News</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 drop-shadow-lg">
+              England News
+            </h1>
+            <p className="text-lg text-white/80 max-w-xl leading-relaxed mb-8">
+              Latest breaking news and local updates from cities, counties, and communities across England.
+            </p>
+
+            {/* Quick topic pills */}
+            <div className="flex flex-wrap gap-2">
+              {['Politics', 'Crime', 'Transport', 'Health', 'Economy', 'Education'].map(topic => (
+                <span
+                  key={topic}
+                  className="px-4 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-full backdrop-blur-sm cursor-pointer transition-colors"
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-white dark:from-neutral-950 to-transparent" />
       </div>
 
       {/* H2: Top Stories in England */}
