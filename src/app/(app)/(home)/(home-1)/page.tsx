@@ -76,8 +76,8 @@ const Page = async () => {
   ] = await Promise.all([
     getAllPostsWithWordPress({ tags: ['uk-featured-news', 'politics'], perPage: 8 }),
     getWordPressPostsByCategory('england-news', 6),
-    getAllPostsWithWordPress({ tags: ['scotland'], perPage: 4 }),
-    getAllPostsWithWordPress({ tags: ['wales'], perPage: 4 }),
+    getAllPostsWithWordPress({ tags: ['scotland-featured'], perPage: 4 }),
+    getAllPostsWithWordPress({ tags: ['new-south-wales'], perPage: 4 }),
     getAllPostsWithWordPress({ tags: ['ireland'], perPage: 4 }),
     getWordPressPostsByCategory('football', 4),
     getAllPostsWithWordPress({ tags: ['sport'], perPage: 6 }),
