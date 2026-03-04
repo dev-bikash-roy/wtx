@@ -75,10 +75,10 @@ const Page = async () => {
     categoriesWithPosts
   ] = await Promise.all([
     getAllPostsWithWordPress({ tags: ['uk-featured-news', 'politics'], perPage: 8 }),
-    getWordPressPostsByCategory('england', 6),
-    getWordPressPostsByCategory('scotland', 4),
-    getWordPressPostsByCategory('wales', 4),
-    getWordPressPostsByCategory('ireland', 4),
+    getWordPressPostsByCategory('england-news', 6),
+    getWordPressPostsByCategory('scotland-news', 4),
+    getWordPressPostsByCategory('wales-news', 4),
+    getWordPressPostsByCategory('ireland-news', 4),
     getAllPostsWithWordPress({ categories: ['sports'], tags: ['football'], perPage: 4 }),
     getWordPressPostsByCategory('sports', 6),
     getWordPressPostsByCategory('fashion', 4),
