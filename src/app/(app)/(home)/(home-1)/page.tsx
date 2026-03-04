@@ -6,6 +6,7 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline'
 
 // Pre-load essential components
 import SectionSliderNewCategories from '@/components/SectionSliderNewCategories'
+import SectionLargeSlider from '@/components/SectionLargeSlider'
 import CardLarge1 from '@/components/PostCards/CardLarge1'
 import Card11 from '@/components/PostCards/Card11'
 import Card2 from '@/components/PostCards/Card2'
@@ -143,21 +144,27 @@ const Page = async () => {
 
       {/* Section 1 */}
       <section className="mt-12" aria-labelledby="section1-heading">
-        <h2 id="section1-heading" className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+        <h2 id="section1-heading" className="sr-only">
           Top Stories (UK)
         </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Lead Story</h3>
-            {leadStory && <CardLarge1 post={leadStory} />}
-          </div>
-          <div className="lg:col-span-1 border-t lg:border-t-0 lg:border-l border-neutral-200 dark:border-neutral-700 pt-6 lg:pt-0 lg:pl-8">
-            <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">More Top Stories</h3>
-            <div className="flex flex-col gap-6">
-              {moreTopStories.map(post => (
-                <Card11 key={post.id} post={post} />
-              ))}
-            </div>
+
+        <div className="mb-16">
+          <h3 className="sr-only">Lead Story</h3>
+          {topStories.length > 0 && (
+            <SectionLargeSlider
+              posts={topStories.slice(0, 3)}
+            />
+          )}
+        </div>
+
+        <div>
+          <h3 className="text-2xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100 border-b border-neutral-200 dark:border-neutral-700 pb-4">
+            More Top Stories
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {topStories.slice(3, 7).map(post => (
+              <Card11 key={post.id} post={post} />
+            ))}
           </div>
         </div>
       </section>
