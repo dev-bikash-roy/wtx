@@ -44,11 +44,11 @@ const CardLarge1: FC<Props> = ({ className, post, onClickNext, onClickPrev, prio
         <div className="nc-CardLarge1__left space-y-3 rounded-3xl bg-white/40 p-4 shadow-lg backdrop-blur-lg backdrop-filter sm:space-y-5 sm:p-8 md:px-10 xl:py-14 dark:bg-neutral-900/40 dark:shadow-2xl">
           <CategoryBadgeList categories={categories} />
 
-          <h2 className="nc-card-title text-base font-semibold sm:text-xl lg:text-2xl">
+          <h3 className="nc-card-title text-base font-semibold sm:text-xl lg:text-2xl">
             <Link href={`/news/${handle}`} className="line-clamp-2" title={title}>
               {title}
             </Link>
-          </h2>
+          </h3>
 
           {/* AI SUMMARY */}
           {post.aiSummary ? (

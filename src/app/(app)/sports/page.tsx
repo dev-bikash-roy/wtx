@@ -4,23 +4,23 @@ import { getWordPressPostsByCategory } from '@/data/wordpress-posts'
 import PaginationWrapper from '@/components/PaginationWrapper'
 
 export const metadata: Metadata = {
-  title: 'Fashion News | WTX News',
-  description: 'Latest fashion news, trends, and style tips from the UK.',
+  title: 'Sports News | WTX News',
+  description: 'Latest sports news from the UK. Football, rugby, cricket, and more.',
 }
 
 export const revalidate = 180
 
 const Page = async () => {
-  const posts = await getWordPressPostsByCategory('fashion', 24)
+  const posts = await getWordPressPostsByCategory('sport', 24)
 
   return (
     <div className="container pt-10 lg:pt-16 pb-16">
       <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-4xl">
-        Fashion
+        Sports News
       </h1>
       
       <p className="text-neutral-600 dark:text-neutral-400 mb-8">
-        Latest fashion news, trends, and style inspiration
+        Latest sports news and updates from across the UK
       </p>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

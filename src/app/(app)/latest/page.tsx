@@ -1,26 +1,26 @@
 import { Metadata } from 'next'
 import Card11 from '@/components/PostCards/Card11'
-import { getWordPressPostsByCategory } from '@/data/wordpress-posts'
+import { getAllPostsWithWordPress } from '@/data/wordpress-posts'
 import PaginationWrapper from '@/components/PaginationWrapper'
 
 export const metadata: Metadata = {
-  title: 'Fashion News | WTX News',
-  description: 'Latest fashion news, trends, and style tips from the UK.',
+  title: 'Latest News | WTX News',
+  description: 'Latest news from across the UK. Fresh updates and breaking stories.',
 }
 
-export const revalidate = 180
+export const revalidate = 180 // 3 minutes
 
 const Page = async () => {
-  const posts = await getWordPressPostsByCategory('fashion', 24)
+  const posts = await getAllPostsWithWordPress({ perPage: 24 })
 
   return (
     <div className="container pt-10 lg:pt-16 pb-16">
       <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-4xl">
-        Fashion
+        Latest News
       </h1>
       
       <p className="text-neutral-600 dark:text-neutral-400 mb-8">
-        Latest fashion news, trends, and style inspiration
+        Most recent stories from across the UK
       </p>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

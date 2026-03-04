@@ -56,7 +56,7 @@ export default function PremiumGuard({ postCategories, children }: Props) {
         if (!loading) {
             checkAccess();
         }
-    }, [user, loading, categoryHandles]);
+    }, [user, loading, categoryHandles, postCategories]);
 
     if (loading || checking) {
         return <div className="animate-pulse p-4">Checking access...</div>;

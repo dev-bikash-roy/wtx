@@ -6,17 +6,17 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
       name: 'UK News',
       type: 'dropdown',
       children: [
-        { id: 'england', href: '/category/england-news', name: 'England' },
+        { id: 'england', href: '/england-news', name: 'England' },
         { id: 'scotland', href: '/scotland-news', name: 'Scotland' },
         { id: 'wales', href: '/wales-news', name: 'Wales' },
-        { id: 'northern-ireland', href: '/category/northern-ireland-uk-news', name: 'Northern Ireland' },
+        { id: 'ireland', href: '/ireland-news', name: 'Ireland' },
         { id: 'london', href: '/tag/london', name: 'London' },
         { id: 'manchester', href: '/tag/manchester', name: 'Manchester' },
       ],
     },
     {
       id: 'latest-news-nav',
-      href: '/tag/latest-news',
+      href: '/latest',
       name: 'Latest News',
       type: 'dropdown',
       children: [
@@ -29,7 +29,7 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
     },
     {
       id: 'sport',
-      href: '/category/sport',
+      href: '/sports',
       name: 'Sport',
       type: 'dropdown',
       children: [
@@ -59,8 +59,8 @@ export async function getNavigation(): Promise<TNavigationItem[]> {
       children: [
         { id: 'health', href: '/category/health', name: 'Health' },
         { id: 'fitness', href: '/category/fitness', name: 'Fitness' },
-        { id: 'fashion', href: '/category/fashion', name: 'Fashion' },
-        { id: 'food-and-drink', href: '/category/food-and-drink', name: 'Food & Drink' },
+        { id: 'fashion', href: '/fashion', name: 'Fashion' },
+        { id: 'travel', href: '/travel', name: 'Travel' },
       ],
     },
     {

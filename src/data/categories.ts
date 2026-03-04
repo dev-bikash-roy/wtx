@@ -64,176 +64,105 @@ export async function getCategories(): Promise<TemplateCategory[]> {
   return [
     {
       id: 'category-1',
-      name: 'Garden',
-      handle: 'garden',
-      description:
-        'Explore the world of gardening, from planting to harvesting and everything in between. Discover tips, tricks, and expert advice to make your garden thrive.',
-      color: 'indigo',
-      count: 13,
+      name: 'England',
+      handle: 'england',
+      description: 'News and stories from across England.',
+      color: 'blue',
+      count: 15,
       date: '2025-06-10',
       thumbnail: {
         src: _demo_category_image_urls[0],
-        alt: 'Garden',
+        alt: 'England',
         width: 1920,
         height: 1080,
       },
     },
     {
       id: 'category-2',
-      name: 'Technology',
-      handle: 'technology',
-      description:
-        'Stay updated with the latest technology news, trends, and innovations. Explore the world of AI, blockchain, and the future of technology.',
-      color: 'blue',
-      count: 25,
+      name: 'Scotland',
+      handle: 'scotland',
+      description: 'News and stories from Scotland.',
+      color: 'indigo',
+      count: 12,
       date: '2025-05-15',
       thumbnail: {
         src: _demo_category_image_urls[1],
-        alt: 'Technology',
+        alt: 'Scotland',
         width: 1920,
         height: 1080,
       },
     },
     {
       id: 'category-3',
-      name: 'Fitness',
-      handle: 'fitness',
-      description:
-        'Discover workout routines, health tips, and wellness advice for a better lifestyle. Stay fit and healthy with our expert tips and advice.',
-      color: 'red',
-      count: 18,
+      name: 'Wales',
+      handle: 'wales',
+      description: 'News and stories from Wales.',
+      color: 'green',
+      count: 8,
       date: '2025-04-20',
       thumbnail: {
         src: _demo_category_image_urls[2],
-        alt: 'Fitness',
+        alt: 'Wales',
         width: 1920,
         height: 1080,
       },
     },
     {
       id: 'category-4',
-      name: 'Finance',
-      handle: 'finance',
-      description:
-        'Stay updated with financial news, investment strategies, and money management tips. Make informed decisions with our expert advice.',
-      color: 'green',
-      count: 22,
+      name: 'Ireland',
+      handle: 'ireland',
+      description: 'News and stories from Ireland.',
+      color: 'emerald',
+      count: 10,
       date: '2025-03-05',
       thumbnail: {
         src: _demo_category_image_urls[3],
-        alt: 'Finance',
+        alt: 'Ireland',
         width: 1920,
         height: 1080,
       },
     },
     {
       id: 'category-5',
-      name: 'Travel',
-      handle: 'travel',
-      description:
-        'Explore travel guides, destination reviews, and adventure stories from around the world. Plan your next adventure with our expert tips and advice.',
-      color: 'yellow',
-      count: 30,
+      name: 'Sports',
+      handle: 'sports',
+      description: 'Latest sports news, scores, and updates.',
+      color: 'red',
+      count: 22,
       date: '2025-02-15',
       thumbnail: {
         src: _demo_category_image_urls[4],
-        alt: 'Travel',
+        alt: 'Sports',
         width: 1920,
         height: 1080,
       },
     },
     {
       id: 'category-6',
-      name: 'Photography',
-      handle: 'photography',
-      description:
-        'Discover the art of photography, from landscape shots to portrait techniques and editing tips. Capture the beauty of the world with our expert tips and advice.',
-      color: 'purple',
-      count: 28,
+      name: 'Fashion',
+      handle: 'fashion',
+      description: 'Latest trends, styles, and fashion news.',
+      color: 'pink',
+      count: 18,
       date: '2025-01-20',
       thumbnail: {
         src: _demo_category_image_urls[5],
-        alt: 'Photography',
+        alt: 'Fashion',
         width: 1920,
         height: 1080,
       },
     },
     {
       id: 'category-7',
-      name: 'Music',
-      handle: 'music',
-      description:
-        'Explore music reviews, artist interviews, and the latest trends in the music industry. Stay updated with the latest music news and trends.',
-      color: 'pink',
-      count: 35,
+      name: 'Travel',
+      handle: 'travel',
+      description: 'Explore travel guides, tips, and destinations.',
+      color: 'yellow',
+      count: 20,
       date: '2025-01-15',
       thumbnail: {
         src: _demo_category_image_urls[6],
-        alt: 'Music',
-        width: 1920,
-        height: 1080,
-      },
-    },
-    {
-      id: 'category-8',
-      name: 'Architecture',
-      handle: 'architecture',
-      description:
-        'Discover architectural marvels, design trends, and insights into the world of building and construction. Explore the world of architecture with our expert tips and advice.',
-      color: 'gray',
-      count: 22,
-      date: '2025-01-10',
-      thumbnail: {
-        src: _demo_category_image_urls[7],
-        alt: 'Architecture',
-        width: 1920,
-        height: 1080,
-      },
-    },
-    {
-      id: 'category-9',
-      name: 'Wellness',
-      handle: 'wellness',
-      description:
-        'Find tips and advice for mental and physical wellness, including meditation, yoga, and healthy living. Stay fit and healthy with our expert tips and advice.',
-      color: 'teal',
-      count: 27,
-      date: '2025-01-05',
-      thumbnail: {
-        src: _demo_category_image_urls[8],
-        alt: 'Wellness',
-        width: 1920,
-        height: 1080,
-      },
-    },
-    {
-      id: 'category-10',
-      name: 'Education',
-      handle: 'education',
-      description:
-        'Stay informed about educational trends, learning resources, and academic insights. Stay updated with the latest educational news and trends.',
-      color: 'orange',
-      count: 31,
-      date: '2025-01-01',
-      thumbnail: {
-        src: _demo_category_image_urls[9],
-        alt: 'Education',
-        width: 1920,
-        height: 1080,
-      },
-    },
-    {
-      id: 'category-11',
-      name: 'Typography',
-      handle: 'typography',
-      description:
-        'Stay informed about educational trends, learning resources, and academic insights. Stay updated with the latest educational news and trends.',
-      color: 'sky',
-      count: 31,
-      date: '2025-06-15',
-      thumbnail: {
-        src: _demo_category_image_urls[1],
-        alt: 'Education',
+        alt: 'Travel',
         width: 1920,
         height: 1080,
       },
@@ -255,7 +184,7 @@ export async function getCategoryByHandle(handle: string) {
     // If no posts found in WP, try local posts
     if (posts.length === 0) {
       const allPosts = await getAllPosts()
-      posts = allPosts.filter(post => 
+      posts = allPosts.filter(post =>
         post.categories?.some(cat => cat.handle === handle)
       ).slice(0, 20)
     }
@@ -304,7 +233,7 @@ export async function getCategoryByHandle(handle: string) {
         }
       }
     }
-    
+
     // Final fallback: create a basic category object
     if (!category) {
       category = {
@@ -382,101 +311,83 @@ export async function getTags(): Promise<TemplateTag[]> {
   return [
     {
       id: 'tag-1',
-      name: 'Technology',
-      handle: 'technology',
-      description: 'Explore the latest innovations, gadgets, and tech trends shaping our digital future.',
-      count: 10,
+      name: 'Politics',
+      handle: 'politics',
+      description: 'Political news and analysis.',
+      count: 45,
       color: 'blue'
     },
     {
       id: 'tag-2',
-      name: 'Travel',
-      handle: 'travel',
-      description: 'Explore travel guides, destination reviews, and adventure stories from around the world.',
-      count: 10,
-      color: 'yellow'
+      name: 'Crime',
+      handle: 'crime',
+      description: 'Crime and justice reporting.',
+      count: 32,
+      color: 'red'
     },
     {
       id: 'tag-3',
-      name: 'Food',
-      handle: 'food',
-      description: 'Discover the best food and drink experiences, from local cuisine to gourmet dining.',
-      count: 10,
-      color: 'red'
+      name: 'Transport',
+      handle: 'transport',
+      description: 'Updates on public transit and travel infrastructure.',
+      count: 28,
+      color: 'yellow'
     },
     {
       id: 'tag-4',
       name: 'Health',
       handle: 'health',
-      description: 'Stay updated with health and wellness news, tips, and expert advice.',
-      count: 10,
+      description: 'Health news and public health updates.',
+      count: 40,
       color: 'green'
     },
     {
       id: 'tag-5',
-      name: 'Science',
-      handle: 'science',
-      description: 'Explore the latest scientific discoveries, research, and breakthroughs.',
-      count: 10,
+      name: 'Education',
+      handle: 'education',
+      description: 'Schools, universities, and education policy.',
+      count: 35,
       color: 'purple'
     },
     {
       id: 'tag-6',
-      name: 'History',
-      handle: 'history',
-      description: 'Discover historical events, cultural heritage, and the stories of our past.',
-      count: 10,
+      name: 'Weather',
+      handle: 'weather',
+      description: 'Weather forecasts and climate updates.',
+      count: 50,
       color: 'indigo'
     },
     {
       id: 'tag-7',
-      name: 'Art',
-      handle: 'art',
-      description: 'Explore the world of art, from painting to sculpture and everything in between.',
-      count: 10,
+      name: 'Economy',
+      handle: 'economy',
+      description: 'Business, finance, and economic news.',
+      count: 38,
       color: 'pink'
     },
     {
       id: 'tag-8',
-      name: 'Photography',
-      handle: 'photography',
-      description: 'Discover the art of photography, from landscape shots to portrait techniques and editing tips.',
-      count: 15,
+      name: 'Housing',
+      handle: 'housing',
+      description: 'Real estate, renting, and housing market news.',
+      count: 25,
       color: 'teal'
     },
     {
       id: 'tag-9',
-      name: 'Music',
-      handle: 'music',
-      description: 'Explore music reviews, artist interviews, and the latest trends in the music industry.',
-      count: 12,
+      name: 'Courts',
+      handle: 'courts',
+      description: 'Court reports and legal news.',
+      count: 22,
       color: 'orange'
     },
     {
       id: 'tag-10',
-      name: 'Architecture',
-      handle: 'architecture',
-      description:
-        'Discover architectural marvels, design trends, and insights into the world of building and construction.',
-      count: 8,
-      color: 'gray'
-    },
-    {
-      id: 'tag-11',
-      name: 'Wellness',
-      handle: 'wellness',
-      description:
-        'Find tips and advice for mental and physical wellness, including meditation, yoga, and healthy living.',
-      count: 14,
-      color: 'green'
-    },
-    {
-      id: 'tag-12',
-      name: 'Education',
-      handle: 'education',
-      description: 'Stay informed about educational trends, learning resources, and academic insights.',
-      count: 11,
-      color: 'blue'
+      name: 'Environment',
+      handle: 'environment',
+      description: 'Environmental news and sustainability.',
+      count: 30,
+      color: 'emerald'
     },
   ]
 }
@@ -520,16 +431,16 @@ export async function getTagByHandle(handle: string) {
 
   // Get posts specifically for this tag
   let posts: any[] = []
-  
+
   try {
     // First try to get posts from WordPress by tag
     const { getWordPressPostsByTag } = await import('./wordpress-posts')
     posts = await getWordPressPostsByTag(handle, 20)
-    
+
     // If no WordPress posts found, try to get posts that have this tag from local posts
     if (posts.length === 0) {
       const allPosts = await getAllPosts()
-      posts = allPosts.filter(post => 
+      posts = allPosts.filter(post =>
         post.tags?.some(tag => tag.handle === handle)
       ).slice(0, 12)
     }
@@ -537,14 +448,14 @@ export async function getTagByHandle(handle: string) {
     console.error('Error fetching posts by tag:', error)
     // Fallback to local posts
     const allPosts = await getAllPosts()
-    posts = allPosts.filter(post => 
+    posts = allPosts.filter(post =>
       post.tags?.some(tag => tag.handle === handle)
     ).slice(0, 12)
   }
 
   const tags = await getTags()
   let tag = tags.find((tag) => tag.handle === handle)
-  
+
   if (!tag) {
     // If tag not found in the list, create a basic tag object
     tag = {
@@ -556,7 +467,7 @@ export async function getTagByHandle(handle: string) {
       color: 'blue'
     }
   }
-  
+
   return {
     ...tag,
     posts,

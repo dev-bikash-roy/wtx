@@ -1,47 +1,22 @@
-import dynamic from 'next/dynamic'
-
-// Above-the-fold components - load immediately
-import SectionSliderNewCategories from '@/components/SectionSliderNewCategories'
-import SectionLargeSlider from '@/components/SectionLargeSlider'
-import SectionTrending from '@/components/SectionTrending'
-
-// Below-the-fold components - lazy load for better initial performance
-const SectionTrendingTags = dynamic(() => import('@/components/SectionTrendingTags'), {
-  loading: () => <div className="h-32 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
-})
-const SectionMagazine1 = dynamic(() => import('@/components/SectionMagazine1'), {
-  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
-})
-const SectionMagazine2 = dynamic(() => import('@/components/SectionMagazine2'), {
-  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
-})
-const SectionMagazine6 = dynamic(() => import('@/components/SectionMagazine6'), {
-  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
-})
-const SectionSubscribe2 = dynamic(() => import('@/components/SectionSubscribe2'), {
-  loading: () => <div className="h-64 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
-})
-const SectionGridPosts = dynamic(() => import('@/components/SectionGridPosts'), {
-  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
-})
-const SectionSliderPosts = dynamic(() => import('@/components/SectionSliderPosts'), {
-  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
-})
-const SectionMagazine3 = dynamic(() => import('@/components/SectionMagazine3'), {
-  loading: () => <div className="h-96 animate-pulse bg-neutral-100 dark:bg-neutral-800 rounded-xl" />
-})
 import { getCategoriesWithPosts } from '@/data/categories'
 import { getAllPostsWithWordPress, getWordPressPostsByCategory } from '@/data/wordpress-posts'
-import { getAuthors } from '@/data/authors'
 import { Metadata } from 'next'
+import Link from 'next/link'
+import { ArrowRightIcon } from '@heroicons/react/24/outline'
+
+// Pre-load essential components
+import SectionSliderNewCategories from '@/components/SectionSliderNewCategories'
+import CardLarge1 from '@/components/PostCards/CardLarge1'
+import Card11 from '@/components/PostCards/Card11'
+import Card2 from '@/components/PostCards/Card2'
 
 // Enable ISR - revalidate every 5 minutes
 export const revalidate = 300
 
 export const metadata: Metadata = {
-  title: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
-  description: 'Stay informed with WTX News. Latest UK breaking news, politics, sports, entertainment, and lifestyle. Unbiased reporting and in-depth analysis from across the United Kingdom.',
-  keywords: ['UK news', 'breaking news UK', 'British news', 'UK politics', 'UK sports', 'UK entertainment', 'UK lifestyle', 'WTX News', 'latest news UK', 'UK current affairs'],
+  title: 'UK Local News & Headlines | WTX News',
+  description: 'Latest UK local news and headlines from England, Scotland, Wales, and Ireland. Breaking news, sports, fashion, travel, and more. Fresh updates daily.',
+  keywords: ['UK local news', 'UK headlines', 'England news', 'Scotland news', 'Wales news', 'Ireland news', 'UK breaking news', 'British news', 'UK sports', 'UK fashion', 'UK travel'],
 
   // Open Graph for social media sharing
   openGraph: {
@@ -58,8 +33,6 @@ export const metadata: Metadata = {
       alt: 'WTX News - UK Breaking News',
     }],
   },
-
-  // Twitter Card metadata
   twitter: {
     card: 'summary_large_image',
     title: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
@@ -68,13 +41,9 @@ export const metadata: Metadata = {
     site: '@wtxnews',
     creator: '@wtxnews',
   },
-
-  // Canonical URL
   alternates: {
     canonical: 'https://wtxnews.co.uk',
   },
-
-  // Robots directives
   robots: {
     index: true,
     follow: true,
@@ -89,264 +58,234 @@ export const metadata: Metadata = {
 }
 
 const Page = async () => {
-  // Detect if request is from mobile (server-side)
-  const { headers } = await import('next/headers')
-  const headersList = await headers()
-  const userAgent = headersList.get('user-agent') || ''
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
+  // Fetch data
+  const [
+    topStoriesRaw,
+    englandFeaturedRaw,
+    scotlandFeaturedRaw,
+    walesFeaturedRaw,
+    irelandFeaturedRaw,
+    footballRaw,
+    otherSportsRaw,
+    fashionRaw,
+    travelDestinationsRaw,
+    travelTipsRaw,
+    latestNewsRaw,
+    categoriesWithPosts
+  ] = await Promise.all([
+    getAllPostsWithWordPress({ tags: ['uk-featured-news', 'politics'], perPage: 8 }),
+    getWordPressPostsByCategory('england', 6),
+    getWordPressPostsByCategory('scotland', 4),
+    getWordPressPostsByCategory('wales', 4),
+    getWordPressPostsByCategory('ireland', 4),
+    getAllPostsWithWordPress({ categories: ['sports'], tags: ['football'], perPage: 4 }),
+    getWordPressPostsByCategory('sports', 6),
+    getWordPressPostsByCategory('fashion', 4),
+    getAllPostsWithWordPress({ categories: ['travel'], tags: ['uk-destinations', 'destinations'], perPage: 4 }),
+    getAllPostsWithWordPress({ categories: ['travel'], tags: ['travel-tips', 'tips'], perPage: 4 }),
+    getAllPostsWithWordPress({ perPage: 16 }),
+    getCategoriesWithPosts().catch(() => [])
+  ])
 
-  // MOBILE: Fetch minimal data for faster load
-  if (isMobile) {
-    const [
-      latestNewsPosts,
-      trendingPosts,
-      categoriesWithPosts
-    ] = await Promise.all([
-      // Only 3 latest posts
-      getAllPostsWithWordPress({ tags: ['uk-featured-news'], perPage: 3 }),
-      // Only 4 trending posts
-      getAllPostsWithWordPress({ perPage: 4 }),
-      // Categories
-      getCategoriesWithPosts()
-    ])
+  // Fallback function ensures we always display some feed
+  const getPostsOrFallback = (posts: any[], count: number) => {
+    if (posts && posts.length >= count) return posts.slice(0, count)
+    if (posts && posts.length > 0) {
+      // mix with fallback if short
+      const needed = count - posts.length
+      const fallback = latestNewsRaw.filter(p => !posts.find(ep => ep.id === p.id)).slice(0, needed)
+      return [...posts, ...fallback]
+    }
+    return latestNewsRaw.slice(0, count)
+  }
 
-    return (
-      <div className="relative container space-y-16 pb-16 lg:space-y-20 lg:pb-20">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'WebPage',
-              name: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
-              description: 'Stay informed with WTX News. Latest UK breaking news, politics, sports, entertainment, and lifestyle.',
-              url: 'https://wtxnews.co.uk',
-              publisher: {
-                '@type': 'NewsMediaOrganization',
-                name: 'WTX News',
-                logo: {
-                  '@type': 'ImageObject',
-                  url: 'https://wtxnews.co.uk/wtx-logo.png',
-                }
-              }
-            })
-          }}
-        />
+  const topStories = getPostsOrFallback(topStoriesRaw, 6)
+  const leadStory = topStories[0]
+  const moreTopStories = topStories.slice(1, 6)
 
-        <h1 className="sr-only">Latest UK News & Breaking Stories</h1>
+  const englandFeatured = getPostsOrFallback(englandFeaturedRaw, 4)
+  // simulate trending simply by shifting array for now
+  const englandTrending = getPostsOrFallback(latestNewsRaw, 4)
 
-        {/* Mobile: Only show essential sections */}
-        <div className="pt-10">
+  const scotlandFeatured = getPostsOrFallback(scotlandFeaturedRaw, 4)
+  const walesFeatured = getPostsOrFallback(walesFeaturedRaw, 4)
+  const irelandFeatured = getPostsOrFallback(irelandFeaturedRaw, 4)
+
+  const football = getPostsOrFallback(footballRaw, 4)
+  const otherSports = getPostsOrFallback(otherSportsRaw, 4)
+
+  const fashion = getPostsOrFallback(fashionRaw, 4)
+
+  const travelDest = getPostsOrFallback(travelDestinationsRaw, 4)
+  const travelTips = getPostsOrFallback(travelTipsRaw, 4)
+
+  const latestNews = latestNewsRaw.slice(0, 12)
+
+  return (
+    <div className="relative container space-y-20 pb-20 lg:space-y-24 lg:pb-24 pt-10 lg:pt-16">
+
+      {/* Required H1 hierarchy at top */}
+      <h1 className="text-4xl lg:text-5xl font-bold mb-8 text-neutral-900 dark:text-neutral-100 sr-only">
+        UK Local News & Headlines
+      </h1>
+
+      {/* Hero Category Navigation Header */}
+      {categoriesWithPosts && categoriesWithPosts.length > 0 && (
+        <div className="mb-10">
           <SectionSliderNewCategories
-            heading="Today's headlines"
-            subHeading="Quick access"
-            categories={categoriesWithPosts.slice(0, 6)}
+            heading="Today's main headlines"
+            subHeading="Quick access to key sections"
+            categories={categoriesWithPosts.slice(0, 10)}
             categoryCardType="card4"
           />
         </div>
+      )}
 
-        <SectionLargeSlider
-          heading="Latest news"
-          subHeading="Top stories"
-          posts={latestNewsPosts.slice(0, 3)}
-        />
-
-        <SectionTrending
-          heading="Trending"
-          subHeading="Popular now"
-          posts={trendingPosts.slice(0, 4)}
-        />
-
-        {/* Load more content on scroll - client component */}
-        <div className="text-center py-8">
-          <p className="text-sm text-neutral-500">Scroll for more stories</p>
+      {/* Section 1 */}
+      <section className="mt-12" aria-labelledby="section1-heading">
+        <h2 id="section1-heading" className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+          Top Stories (UK)
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Lead Story</h3>
+            {leadStory && <CardLarge1 post={leadStory} />}
+          </div>
+          <div className="lg:col-span-1 border-t lg:border-t-0 lg:border-l border-neutral-200 dark:border-neutral-700 pt-6 lg:pt-0 lg:pl-8">
+            <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">More Top Stories</h3>
+            <div className="flex flex-col gap-6">
+              {moreTopStories.map(post => (
+                <Card11 key={post.id} post={post} />
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    )
-  }
+      </section>
 
-  // DESKTOP: Full content load
-  const [
-    latestNewsPosts,
-    latestNewsDefault,
-    trendingPosts,
-    editorsPicksPosts,
-    englandPosts,
-    scotlandPosts,
-    walesPosts,
-    irelandPosts,
-    celebPosts,
-    latestSportsPosts,
-    moneyExpertPosts,
-    exploreUKPosts,
-    defaultPosts,
-    categoriesWithPosts
-  ] = await Promise.all([
-    // 1. Latest news today (Tag: uk-featured-news) - reduced from 5 to 3
-    getAllPostsWithWordPress({ tags: ['uk-featured-news'], perPage: 3 }),
-    getAllPostsWithWordPress({ perPage: 3 }), // Fallback
+      {/* Section 2 */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+          England
+        </h2>
 
-    // 2. Trending news - reduced from 6 to 4
-    getAllPostsWithWordPress({ perPage: 4 }),
+        <div className="mb-12">
+          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in England</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {englandFeatured.map(post => <Card11 key={post.id} post={post} />)}
+          </div>
+        </div>
 
-    // 3. Editors picks (Tag: editors-picks) - reduced from 5 to 3
-    getAllPostsWithWordPress({ tags: ['editors-picks'], perPage: 3 }),
+        <div className="mb-12">
+          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Trending in England</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {englandTrending.map(post => <Card11 key={post.id} post={post} />)}
+          </div>
+        </div>
 
-    // 4. What's happening near you (Regions) - reduced from 3 to 2 each
-    getWordPressPostsByCategory('england-news', 2),
-    getWordPressPostsByCategory('scotland-uk-news', 2),
-    getWordPressPostsByCategory('wales-uk-news', 2),
-    getWordPressPostsByCategory('ireland-news', 2),
+        <div className="flex justify-center mt-8">
+          <Link
+            href="/england-news"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 dark:text-neutral-900 text-white font-medium rounded-full transition-colors"
+          >
+            More England News
+            <ArrowRightIcon className="w-5 h-5" />
+          </Link>
+        </div>
+      </section>
 
-    // 5. Celebs & Showbiz (Tag: uk-entertainment) - reduced from 8 to 6
-    getAllPostsWithWordPress({ tags: ['uk-entertainment'], perPage: 6 }),
+      {/* Section 3 */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+          Scotland
+        </h2>
+        <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in Scotland</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {scotlandFeatured.map(post => <Card11 key={post.id} post={post} />)}
+        </div>
+      </section>
 
-    // 6. Latest Sports News (Category: sport) - reduced from 6 to 4
-    getWordPressPostsByCategory('sport', 4),
+      {/* Section 4 */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+          Wales
+        </h2>
+        <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in Wales</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {walesFeatured.map(post => <Card11 key={post.id} post={post} />)}
+        </div>
+      </section>
 
-    // 7. Money Saving Expert (Category: money-expert) - reduced from 5 to 3
-    getWordPressPostsByCategory('money-expert', 3),
+      {/* Section 5 */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+          Ireland
+        </h2>
+        <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in Ireland</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {irelandFeatured.map(post => <Card11 key={post.id} post={post} />)}
+        </div>
+      </section>
 
-    // 8. Explore the UK - reduced from 5 to 3
-    getAllPostsWithWordPress({
-      categories: ['travel'],
-      tags: ['uk-holidays', 'nature-holidays', 'cabin-holidays', 'hiking-holidays', 'weekend-spa-getaways'],
-      perPage: 3
-    }),
+      {/* Section 6 */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+          Sports News
+        </h2>
+        <div className="mb-12">
+          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Football</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {football.map(post => <Card2 key={post.id} post={post} />)}
+          </div>
+        </div>
+        <div className="mb-12">
+          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Other Sports</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {otherSports.map(post => <Card11 key={post.id} post={post} />)}
+          </div>
+        </div>
+      </section>
 
-    // Fallback and categories - reduced from 20 to 12
-    getAllPostsWithWordPress({ perPage: 12 }),
-    getCategoriesWithPosts()
-  ])
+      {/* Section 7 */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+          Fashion
+        </h2>
+        <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Latest Fashion</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {fashion.map(post => <Card11 key={post.id} post={post} />)}
+        </div>
+      </section>
 
-  const getPostsOrFallback = (posts: any[], count: number) => {
-    if (posts && posts.length >= count) return posts.slice(0, count);
-    if (posts && posts.length > 0) return posts; // Return whatever we have
-    return defaultPosts.slice(0, count); // Complete fallback
-  }
+      {/* Section 8 */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+          Travel Around the UK
+        </h2>
+        <div className="mb-12">
+          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">UK Destinations</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {travelDest.map(post => <Card11 key={post.id} post={post} />)}
+          </div>
+        </div>
+        <div className="mb-12">
+          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Travel Tips</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {travelTips.map(post => <Card11 key={post.id} post={post} />)}
+          </div>
+        </div>
+      </section>
 
-  // Filter categories for "Editors picks" filters (Just picking some random popular ones for UI)
-  const editorCategories = categoriesWithPosts.slice(0, 4)
+      {/* Section 9 */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+          Latest News
+        </h2>
+        <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Most Recent</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {latestNews.map(post => <Card11 key={post.id} post={post} />)}
+        </div>
+      </section>
 
-  return (
-    <div className="relative container space-y-20 pb-20 lg:space-y-24 lg:pb-24">
-      {/* Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebPage',
-            name: 'WTX News - UK Breaking News, Politics, Sports & Lifestyle',
-            description: 'Stay informed with WTX News. Latest UK breaking news, politics, sports, entertainment, and lifestyle.',
-            url: 'https://wtxnews.co.uk',
-            publisher: {
-              '@type': 'NewsMediaOrganization',
-              name: 'WTX News',
-              logo: {
-                '@type': 'ImageObject',
-                url: 'https://wtxnews.co.uk/wtx-logo.png',
-              }
-            },
-            breadcrumb: {
-              '@type': 'BreadcrumbList',
-              itemListElement: [{
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Home',
-                item: 'https://wtxnews.co.uk'
-              }]
-            }
-          })
-        }}
-      />
-
-      {/* H1 for SEO - visually hidden but accessible */}
-      <h1 className="sr-only">Latest UK News & Breaking Stories</h1>
-
-      {/* 0. Today's main headlines - Sub Menu */}
-      <div className="pt-10 lg:pt-16">
-        <SectionSliderNewCategories
-          heading="Today's main headlines"
-          subHeading="Quick access to key sections"
-          categories={categoriesWithPosts}
-          categoryCardType="card4"
-        />
-      </div>
-
-      {/* 1. Latest news today */}
-      <SectionLargeSlider
-        heading="Latest news today"
-        subHeading="Tags - UK Featured News"
-        posts={getPostsOrFallback(latestNewsPosts.length > 0 ? latestNewsPosts : latestNewsDefault, 5)}
-      />
-
-      {/* 2. Trending news */}
-      <SectionTrending
-        heading="Trending news"
-        subHeading="Most popular stories"
-        posts={getPostsOrFallback(trendingPosts, 6)}
-      />
-
-      {/* 3. Trending Tags */}
-      <SectionTrendingTags
-        heading="Trending Tags"
-        subHeading="List the 5 most popular tags that have been used today"
-      />
-
-      {/* 4. Editors picks */}
-      <SectionMagazine1
-        heading="Editors picks"
-        subHeading="Curated by our editors"
-        tabs={['News', 'Sport', 'Entertainment', 'Travel']}
-        categories={['news', 'sport', 'entertainment', 'travel']}
-        posts={getPostsOrFallback(editorsPicksPosts, 5)}
-      />
-
-      {/* 5. What's happening near you */}
-      <SectionMagazine2
-        heading="What's happening near you"
-        subHeading="Recent news from across the UK regions"
-        tabs={['England', 'Scotland', 'Wales', 'Ireland']}
-        categories={['england-news', 'scotland-uk-news', 'wales-uk-news', 'ireland-news']}
-        posts={getPostsOrFallback(englandPosts, 5)}
-      />
-
-      {/* 6. Celebs & Showbiz */}
-      <SectionGridPosts
-        headingIsCenter
-        postCardName="card11"
-        heading="Celebs & Showbiz"
-        subHeading="Tags UK entertainment"
-        posts={getPostsOrFallback(celebPosts, 8)}
-        gridClass="md:grid-cols-2 lg:grid-cols-4"
-      />
-
-      {/* 7. Latest Sports News */}
-      <SectionSliderPosts
-        heading="Latest Sports News"
-        subHeading="From Sports Category"
-        posts={getPostsOrFallback(latestSportsPosts, 6)}
-        postCardName="card10"
-      />
-
-      {/* 8. Money Saving Expert */}
-      <SectionMagazine3
-        heading="Money Saving Expert"
-        subHeading="Money saving expert Category"
-        posts={getPostsOrFallback(moneyExpertPosts, 5)}
-      />
-
-      <SectionMagazine6
-        heading="Explore the UK"
-        subHeading="Recent updates from across the UK"
-        tabs={["Today's Main News", "UK News", "UK Politics"]}
-        tags={['todays-main-news-story-uk', 'uk-news', 'uk-politics']}
-        posts={getPostsOrFallback(exploreUKPosts, 5)}
-      />
-
-      {/* 10. Subscribe */}
-      <SectionSubscribe2 />
     </div>
   )
 }

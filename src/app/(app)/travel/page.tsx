@@ -1,59 +1,37 @@
-import SectionGridPosts from '@/components/SectionGridPosts'
-import SectionSliderNewCategories from '@/components/SectionSliderNewCategories'
-import WidgetTags from '@/components/WidgetTags'
-import { fetchPostsByCategory, fetchCategories, fetchTags } from '@/data/wp-api'
 import { Metadata } from 'next'
+import Card11 from '@/components/PostCards/Card11'
+import { getWordPressPostsByCategory } from '@/data/wordpress-posts'
+import PaginationWrapper from '@/components/PaginationWrapper'
 
 export const metadata: Metadata = {
-    title: 'Travel News & Guides | WTX News',
-    description: 'Explore travel guides, holiday tips, and destination reviews from WTX News',
+  title: 'Travel Around the UK | WTX News',
+  description: 'UK travel guides, destinations, and tips. Explore the best of Britain.',
 }
 
-const BLOG_API_BASE = 'https://blog.wtxnews.co.uk/wp-json/wp/v2'
+export const revalidate = 180
 
-export default async function TravelPage() {
-    const posts = await fetchPostsByCategory('travel', 20, 1, BLOG_API_BASE)
-    const categories = await fetchCategories(20, BLOG_API_BASE)
-    const tags = await fetchTags(20, BLOG_API_BASE)
+const Page = async () => {
+  const posts = await getWordPressPostsByCategory('travel', 24)
 
-    return (
-        <div className="container pb-20 pt-10 lg:pb-24 lg:pt-16">
-            <div className="mb-10 text-center lg:mb-16">
-                <h1 className="text-3xl font-bold md:text-4xl lg:text-5xl">Travel</h1>
-                <p className="mt-4 text-neutral-500 dark:text-neutral-400">
-                    Discover your next destination
-                </p>
-            </div>
+  return (
+    <div className="container pt-10 lg:pt-16 pb-16">
+      <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-4xl">
+        Travel Around the UK
+      </h1>
+      
+      <p className="text-neutral-600 dark:text-neutral-400 mb-8">
+        Discover UK destinations, travel tips, and holiday inspiration
+      </p>
 
-            {categories.length > 0 && (
-                <div className="mb-16">
-                    <SectionSliderNewCategories
-                        heading="Browse Categories"
-                        subHeading="Explore articles by topic"
-                        categories={categories}
-                        categoryCardType="card4"
-                    />
-                </div>
-            )}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {posts.map((post) => (
+          <Card11 key={post.id} post={post} />
+        ))}
+      </div>
 
-            <div className="flex flex-col lg:flex-row">
-                <div className="w-full lg:w-3/4 lg:pr-10">
-                    <SectionGridPosts
-                        posts={posts}
-                        heading="Latest in Travel"
-                        subHeading="Inspiration for your journeys"
-                        gridClass="sm:grid-cols-2"
-                    />
-                </div>
-                <div className="w-full space-y-8 lg:w-1/4">
-                    <div className="rounded-2xl bg-neutral-100 p-6 dark:bg-neutral-800">
-                        <h3 className="mb-4 text-xl font-semibold text-neutral-900 dark:text-neutral-100">
-                            Popular Tags
-                        </h3>
-                        <WidgetTags tags={tags} />
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
+      <PaginationWrapper className="mt-12" />
+    </div>
+  )
 }
+
+export default Page

@@ -238,6 +238,11 @@ const nextConfig = {
         hostname: 'cdn.mos.cms.futurecdn.net',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.hellomagazine.com',
+        pathname: '/**',
+      },
     ],
   },
 
