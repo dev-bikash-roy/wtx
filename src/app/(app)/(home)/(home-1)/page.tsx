@@ -80,24 +80,35 @@ const Page = async () => {
     getAllPostsWithWordPress({ tags: ['wales'], perPage: 4 }),
     getAllPostsWithWordPress({ tags: ['ireland'], perPage: 4 }),
     getWordPressPostsByCategory('football', 4),
-    getWordPressPostsByCategory('sports', 6),
+    getAllPostsWithWordPress({ tags: ['sport'], perPage: 6 }),
     getWordPressPostsByCategory('fashion', 4),
-    getAllPostsWithWordPress({ categories: ['travel'], tags: ['uk-destinations', 'destinations'], perPage: 4 }),
+    getAllPostsWithWordPress({ tags: ['travel'], perPage: 4 }),
     getAllPostsWithWordPress({ categories: ['travel'], tags: ['travel-tips', 'tips'], perPage: 4 }),
-    getAllPostsWithWordPress({ perPage: 16 }),
+    getAllPostsWithWordPress({ perPage: 30 }),
     getCategoriesWithPosts().catch(() => [])
   ])
 
-  // Fallback function ensures we always display some feed
+  const usedFallbackIds = new Set<number | string>()
+
+  // Fallback function ensures we always display some feed without repeating fallbacks across sections
   const getPostsOrFallback = (posts: any[], count: number) => {
     if (posts && posts.length >= count) return posts.slice(0, count)
+
     if (posts && posts.length > 0) {
       // mix with fallback if short
       const needed = count - posts.length
-      const fallback = latestNewsRaw.filter(p => !posts.find(ep => ep.id === p.id)).slice(0, needed)
+      const fallback = latestNewsRaw
+        .filter(p => !posts.find(ep => ep.id === p.id) && !usedFallbackIds.has(p.id))
+        .slice(0, needed)
+      fallback.forEach(f => usedFallbackIds.add(f.id))
       return [...posts, ...fallback]
     }
-    return latestNewsRaw.slice(0, count)
+
+    const fallback = latestNewsRaw
+      .filter(p => !usedFallbackIds.has(p.id))
+      .slice(0, count)
+    fallback.forEach(f => usedFallbackIds.add(f.id))
+    return fallback
   }
 
   const topStories = getPostsOrFallback(topStoriesRaw, 6)
