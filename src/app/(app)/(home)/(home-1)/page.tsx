@@ -1,5 +1,5 @@
 import { getCategoriesWithPosts } from '@/data/categories'
-import { getAllPostsWithWordPress, getWordPressPostsByCategory } from '@/data/wordpress-posts'
+import { getAllPostsWithWordPress, getWordPressPostsByCategory, getWordPressPostsByTag } from '@/data/wordpress-posts'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
@@ -74,16 +74,16 @@ const Page = async () => {
     latestNewsRaw,
     categoriesWithPosts
   ] = await Promise.all([
-    getAllPostsWithWordPress({ tags: ['uk-featured-news', 'politics'], perPage: 8 }),
+    getAllPostsWithWordPress({ perPage: 8 }),
     getWordPressPostsByCategory('england-news', 6),
-    getAllPostsWithWordPress({ tags: ['scotland-featured'], perPage: 4 }),
-    getAllPostsWithWordPress({ tags: ['new-south-wales'], perPage: 4 }),
-    getAllPostsWithWordPress({ tags: ['ireland'], perPage: 4 }),
+    getWordPressPostsByTag('scotland-featured', 4),
+    getWordPressPostsByTag('new-south-wales', 4),
+    getWordPressPostsByTag('ireland', 4),
     getWordPressPostsByCategory('football', 4),
-    getAllPostsWithWordPress({ tags: ['sport'], perPage: 6 }),
+    getWordPressPostsByTag('sport', 6),
     getWordPressPostsByCategory('fashion', 4),
-    getAllPostsWithWordPress({ tags: ['travel'], perPage: 4 }),
-    getAllPostsWithWordPress({ categories: ['travel'], tags: ['travel-tips', 'tips'], perPage: 4 }),
+    getWordPressPostsByTag('travel', 4),
+    getWordPressPostsByTag('travel-tips', 4),
     getAllPostsWithWordPress({ perPage: 30 }),
     getCategoriesWithPosts().catch(() => [])
   ])
