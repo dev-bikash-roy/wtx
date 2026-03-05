@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Card2 from '@/components/PostCards/Card2'
+import Card6 from '@/components/PostCards/Card6'
 import Card11 from '@/components/PostCards/Card11'
 import { getWordPressPostsByCategory, getWordPressPostsByTag } from '@/data/wordpress-posts'
 import { TPost } from '@/data/posts'
@@ -139,27 +141,21 @@ const Page = async () => {
       </div>
 
       {/* H2: Top Stories in England */}
-      <section>
+      <section className="mb-16">
         <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-          Top Stories in England
+          Top Stories
         </h2>
 
-        {/* H3: Lead story (hero) */}
-        {topStories[0] && (
-          <div className="mb-8">
-            <h3 className="sr-only">Lead Story</h3>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <Card11 post={topStories[0]} ratio="aspect-video" />
-            </div>
+        {/* 1 Large Left, 4 Small List Right (Main Section Layout) */}
+        <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
+          {topStories[0] && <Card2 size="large" post={topStories[0]} />}
+          <div className="flex flex-col gap-6 md:gap-8">
+            {topStories
+              .filter((_, i) => i < 5 && i > 0)
+              .map((item, index) => (
+                <Card6 key={index} post={item} />
+              ))}
           </div>
-        )}
-
-        {/* H3: Top story list */}
-        <h3 className="sr-only">Top Stories</h3>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {topStories.slice(1, 10).map((post) => (
-            <Card11 key={post.id} post={post} />
-          ))}
         </div>
       </section>
 

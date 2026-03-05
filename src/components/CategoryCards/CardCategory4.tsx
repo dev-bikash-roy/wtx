@@ -64,7 +64,6 @@ const CardCategory4: FC<Props> = ({ className = '', category, badge }) => {
         <div className={`size-9 ${getColorClass()} rounded-full`}></div>
         <div className="ms-3.5 space-y-0.5">
           <p className="line-clamp-1 text-base font-medium text-neutral-900 dark:text-neutral-100">{name}</p>
-          <p className="line-clamp-1 text-sm text-neutral-500 dark:text-neutral-400">{count}+ articles</p>
         </div>
       </div>
 

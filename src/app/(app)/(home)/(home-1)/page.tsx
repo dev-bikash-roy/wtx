@@ -75,10 +75,10 @@ const Page = async () => {
     categoriesWithPosts
   ] = await Promise.all([
     getAllPostsWithWordPress({ perPage: 8 }),
-    getWordPressPostsByCategory('england-news', 6),
-    getWordPressPostsByTag('scotland-featured', 4),
-    getWordPressPostsByTag('new-south-wales', 4),
-    getWordPressPostsByTag('ireland', 4),
+    getWordPressPostsByTag('england-news', 6),
+    getWordPressPostsByTag('scotland', 4),
+    getWordPressPostsByTag('wales', 4),
+    getWordPressPostsByTag('northern-ireland', 4),
     getWordPressPostsByCategory('football', 4),
     getWordPressPostsByTag('sport', 6),
     getWordPressPostsByCategory('fashion', 4),
@@ -133,6 +133,19 @@ const Page = async () => {
 
   const latestNews = latestNewsRaw.slice(0, 12)
 
+  // Reorder categories for Quick Access
+  const desiredOrder = ['uk news', 'news briefing', 'uk politics', 'world news', 'sport'];
+  const orderedCategories = [...categoriesWithPosts].sort((a, b) => {
+    const nameA = a.name.toLowerCase();
+    const nameB = b.name.toLowerCase();
+    const indexA = desiredOrder.findIndex(d => nameA.includes(d));
+    const indexB = desiredOrder.findIndex(d => nameB.includes(d));
+    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+    return 0; // maintain original order for the rest
+  });
+
   return (
     <div className="relative container space-y-20 pb-20 lg:space-y-24 lg:pb-24 pt-10 lg:pt-16">
 
@@ -141,24 +154,13 @@ const Page = async () => {
         UK Local News & Headlines
       </h1>
 
-      {/* Hero Category Navigation Header */}
-      {categoriesWithPosts && categoriesWithPosts.length > 0 && (
-        <div className="mb-10">
-          <SectionSliderNewCategories
-            heading="Today's main headlines"
-            subHeading="Quick access to key sections"
-            categories={categoriesWithPosts.slice(0, 10)}
-            categoryCardType="card4"
-          />
-        </div>
-      )}
-
-      {/* Section 1 */}
-      <section className="mt-12" aria-labelledby="section1-heading">
+      {/* Section 1 - Hero */}
+      <section className="mt-2 lg:mt-6" aria-labelledby="section1-heading">
         <h2 id="section1-heading" className="sr-only">
           Top Stories (UK)
         </h2>
 
+        {/* Lead Story Hero Slider */}
         <div className="mb-16">
           <h3 className="sr-only">Lead Story</h3>
           {topStories.length > 0 && (
@@ -168,9 +170,20 @@ const Page = async () => {
           )}
         </div>
 
+        {/* Hero Category Navigation Header (Quick Access) */}
+        {orderedCategories && orderedCategories.length > 0 && (
+          <div className="mb-16">
+            <SectionSliderNewCategories
+              subHeading="Quick access to key sections"
+              categories={orderedCategories.slice(0, 10)}
+              categoryCardType="card4"
+            />
+          </div>
+        )}
+
         <div>
           <h3 className="text-2xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100 border-b border-neutral-200 dark:border-neutral-700 pb-4">
-            More Top Stories
+            Today&apos;s Main Headlines
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {topStories.slice(3, 7).map(post => (
@@ -182,9 +195,10 @@ const Page = async () => {
 
       {/* Section 2 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
-        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
-          England
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-2 text-neutral-900 dark:text-neutral-100">
+          England News
         </h2>
+        <p className="mt-2 mb-8 text-neutral-500 dark:text-neutral-400">The latest News from England</p>
 
         <div className="mb-12">
           <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in England</h3>
@@ -213,9 +227,10 @@ const Page = async () => {
 
       {/* Section 3 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
-        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-2 text-neutral-900 dark:text-neutral-100">
           Scotland
         </h2>
+        <p className="mt-2 mb-8 text-neutral-500 dark:text-neutral-400">The latest News from Scotland</p>
         <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in Scotland</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {scotlandFeatured.map(post => <Card11 key={post.id} post={post} />)}
@@ -224,9 +239,10 @@ const Page = async () => {
 
       {/* Section 4 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
-        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-2 text-neutral-900 dark:text-neutral-100">
           Wales
         </h2>
+        <p className="mt-2 mb-8 text-neutral-500 dark:text-neutral-400">The latest News from Wales</p>
         <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in Wales</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {walesFeatured.map(post => <Card11 key={post.id} post={post} />)}
@@ -235,9 +251,10 @@ const Page = async () => {
 
       {/* Section 5 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
-        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
-          Ireland
+        <h2 className="text-3xl lg:text-4xl font-semibold mb-2 text-neutral-900 dark:text-neutral-100">
+          Northern Ireland
         </h2>
+        <p className="mt-2 mb-8 text-neutral-500 dark:text-neutral-400">The latest News from Ireland</p>
         <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in Ireland</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {irelandFeatured.map(post => <Card11 key={post.id} post={post} />)}
