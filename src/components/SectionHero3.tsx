@@ -20,7 +20,7 @@ const SectionHero3: FC<Props> = ({ posts, className }) => {
         <NcImage
           alt={title}
           containerClassName="absolute inset-0 z-0 overflow-hidden rounded-[40px]"
-          src={featuredImage}
+          src={featuredImage.src}
           fill
           sizes="(max-width: 1024px) 100vw, 90vw"
         />
@@ -28,13 +28,13 @@ const SectionHero3: FC<Props> = ({ posts, className }) => {
         <div className="absolute inset-0 p-5 md:p-14 xl:p-20 2xl:p-28">
           <div className="max-w-2xl">
             <h2 className="text-xl font-semibold text-white sm:text-3xl lg:text-4xl">
-              <Link href={`/news/${handle}`}>{title}</Link>
+              <Link href={`/post/${handle}`}>{title}</Link>
             </h2>
             <span className="mt-3 block text-sm/6 text-neutral-300 sm:mt-5 sm:text-base/relaxed">
               <span className="line-clamp-2">{excerpt}</span>
             </span>
             <div className="mt-5 sm:mt-8">
-              <ButtonSecondary href={`/news/${handle}`}>
+              <ButtonSecondary href={`/post/${handle}`}>
                 <span>Read more</span>
                 <ArrowRightIcon className="size-6 rtl:rotate-180" />
               </ButtonSecondary>

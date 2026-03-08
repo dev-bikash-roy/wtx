@@ -48,12 +48,12 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
 const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const { handle } = await params
   const category = await getCategoryByHandle(handle)
-  
+
   // If category doesn't exist or has no posts, show not found
   if (!category || !category.posts || category.posts.length === 0) {
     return notFound()
   }
-  
+
   const posts = category.posts || []
   const categories = await getCategories()
   const tags = await getTags()
@@ -127,9 +127,14 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
 
         {/* PAGINATIONS */}
         <PaginationWrapper className="mt-20" />
+
+        {/* SUBSCRIBE */}
+        <SectionSubscribe2 category={`${category.name}`} className="mt-20 lg:mt-32" />
       </div>
     </div>
   )
 }
+
+import SectionSubscribe2 from '@/components/SectionSubscribe2'
 
 export default Page

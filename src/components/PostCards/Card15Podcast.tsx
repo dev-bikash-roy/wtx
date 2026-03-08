@@ -38,13 +38,13 @@ const Card15Podcast: FC<Props> = ({ className, post }) => {
     >
       <div className="w-1/4 shrink-0">
         <div className="relative aspect-1/1 overflow-hidden rounded-full shadow-lg">
-          <Image className="size-full object-cover" src={featuredImage} fill alt={title} sizes="100px" />
+          <Image className="size-full object-cover" src={featuredImage.src} fill alt={title} sizes="100px" />
         </div>
       </div>
 
       <div className="ms-4 flex grow flex-col">
         <h2 className={`nc-card-title block text-sm font-semibold sm:text-lg`}>
-          <Link href={`/news/${handle}`} className="absolute inset-0" />
+          <Link href={`/post/${handle}`} className="absolute inset-0" />
           <span className={IS_AUDIO ? `line-clamp-1` : 'line-clamp-2'} title={title}>
             {title}
           </span>

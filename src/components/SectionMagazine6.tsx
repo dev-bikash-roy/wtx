@@ -62,7 +62,7 @@ const SectionMagazine6: FC<Props> = ({
             fill
             alt={title}
             sizes="(max-width: 1024px) 100vw, 1280px"
-            src={featuredImage}
+            src={featuredImage.src}
             className="object-cover"
           />
           <div>
@@ -73,7 +73,7 @@ const SectionMagazine6: FC<Props> = ({
           <div className="group dark absolute flex max-w-2xl flex-col justify-end p-5 md:w-1/2 lg:w-2/3 lg:p-14">
             <div className="">
               <h2 className="text-base font-semibold text-white hover:text-neutral-300 md:text-xl lg:text-2xl xl:text-3xl">
-                <Link href={`/news/${handle}`} className="line-clamp-3">
+                <Link href={`/post/${handle}`} className="line-clamp-3">
                   {title}
                 </Link>
               </h2>
@@ -93,7 +93,7 @@ const SectionMagazine6: FC<Props> = ({
               {subPosts.map((post, i) => (
                 <div key={i} className="block py-5 lg:py-7">
                   <h2 className="nc-card-title text-sm font-semibold lg:text-base">
-                    <Link href={`/news/${post.handle}`} className="line-clamp-2">
+                    <Link href={`/post/${post.handle}`} className="line-clamp-2">
                       {post.title}
                     </Link>
                   </h2>

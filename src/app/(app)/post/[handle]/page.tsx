@@ -31,12 +31,12 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
     title: post.title,
     description: post.excerpt,
     alternates: {
-      canonical: `https://wtxnews.co.uk/news/${handle}`,
+      canonical: `https://wtxnews.co.uk/post/${handle}`,
     },
     openGraph: {
       title: post.title,
       description: post.excerpt,
-      url: `https://wtxnews.co.uk/news/${handle}`,
+      url: `https://wtxnews.co.uk/post/${handle}`,
       type: 'article',
       images: [
         {
@@ -58,7 +58,29 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const post = await getPostByHandleWithWordPress(handle)
 
   if (!post) {
-    return <div>Post not found</div>
+    return (
+      <div className="container flex flex-col items-center justify-center py-32 text-center gap-6">
+        <span className="text-6xl">📰</span>
+        <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Post not found</h1>
+        <p className="text-neutral-500 dark:text-neutral-400 max-w-md">
+          Sorry, we couldn&apos;t find that article. It may have been removed or the link might be incorrect.
+        </p>
+        <div className="flex gap-4">
+          <a
+            href="/"
+            className="px-6 py-3 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-full font-medium hover:opacity-80 transition-opacity"
+          >
+            Go Home
+          </a>
+          <a
+            href="/latest-news"
+            className="px-6 py-3 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-full font-medium hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+          >
+            Latest News
+          </a>
+        </div>
+      </div>
+    )
   }
 
   const comments = await getCommentsByPostId(post.id)
@@ -110,7 +132,7 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
         description: post.excerpt,
         mainEntityOfPage: {
           '@type': 'WebPage',
-          '@id': `https://wtxnews.co.uk/news/${post.handle}`
+          '@id': `https://wtxnews.co.uk/post/${post.handle}`
         }
       }} />
       <div className="single-post-page">

@@ -34,7 +34,8 @@ const NewsletterForm = ({ category = "General" }: Props) => {
         setMessage('')
 
         try {
-            await addDoc(collection(db, 'newsletters'), {
+            const collectionName = 'newsletters'
+            await addDoc(collection(db, collectionName), {
                 firstName,
                 lastName,
                 city,

@@ -31,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Use a reasonable limit for sitemap or pagination if extremely large, but for now fetch what we can
   const posts = await getAllPostsWithWordPress({ perPage: 100 })
   const postUrls = posts.map((post) => ({
-    url: `${baseUrl}/news/${post.handle}`,
+    url: `${baseUrl}/post/${post.handle}`,
     lastModified: new Date(post.date || new Date()),
     changeFrequency: 'weekly' as const,
     priority: 0.7,

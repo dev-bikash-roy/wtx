@@ -68,7 +68,11 @@ export default async function LatestNewsPage() {
             </div>
 
             {renderContent()}
+
+            <SectionSubscribe2 category="UK News" className="mt-20 lg:mt-32" />
         </div>
     )
 }
+
+import SectionSubscribe2 from '@/components/SectionSubscribe2'
 

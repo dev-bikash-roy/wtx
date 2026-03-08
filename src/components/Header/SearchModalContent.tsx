@@ -137,7 +137,7 @@ const SearchModalContent: FC<Props> = ({ open, onClose }) => {
                                     router.push(item.uri + query)
                                 }
                             } else if ('handle' in item) {
-                                router.push(`/news/${item.handle}`)
+                                router.push(`/post/${item.handle}`)
                             }
                             onClose()
                         }}
@@ -306,7 +306,7 @@ const CardPost = ({ post }: { post: TPost }) => {
                     <CategoryBadgeList categories={categories} />
                 </div>
                 <h4 className="mt-2 text-sm leading-6 font-medium text-neutral-900 dark:text-neutral-300">
-                    <Link className="absolute inset-0" href={`/news/${post.handle}`} />
+                    <Link className="absolute inset-0" href={`/post/${post.handle}`} />
                     {post.title}
                 </h4>
             </div>
@@ -322,7 +322,7 @@ const CardPost = ({ post }: { post: TPost }) => {
                 <span className="absolute start-1 bottom-1">
                     <PostTypeFeaturedIcon wrapSize="h-7 w-7" iconSize="h-4 w-4" postType={postType} />
                 </span>
-                <Link className="absolute inset-0" href={`/news/${post.handle}`} />
+                <Link className="absolute inset-0" href={`/post/${post.handle}`} />
             </div>
         </div>
     )

@@ -52,31 +52,7 @@ export async function getPostByHandleWithWordPress(handle: string): Promise<TPos
   console.log('[getPostByHandleWithWordPress] Looking for post with handle:', handle)
 
   try {
-    // 1. Check Firestore cache for existing post with AI summary
-    const { getDocs, query, collection, where } = await import('firebase/firestore')
-    const { db } = await import('@/lib/firebase/config')
-
-    const postsRef = collection(db, 'posts')
-    const q = query(postsRef, where('slug', '==', handle), where('status', '==', 'published'))
-    const snap = await getDocs(q)
-
-    let cachedDoc = null
-    if (!snap.empty) {
-      cachedDoc = snap.docs[0]
-      const data = cachedDoc.data()
-      console.log('[getPostByHandleWithWordPress] Found cached post:', data.title)
-      if (data.aiSummary) {
-        // Fetch fresh data from WordPress but use cached AI summary
-        const wpPost = await multiWP.getPostBySlug(handle)
-        if (wpPost) {
-          wpPost.aiSummary = data.aiSummary
-          console.log('[getPostByHandleWithWordPress] Returning WordPress post with cached summary')
-          return wpPost
-        }
-      }
-    }
-
-    // 2. Fetch from WordPress
+    // Fetch directly from WordPress (no Firestore client SDK on server)
     console.log('[getPostByHandleWithWordPress] Fetching from WordPress')
     const wpPost = await multiWP.getPostBySlug(handle)
 

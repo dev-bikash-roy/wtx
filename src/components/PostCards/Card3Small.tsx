@@ -29,13 +29,13 @@ const Card3Small: FC<Props> = ({ className, post }) => {
           alt={title}
           sizes="100px"
           className="rounded-lg object-cover brightness-100 transition-[filter] duration-300 group-hover:brightness-75"
-          src={featuredImage}
+          src={featuredImage.src}
           fill
           title={title}
         />
       </div>
 
-      <Link href={`/news/${handle}`} className="absolute inset-0" title={title}></Link>
+      <Link href={`/post/${handle}`} className="absolute inset-0" title={title}></Link>
     </div>
   )
 }

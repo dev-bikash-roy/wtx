@@ -82,6 +82,45 @@ const Page = async () => {
 
     return (
         <div className="relative container space-y-20 pb-20 lg:space-y-24 lg:pb-24">
+            {/* Hero Banner */}
+            <div className="-mx-4 sm:-mx-6 lg:-mx-8 xl:-mx-10 mb-12 relative overflow-hidden">
+                {topSportsStories[0]?.featuredImage?.src && (
+                    <div
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{ backgroundImage: `url(${topSportsStories[0].featuredImage.src})` }}
+                    />
+                )}
+                {/* Gradient overlay - sports themed deep blue */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0f172a]/95 via-[#1e3a5f]/85 to-[#0ea5e9]/50" />
+
+                {/* Content */}
+                <div className="relative z-10 px-4 sm:px-6 lg:px-8 xl:px-10 py-16 lg:py-24">
+                    <div className="max-w-3xl">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="h-1 w-10 bg-[#0ea5e9] rounded-full" />
+                            <span className="text-white/80 text-sm font-semibold tracking-widest uppercase">WTX News</span>
+                        </div>
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 drop-shadow-lg">
+                            Sports News
+                        </h1>
+                        <p className="text-lg text-white/80 max-w-xl leading-relaxed mb-8">
+                            Live scores, match reports, transfers and all the latest from the world of sport.
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {['Football', 'F1', 'Cricket', 'Tennis', 'Rugby', 'Boxing'].map(topic => (
+                                <span
+                                    key={topic}
+                                    className="px-4 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-full backdrop-blur-sm cursor-pointer transition-colors"
+                                >
+                                    {topic}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-white dark:from-neutral-950 to-transparent" />
+            </div>
+
             {/* 1. Today's top sports stories */}
             <SectionLargeSlider
                 heading="Today's top sports stories"
@@ -186,10 +225,7 @@ const Page = async () => {
             />
 
             {/* 13. Subscribe */}
-            <div className="text-center">
-                <p className="mb-4 text-neutral-500">Sports news devbikash2022@gmail.com</p>
-                <SectionSubscribe2 />
-            </div>
+            <SectionSubscribe2 category="Sports News" />
 
         </div>
     )

@@ -66,7 +66,7 @@ const MediaVideo: FC<Props> = ({ videoUrl, isHover, handle }) => {
       )}
 
       <Link
-        href={`/news/${handle}`}
+        href={`/post/${handle}`}
         className={clsx('absolute inset-0 flex items-center justify-center', isPlaying ? 'opacity-0' : 'opacity-100')}
       >
         <SpinLoading />

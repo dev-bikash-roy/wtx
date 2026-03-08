@@ -18,7 +18,7 @@ const Card13: FC<Props> = ({ className, post }) => {
     <div className={clsx('post-card-13 group relative flex justify-between', className)}>
       <div className="flex h-full flex-col py-2">
         <h2 className={`nc-card-title block text-sm font-semibold sm:text-base`}>
-          <Link href={`/news/${handle}`} className="line-clamp-2" title={title}>
+          <Link href={`/post/${handle}`} className="line-clamp-2" title={title}>
             {title}
           </Link>
         </h2>
@@ -32,12 +32,12 @@ const Card13: FC<Props> = ({ className, post }) => {
       </div>
 
       <Link
-        href={`/news/${handle}`}
+        href={`/post/${handle}`}
         className={clsx('relative ms-4 block h-full w-24 shrink-0 sm:ms-5 sm:w-36 lg:w-40 xl:w-48 2xl:w-[200px]')}
       >
         <Image
           className="rounded-xl object-cover brightness-100 transition-[filter] duration-300 group-hover:brightness-75 sm:rounded-3xl"
-          src={featuredImage}
+          src={featuredImage.src}
           fill
           alt={title}
           sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"

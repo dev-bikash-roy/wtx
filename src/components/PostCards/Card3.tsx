@@ -36,7 +36,7 @@ const Card3: FC<Props> = ({ className, post }) => {
         <div className="space-y-3.5">
           <CategoryBadgeList categories={categories} />
           <h2 className="nc-card-title block text-base font-medium sm:font-semibold xl:text-lg">
-            <Link href={`/news/${handle}`} className="line-clamp-2" title={title}>
+            <Link href={`/post/${handle}`} className="line-clamp-2" title={title}>
               {title}
             </Link>
           </h2>
@@ -53,7 +53,7 @@ const Card3: FC<Props> = ({ className, post }) => {
 
       <div className="relative aspect-1/1 w-56 shrink-0">
         <Image
-          src={featuredImage}
+          src={featuredImage.src}
           alt={title}
           className="w-full rounded-3xl object-cover brightness-100 transition-[filter] duration-300 group-hover:brightness-75"
           fill
@@ -64,7 +64,7 @@ const Card3: FC<Props> = ({ className, post }) => {
           wrapSize="size-8"
           iconSize="size-4"
         />
-        <Link href={`/news/${handle}`} className="absolute inset-0"></Link>
+        <Link href={`/post/${handle}`} className="absolute inset-0"></Link>
       </div>
     </div>
   )

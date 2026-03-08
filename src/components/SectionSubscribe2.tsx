@@ -7,9 +7,10 @@ import NewsletterForm from './NewsletterForm'
 
 interface Props {
   className?: string
+  category?: string
 }
 
-const SectionSubscribe2: FC<Props> = ({ className }) => {
+const SectionSubscribe2: FC<Props> = ({ className, category }) => {
   return (
     <div className={clsx('section-subscribe-2 relative flex flex-col items-center lg:flex-row', className)}>
       <div className="mb-14 shrink-0 lg:me-10 lg:mb-0 lg:w-2/5">
@@ -27,7 +28,7 @@ const SectionSubscribe2: FC<Props> = ({ className }) => {
             <span className="font-medium text-neutral-700 dark:text-neutral-300">Get premium magazines</span>
           </li>
         </ul>
-        <NewsletterForm />
+        <NewsletterForm category={category} />
       </div>
       <div className="grow">
         <Image alt="subsc" sizes="(max-width: 768px) 100vw, 50vw" src={rightImg} />

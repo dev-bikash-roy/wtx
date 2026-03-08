@@ -5,6 +5,7 @@ import Card6 from '@/components/PostCards/Card6'
 import Card11 from '@/components/PostCards/Card11'
 import { getWordPressPostsByCategory, getWordPressPostsByTag } from '@/data/wordpress-posts'
 import { TPost } from '@/data/posts'
+import SectionSubscribe2 from '@/components/SectionSubscribe2'
 
 export const metadata: Metadata = {
   title: 'England News | WTX News',
@@ -178,7 +179,7 @@ const Page = async () => {
                 {londonPosts.slice(0, 3).map((post) => (
                   <Link
                     key={post.id}
-                    href={`/news/${post.handle}`}
+                    href={`/post/${post.handle}`}
                     className="block text-sm text-neutral-600 dark:text-neutral-400 hover:text-primary-600 line-clamp-2"
                   >
                     {post.title}
@@ -202,7 +203,7 @@ const Page = async () => {
                 {manchesterPosts.slice(0, 3).map((post) => (
                   <Link
                     key={post.id}
-                    href={`/news/${post.handle}`}
+                    href={`/post/${post.handle}`}
                     className="block text-sm text-neutral-600 dark:text-neutral-400 hover:text-primary-600 line-clamp-2"
                   >
                     {post.title}
@@ -226,7 +227,7 @@ const Page = async () => {
                 {birminghamPosts.slice(0, 3).map((post) => (
                   <Link
                     key={post.id}
-                    href={`/news/${post.handle}`}
+                    href={`/post/${post.handle}`}
                     className="block text-sm text-neutral-600 dark:text-neutral-400 hover:text-primary-600 line-clamp-2"
                   >
                     {post.title}
@@ -250,7 +251,7 @@ const Page = async () => {
                 {liverpoolPosts.slice(0, 3).map((post) => (
                   <Link
                     key={post.id}
-                    href={`/news/${post.handle}`}
+                    href={`/post/${post.handle}`}
                     className="block text-sm text-neutral-600 dark:text-neutral-400 hover:text-primary-600 line-clamp-2"
                   >
                     {post.title}
@@ -274,7 +275,7 @@ const Page = async () => {
                 {leedsPosts.slice(0, 3).map((post) => (
                   <Link
                     key={post.id}
-                    href={`/news/${post.handle}`}
+                    href={`/post/${post.handle}`}
                     className="block text-sm text-neutral-600 dark:text-neutral-400 hover:text-primary-600 line-clamp-2"
                   >
                     {post.title}
@@ -298,7 +299,7 @@ const Page = async () => {
                 {bristolPosts.slice(0, 3).map((post) => (
                   <Link
                     key={post.id}
-                    href={`/news/${post.handle}`}
+                    href={`/post/${post.handle}`}
                     className="block text-sm text-neutral-600 dark:text-neutral-400 hover:text-primary-600 line-clamp-2"
                   >
                     {post.title}
@@ -456,6 +457,11 @@ const Page = async () => {
             Load More England News
           </Link>
         </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <SectionSubscribe2 category="England News" />
       </section>
     </div>
   )

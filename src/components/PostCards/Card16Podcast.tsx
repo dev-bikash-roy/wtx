@@ -46,13 +46,13 @@ const Card16Podcast: FC<Props> = ({ className, post, ratio = 'aspect-4/3' }) => 
           fill
           alt={title}
           sizes="(max-width: 1024px) 100vw, 50vw"
-          src={featuredImage}
+          src={featuredImage.src}
           className="rounded-3xl object-cover brightness-100 transition-[filter] duration-300 group-hover:brightness-75"
         />
       </div>
 
       {/* ABSOLUTE */}
-      <Link href={`/news/${handle}`} className="absolute inset-0"></Link>
+      <Link href={`/post/${handle}`} className="absolute inset-0"></Link>
 
       <CategoryBadgeList className="absolute inset-x-3 top-3" categories={categories} />
 
@@ -75,7 +75,7 @@ const Card16Podcast: FC<Props> = ({ className, post, ratio = 'aspect-4/3' }) => 
         </div>
         <div className="mt-5 flex grow flex-col rounded-3xl rounded-ss-none bg-white p-5 shadow-xl dark:bg-neutral-900 dark:shadow-2xl">
           <h2 className="nc-card-title block font-semibold text-neutral-900 sm:text-lg/snug dark:text-neutral-100">
-            <Link href={`/news/${handle}`} title={title}>
+            <Link href={`/post/${handle}`} title={title}>
               {title}
             </Link>
           </h2>

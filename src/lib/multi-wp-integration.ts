@@ -108,7 +108,6 @@ export class MultiWordPressIntegration {
       const params = new URLSearchParams({
         per_page: perPage.toString(),
         page: page.toString(),
-        _fields: 'id,date,slug,title,excerpt,content,author,featured_media,categories,tags,_embedded',
         _embed: 'author,wp:featuredmedia,wp:term',
         orderby: 'date',
         order: 'desc'
@@ -232,7 +231,6 @@ export class MultiWordPressIntegration {
         const params = new URLSearchParams({
           per_page: perPage.toString(),
           page: page.toString(),
-          _fields: 'id,date,slug,title,excerpt,content,author,featured_media,categories,tags,_embedded',
           _embed: 'author,wp:featuredmedia,wp:term',
           orderby: 'date',
           order: 'desc'
@@ -310,7 +308,7 @@ export class MultiWordPressIntegration {
   convertWordPressPostToTPost(wpPost: WordPressPost): TPost {
     console.log('[convertWordPressPostToTPost] Converting post:', wpPost.title.rendered)
     console.log('[convertWordPressPostToTPost] Content length:', wpPost.content?.rendered?.length || 0)
-    
+
     const featuredImage = wpPost._embedded?.['wp:featuredmedia']?.[0]
     const author = wpPost._embedded?.author?.[0]
     const categories = wpPost._embedded?.['wp:term']?.[0] || []
@@ -361,7 +359,7 @@ export class MultiWordPressIntegration {
     const getFeaturedImage = () => {
       console.log('[getFeaturedImage] Processing featured image for post:', wpPost.id)
       console.log('[getFeaturedImage] Has _embedded featuredmedia:', !!featuredImage)
-      
+
       // Helper function to validate URL
       const isValidUrl = (url: string): boolean => {
         if (!url || typeof url !== 'string') return false
@@ -558,17 +556,17 @@ export class MultiWordPressIntegration {
         if (response.ok) {
           const posts: WordPressPost[] = await response.json()
           console.log('[getPostBySlug] Found', posts.length, 'post(s) from', site.name)
-          
+
           if (posts.length > 0) {
             const post = posts[0]
             console.log('[getPostBySlug] Post:', post.title.rendered)
-            
+
             post._site = {
               id: site.id,
               name: site.name,
               url: site.url
             }
-            
+
             return this.convertWordPressPostToTPost(post)
           }
         }

@@ -76,7 +76,7 @@ const PostFeaturedMedia: FC<Props> = ({ className, post, isHover = false, priori
     }
 
     return (
-      <Link href={`/news/${handle}`}>
+      <Link href={`/post/${handle}`}>
         <Image
           alt={featuredImage.alt || title}
           fill

@@ -7,6 +7,10 @@ import { db } from "@/lib/firebase/config";
 interface Subscriber {
     id: string;
     email: string;
+    firstName?: string;
+    lastName?: string;
+    city?: string;
+    category?: string;
     createdAt: Timestamp | null;
 }
 
@@ -58,7 +62,10 @@ export default function AdminNewsletterPage() {
                     <table className="w-full text-left text-sm">
                         <thead className="bg-neutral-50 dark:bg-neutral-700/50">
                             <tr>
+                                <th className="px-6 py-4 font-semibold text-neutral-900 dark:text-white">Name</th>
                                 <th className="px-6 py-4 font-semibold text-neutral-900 dark:text-white">Email</th>
+                                <th className="px-6 py-4 font-semibold text-neutral-900 dark:text-white">City</th>
+                                <th className="px-6 py-4 font-semibold text-neutral-900 dark:text-white">Category</th>
                                 <th className="px-6 py-4 font-semibold text-neutral-900 dark:text-white">Subscribed Date</th>
                                 <th className="px-6 py-4 font-semibold text-neutral-900 dark:text-white text-right">Actions</th>
                             </tr>
@@ -66,7 +73,7 @@ export default function AdminNewsletterPage() {
                         <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
                             {subscribers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={3} className="px-6 py-8 text-center text-neutral-500 dark:text-neutral-400">
+                                    <td colSpan={6} className="px-6 py-8 text-center text-neutral-500 dark:text-neutral-400">
                                         No subscribers found yet.
                                     </td>
                                 </tr>
@@ -74,13 +81,23 @@ export default function AdminNewsletterPage() {
                                 subscribers.map((sub) => (
                                     <tr key={sub.id} className="hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors">
                                         <td className="px-6 py-4 text-neutral-700 dark:text-neutral-300">
+                                            {sub.firstName} {sub.lastName}
+                                        </td>
+                                        <td className="px-6 py-4 text-neutral-700 dark:text-neutral-300">
                                             {sub.email}
+                                        </td>
+                                        <td className="px-6 py-4 text-neutral-700 dark:text-neutral-300">
+                                            {sub.city}
+                                        </td>
+                                        <td className="px-6 py-4 text-neutral-700 dark:text-neutral-300">
+                                            <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">
+                                                {sub.category}
+                                            </span>
                                         </td>
                                         <td className="px-6 py-4 text-neutral-500 dark:text-neutral-400">
                                             {sub.createdAt?.toDate().toLocaleDateString()} {sub.createdAt?.toDate().toLocaleTimeString()}
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            {/* Placeholder for future actions like delete */}
                                             <span className="text-neutral-400 text-xs">...</span>
                                         </td>
                                     </tr>

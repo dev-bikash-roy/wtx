@@ -17,12 +17,12 @@ const Card12: FC<Props> = ({ className, post }) => {
   return (
     <div className={clsx('group post-card-12 relative flex flex-col', className)}>
       <Link
-        href={`/news/${handle}`}
+        href={`/post/${handle}`}
         className="relative block aspect-4/3 w-full shrink-0 grow overflow-hidden rounded-3xl"
       >
         <Image
           className="object-cover brightness-100 transition-[filter] duration-300 group-hover:brightness-75"
-          src={featuredImage}
+          src={featuredImage.src}
           alt={title}
           fill
         />
@@ -39,7 +39,7 @@ const Card12: FC<Props> = ({ className, post }) => {
         <h2
           className={`nc-card-title block font-semibold text-neutral-900 transition-colors sm:text-lg lg:text-2xl dark:text-neutral-100`}
         >
-          <Link href={`/news/${handle}`} className="line-clamp-2" title={title}>
+          <Link href={`/post/${handle}`} className="line-clamp-2" title={title}>
             {title}
           </Link>
         </h2>

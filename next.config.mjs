@@ -243,6 +243,11 @@ const nextConfig = {
         hostname: 'images.hellomagazine.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'imgproxy.divecdn.com',
+        pathname: '/**',
+      },
     ],
   },
 

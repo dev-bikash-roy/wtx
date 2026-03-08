@@ -235,7 +235,7 @@ const Page = async () => {
             </div>
 
             {/* Subscribe */}
-            <SectionSubscribe2 />
+            <SectionSubscribe2 category="UK Politics" />
 
         </div>
     )

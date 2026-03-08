@@ -10,6 +10,7 @@ import SectionLargeSlider from '@/components/SectionLargeSlider'
 import CardLarge1 from '@/components/PostCards/CardLarge1'
 import Card11 from '@/components/PostCards/Card11'
 import Card2 from '@/components/PostCards/Card2'
+import SectionSubscribe2 from '@/components/SectionSubscribe2'
 
 // Enable ISR - revalidate every 5 minutes
 export const revalidate = 300
@@ -308,6 +309,11 @@ const Page = async () => {
             {travelTips.map(post => <Card11 key={post.id} post={post} />)}
           </div>
         </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
+        <SectionSubscribe2 category="General" />
       </section>
 
       {/* Section 9 */}
