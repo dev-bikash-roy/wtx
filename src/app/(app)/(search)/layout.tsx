@@ -37,7 +37,7 @@ const Layout: React.FC<Props> = async ({ children }) => {
         />
 
         {/* SUBCRIBES */}
-        <SectionSubscribe2 />
+        <SectionSubscribe2 item1="Get the latest news updates" item2="Get access to premium content" />
       </div>
     </ApplicationLayout>
   )

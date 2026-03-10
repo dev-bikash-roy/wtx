@@ -8,9 +8,16 @@ import NewsletterForm from './NewsletterForm'
 interface Props {
   className?: string
   category?: string
+  item1?: string
+  item2?: string
 }
 
-const SectionSubscribe2: FC<Props> = ({ className, category }) => {
+const SectionSubscribe2: FC<Props> = ({ 
+  className, 
+  category,
+  item1 = "Get more discount",
+  item2 = "Get premium magazines"
+}) => {
   return (
     <div className={clsx('section-subscribe-2 relative flex flex-col items-center lg:flex-row', className)}>
       <div className="mb-14 shrink-0 lg:me-10 lg:mb-0 lg:w-2/5">
@@ -21,11 +28,11 @@ const SectionSubscribe2: FC<Props> = ({ className, category }) => {
         <ul className="mt-10 space-y-5">
           <li className="flex items-center gap-x-4">
             <Badge color="blue">01</Badge>
-            <span className="font-medium text-neutral-700 dark:text-neutral-300">Get more discount</span>
+            <span className="font-medium text-neutral-700 dark:text-neutral-300">{item1}</span>
           </li>
           <li className="flex items-center gap-x-4">
             <Badge color="red">02</Badge>
-            <span className="font-medium text-neutral-700 dark:text-neutral-300">Get premium magazines</span>
+            <span className="font-medium text-neutral-700 dark:text-neutral-300">{item2}</span>
           </li>
         </ul>
         <NewsletterForm category={category} />

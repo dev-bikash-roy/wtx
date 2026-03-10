@@ -70,7 +70,7 @@ const PageContact = () => {
       {/* OTHER SECTIONS */}
       <div className="container mt-20 lg:mt-32">
         <Divider />
-        <SectionSubscribe2 className="mt-20 lg:mt-32" />
+        <SectionSubscribe2 className="mt-20 lg:mt-32" item1="Get our top stories delivered to your inbox" item2="Get access to premium content" />
       </div>
     </div>
   )

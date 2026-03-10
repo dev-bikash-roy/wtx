@@ -34,7 +34,7 @@ const Layout: React.FC<Props> = async ({ children }) => {
           authors={authors.slice(0, 10)}
         />
 
-        <SectionSubscribe2 />
+        <SectionSubscribe2 item1="Get the latest stories from our authors" item2="Get access to premium content" />
       </div>
     </ApplicationLayout>
   )

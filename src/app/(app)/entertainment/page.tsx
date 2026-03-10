@@ -126,7 +126,7 @@ const Page = async () => {
             />
 
             {/* 8. Subscribe */}
-            <SectionSubscribe2 category="Entertainment" />
+            <SectionSubscribe2 category="Entertainment" item1="Latest entertainment news and features" item2="Get access to premium content" />
         </div>
     )
 }

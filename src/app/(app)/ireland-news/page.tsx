@@ -126,7 +126,7 @@ const Page = async () => {
             />
 
             {/* 8. Subscribe */}
-            <SectionSubscribe2 category="Ireland News" />
+            <SectionSubscribe2 category="Ireland News" item1="Local and National news from Ireland" item2="Get access to premium content" />
         </div>
     )
 }

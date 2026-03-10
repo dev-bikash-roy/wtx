@@ -109,7 +109,7 @@ const Page = async () => {
         widgetPosts={posts.slice(0, 4)}
       />
 
-      <SectionSubscribe2 />
+      <SectionSubscribe2 item1="Get the latest news and analysis to your email" item2="Get access to premium content" />
     </div>
   )
 }

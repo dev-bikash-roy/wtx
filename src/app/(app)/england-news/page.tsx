@@ -108,27 +108,27 @@ const Page = async () => {
         <div className="absolute inset-0 bg-gradient-to-r from-[#C8102E]/95 via-[#C8102E]/80 to-black/60" />
 
         {/* Content */}
-        <div className="relative z-10 px-4 sm:px-6 lg:px-8 xl:px-10 py-16 lg:py-24">
+        <div className="relative z-10 px-4 sm:px-6 lg:px-8 xl:px-10 py-10 lg:py-14">
           <div className="max-w-3xl">
             {/* England flag stripe accent */}
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-1 w-10 bg-white rounded-full" />
-              <span className="text-white/80 text-sm font-semibold tracking-widest uppercase">WTX News</span>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-1 w-8 bg-white rounded-full" />
+              <span className="text-white/80 text-xs font-semibold tracking-widest uppercase">WTX News</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 drop-shadow-lg">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-3 drop-shadow-lg">
               England News
             </h1>
-            <p className="text-lg text-white/80 max-w-xl leading-relaxed mb-8">
+            <p className="text-base text-white/80 max-w-xl leading-relaxed mb-6">
               Latest breaking news and local updates from cities, counties, and communities across England.
             </p>
 
             {/* Quick topic pills */}
             <div className="flex flex-wrap gap-2">
-              {['Politics', 'Crime', 'Transport', 'Health', 'Economy', 'Education'].map(topic => (
+              {['Politics', 'Crime', 'Transport', 'Health', 'Economy', 'Weather'].map(topic => (
                 <span
                   key={topic}
-                  className="px-4 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-full backdrop-blur-sm cursor-pointer transition-colors"
+                  className="px-3 py-1 bg-white/20 hover:bg-white/30 text-white text-xs font-medium rounded-full backdrop-blur-sm cursor-pointer transition-colors"
                 >
                   {topic}
                 </span>
@@ -461,7 +461,11 @@ const Page = async () => {
 
       {/* Newsletter */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
-        <SectionSubscribe2 category="England News" />
+        <SectionSubscribe2 
+          category="England News" 
+          item1="Local and National news from England"
+          item2="Get access to premium content"
+        />
       </section>
     </div>
   )

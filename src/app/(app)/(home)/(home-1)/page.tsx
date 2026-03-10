@@ -313,7 +313,11 @@ const Page = async () => {
 
       {/* Newsletter */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
-        <SectionSubscribe2 category="General" />
+        <SectionSubscribe2 
+          category="General" 
+          item1="Get the latest news and analysis to your email"
+          item2="Get access to premium content"
+        />
       </section>
 
       {/* Section 9 */}

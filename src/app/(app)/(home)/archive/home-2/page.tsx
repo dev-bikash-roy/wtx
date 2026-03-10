@@ -77,7 +77,7 @@ const Page = async () => {
         />
       </div>
 
-      <SectionSubscribe2 />
+      <SectionSubscribe2 item1="Get the latest news and analysis to your email" item2="Get access to premium content" />
 
       <div className="relative py-16 lg:py-20">
         <BackgroundSection />

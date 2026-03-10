@@ -69,7 +69,7 @@ export default async function LatestNewsPage() {
 
             {renderContent()}
 
-            <SectionSubscribe2 category="UK News" className="mt-20 lg:mt-32" />
+            <SectionSubscribe2 category="UK News" className="mt-20 lg:mt-32" item1="Get the latest news and analysis to your email" item2="Get access to premium content" />
         </div>
     )
 }

@@ -225,7 +225,7 @@ const Page = async () => {
             />
 
             {/* 13. Subscribe */}
-            <SectionSubscribe2 category="Sports News" />
+            <SectionSubscribe2 category="Sports News" item1="Latest sports news and updates" item2="Get access to premium content" />
 
         </div>
     )

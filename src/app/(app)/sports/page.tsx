@@ -141,7 +141,7 @@ const Page = async () => {
         postCardName="card10"
       />
 
-      <SectionSubscribe2 category="Sports News" />
+      <SectionSubscribe2 category="Sports News" item1="Latest sports news and updates" item2="Get access to premium content" />
 
     </div>
   )

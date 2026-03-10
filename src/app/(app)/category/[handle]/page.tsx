@@ -129,7 +129,7 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
         <PaginationWrapper className="mt-20" />
 
         {/* SUBSCRIBE */}
-        <SectionSubscribe2 category={`${category.name}`} className="mt-20 lg:mt-32" />
+        <SectionSubscribe2 category={`${category.name}`} className="mt-20 lg:mt-32" item1="Top stories from this category to your inbox" item2="Get access to premium content" />
       </div>
     </div>
   )
