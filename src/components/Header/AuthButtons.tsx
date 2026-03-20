@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth, type AuthUser } from '@/contexts/AuthContext'
 import Link from 'next/link'
 import { Fragment, useEffect } from 'react'
 import { Menu, Transition } from '@headlessui/react'
@@ -15,9 +15,9 @@ function triggerAuthIntent() {
 
 export default function AuthButtons() {
   // Try to use auth context, but don't fail if it's not available
-  let user = null
-  let loading = false
-  let logout = async () => {}
+  let user: AuthUser | null = null
+  let loading: boolean = false
+  let logout: () => Promise<void> = async () => {}
 
   try {
     const auth = useAuth()
