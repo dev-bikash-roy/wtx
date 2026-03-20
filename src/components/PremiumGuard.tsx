@@ -37,7 +37,7 @@ export default function PremiumGuard({ postCategories, children }: Props) {
         for (const cat of postCategories) {
           const perm = permissions[cat.handle];
           if (perm === "premium") { required = "premium"; break; }
-          if (perm === "basic" || perm === "paid") required = "basic";
+          if (perm === "basic") required = "basic";
         }
         setRequiredPlan(required);
       } catch {

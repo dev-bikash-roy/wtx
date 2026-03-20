@@ -70,11 +70,11 @@ export default function UserProfile() {
                   <p className="text-neutral-700 dark:text-neutral-300">
                     <span className="font-medium">Plan:</span> 
                     <span className={`ml-2 px-2 py-1 rounded text-sm ${
-                      user.profile.plan === 'paid' 
+                      user.profile.plan !== 'free'
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
                         : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
                     }`}>
-                      {user.profile.plan === 'paid' ? 'Premium' : 'Free'}
+                      {user.profile.plan === 'premium' ? 'Premium' : user.profile.plan === 'basic' ? 'Basic' : 'Free'}
                     </span>
                   </p>
                   <p className="text-neutral-700 dark:text-neutral-300">
@@ -105,7 +105,7 @@ export default function UserProfile() {
                 </ul>
               </div>
               
-              {user.profile?.plan === 'paid' ? (
+              {user.profile?.plan !== 'free' && user.profile?.plan ? (
                 <div className="border-2 border-green-500 rounded-lg p-4 bg-green-50 dark:bg-green-900/20">
                   <h3 className="font-semibold text-green-800 dark:text-green-200">Premium Plan ✓</h3>
                   <ul className="mt-2 text-sm text-green-700 dark:text-green-300 space-y-1">
