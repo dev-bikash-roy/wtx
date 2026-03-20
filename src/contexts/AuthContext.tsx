@@ -13,13 +13,19 @@ import { auth, db } from "@/lib/firebase/config";
 import { useRouter } from "next/navigation";
 
 // Define the shape of our User Profile stored in Firestore
+export type MembershipPlan = "free" | "basic" | "premium";
+
 export interface UserProfile {
   uid: string;
   email: string;
   displayName?: string;
   photoURL?: string;
   role: "user" | "admin";
-  plan: "free" | "paid";
+  plan: MembershipPlan;
+  paddleSubscriptionId?: string;
+  paddleCustomerId?: string;
+  subscriptionStatus?: "active" | "cancelled" | "past_due" | "paused";
+  subscriptionExpiresAt?: Date;
   createdAt: Date;
   lastLoginAt: Date;
 }

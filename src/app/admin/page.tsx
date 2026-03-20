@@ -7,6 +7,8 @@ import Link from "next/link";
 interface AdminStats {
   totalUsers: number;
   paidUsers: number;
+  basicUsers: number;
+  premiumUsers: number;
   freeUsers: number;
   totalPosts: number;
   lastUpdated: string;
@@ -119,6 +121,9 @@ export default function AdminDashboard() {
               <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
                 {stats?.paidUsers || 0}
               </p>
+              <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                Basic: {stats?.basicUsers || 0} · Premium: {stats?.premiumUsers || 0}
+              </p>
             </div>
             <span className="p-2 bg-green-50 text-green-600 rounded-lg dark:bg-green-900/20 dark:text-green-400">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -179,6 +184,10 @@ export default function AdminDashboard() {
           <div className="space-y-3">
             <Link href="/admin/users" className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors dark:bg-neutral-700 dark:hover:bg-neutral-600">
               <span className="font-medium text-gray-700 dark:text-gray-200">Manage Users</span>
+              <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </Link>
+            <Link href="/admin/memberships" className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors dark:bg-neutral-700 dark:hover:bg-neutral-600">
+              <span className="font-medium text-gray-700 dark:text-gray-200">Manage Memberships</span>
               <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             </Link>
             <Link href="/admin/posts" className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors dark:bg-neutral-700 dark:hover:bg-neutral-600">

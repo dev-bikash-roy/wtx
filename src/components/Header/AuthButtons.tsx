@@ -79,6 +79,13 @@ export default function AuthButtons() {
               <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-neutral-700">
                 <p className="font-medium">{user.firebaseUser.displayName || 'User'}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">{user.firebaseUser.email}</p>
+                <span className={`mt-1 inline-block text-xs px-2 py-0.5 rounded-full font-medium capitalize ${
+                  user.profile?.plan === 'premium' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' :
+                  user.profile?.plan === 'basic' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' :
+                  'bg-gray-100 text-gray-600 dark:bg-neutral-700 dark:text-gray-400'
+                }`}>
+                  {user.profile?.plan ?? 'free'} plan
+                </span>
               </div>
               
               <Menu.Item>
@@ -90,6 +97,19 @@ export default function AuthButtons() {
                     } block px-4 py-2 text-sm`}
                   >
                     My Profile
+                  </Link>
+                )}
+              </Menu.Item>
+
+              <Menu.Item>
+                {({ active }) => (
+                  <Link
+                    href="/pricing"
+                    className={`${
+                      active ? 'bg-gray-100 text-gray-900 dark:bg-neutral-700 dark:text-white' : 'text-gray-700 dark:text-gray-300'
+                    } block px-4 py-2 text-sm`}
+                  >
+                    {user.profile?.plan === 'free' ? '⭐ Upgrade Plan' : 'Manage Membership'}
                   </Link>
                 )}
               </Menu.Item>
@@ -143,6 +163,13 @@ export default function AuthButtons() {
 
   return (
     <div className="flex items-center gap-2">
+      <Link
+        href="/pricing"
+        onClick={triggerAuthIntent}
+        className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-neutral-700 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-500"
+      >
+        Membership
+      </Link>
       <Link
         href="/login"
         onClick={triggerAuthIntent}

@@ -280,6 +280,18 @@ const nextConfig = {
             key: 'Link',
             value: '<https://www.googletagmanager.com>; rel=preconnect, <https://wtxnews.com>; rel=preconnect',
           },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.paddle.com https://sandbox-cdn.paddle.com https://public.profitwell.com https://www.googletagmanager.com https://www.google-analytics.com",
+              "frame-src 'self' https://buy.paddle.com https://sandbox-buy.paddle.com https://checkout.paddle.com",
+              "connect-src 'self' https://*.paddle.com https://checkout-service.paddle.com https://sandbox-checkout-service.paddle.com https://www.google-analytics.com https://*.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com wss://*.firebaseio.com",
+              "img-src 'self' data: blob: https: http:",
+              "style-src 'self' 'unsafe-inline' https://cdn.paddle.com",
+              "font-src 'self' data: https://cdn.paddle.com",
+            ].join('; '),
+          },
         ],
       },
       {

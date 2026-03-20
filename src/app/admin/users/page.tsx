@@ -9,9 +9,9 @@ interface User {
     uid: string;
     email: string;
     role: "user" | "admin";
-    plan: "free" | "paid";
+    plan: "free" | "basic" | "premium";
     createdAt: string;
-    lastLoginAt?: string; // Should be added to DB model if we want to show it
+    lastLoginAt?: string;
 }
 
 export default function UsersPage() {
@@ -71,7 +71,8 @@ export default function UsersPage() {
     };
 
     const filteredUsers = users.filter(u => {
-        if (filter === 'paid') return u.plan === 'paid';
+        if (filter === 'basic') return u.plan === 'basic';
+        if (filter === 'premium') return u.plan === 'premium';
         if (filter === 'free') return u.plan === 'free';
         if (filter === 'admin') return u.role === 'admin';
         return true;
@@ -119,7 +120,7 @@ export default function UsersPage() {
                         <div>
                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Paid Subscribers</p>
                             <h3 className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">
-                                {users.filter(u => u.plan === 'paid').length}
+                                {users.filter(u => u.plan !== 'free').length}
                             </h3>
                         </div>
                         <span className="p-2 bg-green-50 text-green-600 rounded-lg dark:bg-green-900/20 dark:text-green-400">
@@ -182,7 +183,7 @@ export default function UsersPage() {
                     </div>
 
                     <div className="flex gap-2">
-                        {['all', 'paid', 'free', 'admin'].map((f) => (
+                        {['all', 'free', 'basic', 'premium', 'admin'].map((f) => (
                             <button
                                 key={f}
                                 onClick={() => setFilter(f)}
@@ -243,13 +244,17 @@ export default function UsersPage() {
                                         <select
                                             value={u.plan}
                                             onChange={(e) => handleUpdate(u.uid, "plan", e.target.value)}
-                                            className={`text-sm rounded-full px-3 py-1 font-medium border-0 focus:ring-2 ring-offset-1 focus:ring-primary-500 cursor-pointer ${u.plan === 'paid'
-                                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                                : 'bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-gray-300'
+                                            className={`text-sm rounded-full px-3 py-1 font-medium border-0 focus:ring-2 ring-offset-1 focus:ring-primary-500 cursor-pointer ${
+                                                u.plan === 'premium'
+                                                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                                                    : u.plan === 'basic'
+                                                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                                                    : 'bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-gray-300'
                                                 }`}
                                         >
                                             <option value="free">Free</option>
-                                            <option value="paid">Pro</option>
+                                            <option value="basic">Basic</option>
+                                            <option value="premium">Premium</option>
                                         </select>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

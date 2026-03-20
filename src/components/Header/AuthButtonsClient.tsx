@@ -8,6 +8,12 @@ export default function AuthButtonsClient() {
   return (
     <div className="flex items-center gap-2">
       <Link
+        href="/pricing"
+        className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-neutral-700 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-500"
+      >
+        Membership
+      </Link>
+      <Link
         href="/login"
         className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-neutral-700 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-500"
       >

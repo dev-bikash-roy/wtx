@@ -69,12 +69,12 @@ export default function UserProfile() {
                 <div className="space-y-2">
                   <p className="text-neutral-700 dark:text-neutral-300">
                     <span className="font-medium">Plan:</span> 
-                    <span className={`ml-2 px-2 py-1 rounded text-sm ${
-                      user.profile.plan === 'paid' 
+                    <span className={`ml-2 px-2 py-1 rounded text-sm capitalize ${
+                      user.profile.plan !== 'free'
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
                         : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
                     }`}>
-                      {user.profile.plan === 'paid' ? 'Premium' : 'Free'}
+                      {user.profile.plan}
                     </span>
                   </p>
                   <p className="text-neutral-700 dark:text-neutral-300">
@@ -93,45 +93,32 @@ export default function UserProfile() {
           {/* Plan Benefits */}
           <div className="mt-8">
             <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              Your Benefits
+              Membership
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="border rounded-lg p-4 dark:border-neutral-600">
-                <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">Free Plan</h3>
-                <ul className="mt-2 text-sm text-neutral-600 dark:text-neutral-400 space-y-1">
-                  <li>• Access to free articles</li>
-                  <li>• Basic news updates</li>
-                  <li>• Community access</li>
-                </ul>
+            {user.profile?.plan === 'free' ? (
+              <div className="rounded-lg border border-neutral-200 dark:border-neutral-600 p-6">
+                <p className="text-neutral-600 dark:text-neutral-400 mb-4">
+                  You are on the <span className="font-semibold">Free</span> plan. Upgrade to unlock premium content.
+                </p>
+                <Link href="/pricing">
+                  <ButtonPrimary>View Membership Plans</ButtonPrimary>
+                </Link>
               </div>
-              
-              {user.profile?.plan === 'paid' ? (
-                <div className="border-2 border-green-500 rounded-lg p-4 bg-green-50 dark:bg-green-900/20">
-                  <h3 className="font-semibold text-green-800 dark:text-green-200">Premium Plan ✓</h3>
-                  <ul className="mt-2 text-sm text-green-700 dark:text-green-300 space-y-1">
-                    <li>• All free plan benefits</li>
-                    <li>• Premium articles access</li>
-                    <li>• Ad-free experience</li>
-                    <li>• Early access to content</li>
-                    <li>• Priority support</li>
-                  </ul>
-                </div>
-              ) : (
-                <div className="border rounded-lg p-4 dark:border-neutral-600 opacity-60">
-                  <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">Premium Plan</h3>
-                  <ul className="mt-2 text-sm text-neutral-600 dark:text-neutral-400 space-y-1">
-                    <li>• All free plan benefits</li>
-                    <li>• Premium articles access</li>
-                    <li>• Ad-free experience</li>
-                    <li>• Early access to content</li>
-                    <li>• Priority support</li>
-                  </ul>
-                  <ButtonPrimary className="mt-3 w-full">
-                    Upgrade to Premium
+            ) : (
+              <div className="rounded-lg border-2 border-green-500 bg-green-50 dark:bg-green-900/20 p-6">
+                <p className="font-semibold text-green-800 dark:text-green-200 capitalize mb-1">
+                  {user.profile?.plan} Plan ✓
+                </p>
+                <p className="text-sm text-green-700 dark:text-green-300 mb-4">
+                  Status: {user.profile?.subscriptionStatus ?? 'active'}
+                </p>
+                <Link href="/pricing">
+                  <ButtonPrimary className="bg-neutral-200 text-neutral-700 hover:bg-neutral-300 dark:bg-neutral-700 dark:text-neutral-200">
+                    Manage Subscription
                   </ButtonPrimary>
-                </div>
-              )}
-            </div>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Actions */}

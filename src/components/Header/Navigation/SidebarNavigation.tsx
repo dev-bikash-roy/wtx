@@ -73,6 +73,14 @@ const SidebarNavigation: React.FC<Props> = ({ data }) => {
               >
                 My Profile
               </Link>
+
+              <Link
+                href="/pricing"
+                onClick={handleClose}
+                className="flex items-center px-3 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg font-medium"
+              >
+                {user.profile?.plan === 'free' ? '⭐ Upgrade Plan' : 'Manage Membership'}
+              </Link>
               
               {user.profile?.role === 'admin' && (
                 <Link
@@ -102,6 +110,13 @@ const SidebarNavigation: React.FC<Props> = ({ data }) => {
     // Not logged in - show login/signup buttons
     return (
       <div className="px-3 py-4 border-b border-neutral-200 dark:border-neutral-700 space-y-2">
+        <Link
+          href="/pricing"
+          onClick={handleClose}
+          className="flex w-full items-center justify-center px-4 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 border border-primary-300 dark:border-primary-700 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20"
+        >
+          ⭐ Membership Plans
+        </Link>
         <Link
           href="/login"
           onClick={handleClose}

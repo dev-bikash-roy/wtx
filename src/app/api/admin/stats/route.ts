@@ -23,14 +23,17 @@ export async function GET(request: NextRequest) {
     const usersColl = adminDb.collection("users");
 
     const totalUsersSnap = await usersColl.count().get();
-    const paidUsersSnap = await usersColl.where("plan", "==", "paid").count().get();
+    const basicUsersSnap = await usersColl.where("plan", "==", "basic").count().get();
+    const premiumUsersSnap = await usersColl.where("plan", "==", "premium").count().get();
     const freeUsersSnap = await usersColl.where("plan", "==", "free").count().get();
 
     const stats = {
       totalUsers: totalUsersSnap.data().count,
-      paidUsers: paidUsersSnap.data().count,
+      paidUsers: basicUsersSnap.data().count + premiumUsersSnap.data().count,
+      basicUsers: basicUsersSnap.data().count,
+      premiumUsers: premiumUsersSnap.data().count,
       freeUsers: freeUsersSnap.data().count,
-      totalPosts: 0, // Placeholder
+      totalPosts: 0,
       lastUpdated: new Date().toISOString()
     };
 
