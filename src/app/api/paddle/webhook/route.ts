@@ -41,14 +41,20 @@ export async function POST(req: NextRequest) {
         const customerId = sub.customer_id;
         const priceId = sub.items?.[0]?.price?.id;
         const plan: MembershipPlan = PRICE_TO_PLAN[priceId] ?? "basic";
+        const customerEmail = sub.customer?.email;
 
-        // Find user by paddleCustomerId
+        // Try by paddleCustomerId first, then email fallback
         const usersRef = db.collection("users");
-        const snap = await usersRef.where("paddleCustomerId", "==", customerId).limit(1).get();
+        let snap = await usersRef.where("paddleCustomerId", "==", customerId).limit(1).get();
+
+        if (snap.empty && customerEmail) {
+          snap = await usersRef.where("email", "==", customerEmail).limit(1).get();
+        }
 
         if (!snap.empty) {
           await snap.docs[0].ref.update({
             plan,
+            paddleCustomerId: customerId,
             paddleSubscriptionId: sub.id,
             subscriptionStatus: sub.status,
             subscriptionExpiresAt: sub.current_billing_period?.ends_at
@@ -78,18 +84,33 @@ export async function POST(req: NextRequest) {
       }
 
       case "transaction.completed": {
-        // One-time payment fallback — link customer to user via metadata
+        // Handle payment — link customer to user via uid in custom_data or email fallback
         const tx = event.data;
         const uid = tx.custom_data?.uid;
         const priceId = tx.items?.[0]?.price?.id;
         const plan: MembershipPlan = PRICE_TO_PLAN[priceId] ?? "basic";
+        const customerEmail = tx.customer?.email;
 
         if (uid) {
+          // From Next.js checkout — direct uid match
           await db.collection("users").doc(uid).update({
             plan,
             paddleCustomerId: tx.customer_id,
             subscriptionStatus: "active",
           });
+        } else if (customerEmail) {
+          // From WordPress payment link — match by email
+          const snap = await db.collection("users")
+            .where("email", "==", customerEmail)
+            .limit(1)
+            .get();
+          if (!snap.empty) {
+            await snap.docs[0].ref.update({
+              plan,
+              paddleCustomerId: tx.customer_id,
+              subscriptionStatus: "active",
+            });
+          }
         }
         break;
       }
