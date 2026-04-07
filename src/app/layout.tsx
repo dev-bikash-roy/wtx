@@ -54,6 +54,30 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Start GPT Tag */}
+        <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" />
+        <Script id="gpt-init" strategy="afterInteractive">
+          {`
+            window.googletag = window.googletag || {cmd: []};
+            googletag.cmd.push(function() {
+              googletag.defineSlot('/21601254161/UK-Leaderboard-970-300-1', [[970,90],[970,250],[300,250],[728,90],[320,50]], 'div-gpt-ad-2784081-1').addService(googletag.pubads());
+              googletag.defineSlot('/21601254161/UK-Header-728-320-2', [[728,90],[320,50]], 'div-gpt-ad-2784081-2').addService(googletag.pubads());
+              googletag.defineSlot('/21601254161/UK-Banner-728-970-320-300-3', [[728,90],[970,90],[970,250],[320,50]], 'div-gpt-ad-2784081-3').addService(googletag.pubads());
+              googletag.defineSlot('/21601254161/UK-MREC-4', [[300,250]], 'div-gpt-ad-2784081-4').addService(googletag.pubads());
+              googletag.defineSlot('/21601254161/UK-FilmStrip-5', [[300,250],[300,600]], 'div-gpt-ad-2784081-5').addService(googletag.pubads());
+              googletag.defineSlot('/21601254161/UK-Banner-728-320-6', [[320,50],[728,90]], 'div-gpt-ad-2784081-6').addService(googletag.pubads());
+              googletag.defineSlot('/21601254161/UK-MREC-7', [[300,250]], 'div-gpt-ad-2784081-7').addService(googletag.pubads());
+              googletag.defineSlot('/21601254161/UK-Banner-728-320-8', [[728,90],[320,50]], 'div-gpt-ad-2784081-8').addService(googletag.pubads());
+              googletag.defineSlot('/21601254161/UK-OUTSREAM-1x1-9', [[1,1]], 'div-gpt-ad-2784081-9').addService(googletag.pubads());
+              googletag.defineSlot('/21601254161/UK-Banner-970-728-320-300-480-10', [[300,250],[970,90],[970,250],[320,480],[728,90]], 'div-gpt-ad-2784081-10').addService(googletag.pubads());
+              googletag.pubads().enableSingleRequest();
+              googletag.enableServices();
+            });
+          `}
+        </Script>
+        {/* End GPT Tag */}
+      </head>
       <body className={`${beVietnamPro.variable} bg-white text-base text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200`} style={{ fontFamily: 'var(--font-be-vietnam-pro), sans-serif' }}>
         {/* Google Analytics - Deferred */}
         <Script
