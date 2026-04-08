@@ -1,4 +1,5 @@
 import JsonLd from '@/components/JsonLd'
+import GptAdSlot from '@/components/GptAdSlot'
 import ArchiveSortByListBox from '@/components/ArchiveSortByListBox'
 import ModalCategories from '@/components/ModalCategories'
 import ModalTags from '@/components/ModalTags'
@@ -115,6 +116,9 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
             <Card11 key={post.id} post={post} />
           ))}
         </div>
+
+        {/* Ad Slot 3 - below post grid */}
+        <GptAdSlot slotId="div-gpt-ad-2784081-3" className="w-full mt-10" />
 
         {/* Show message if no posts found */}
         {posts.length === 0 && (

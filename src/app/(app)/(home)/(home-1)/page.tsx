@@ -11,6 +11,7 @@ import CardLarge1 from '@/components/PostCards/CardLarge1'
 import Card11 from '@/components/PostCards/Card11'
 import Card2 from '@/components/PostCards/Card2'
 import SectionSubscribe2 from '@/components/SectionSubscribe2'
+import GptAdSlot from '@/components/GptAdSlot'
 
 // Enable ISR - revalidate every 5 minutes
 export const revalidate = 300
@@ -194,6 +195,9 @@ const Page = async () => {
         </div>
       </section>
 
+      {/* Ad Slot 2 - after hero */}
+      <GptAdSlot slotId="div-gpt-ad-2784081-2" className="w-full" />
+
       {/* Section 2 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <h2 className="text-3xl lg:text-4xl font-semibold mb-2 text-neutral-900 dark:text-neutral-100">
@@ -281,6 +285,9 @@ const Page = async () => {
         </div>
       </section>
 
+      {/* Ad Slot 3 - mid page after sports */}
+      <GptAdSlot slotId="div-gpt-ad-2784081-3" className="w-full" />
+
       {/* Section 7 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
@@ -319,6 +326,9 @@ const Page = async () => {
           item2="Get access to premium content"
         />
       </section>
+
+      {/* Ad Slot 4 - before latest news */}
+      <GptAdSlot slotId="div-gpt-ad-2784081-4" className="w-full" />
 
       {/* Section 9 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">

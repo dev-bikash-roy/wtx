@@ -1,4 +1,5 @@
 import JsonLd from '@/components/JsonLd'
+import GptAdSlot from '@/components/GptAdSlot'
 import WidgetAbout from '@/components/WidgetAbout'
 import WidgetArchive from '@/components/WidgetArchive'
 import WidgetAuthors from '@/components/WidgetAuthors'
@@ -138,6 +139,11 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
       <div className="single-post-page">
         <SingleHeaderContainer post={post} />
 
+        {/* Ad Slot 2 - below post header */}
+        <div className="container mt-6">
+          <GptAdSlot slotId="div-gpt-ad-2784081-2" className="w-full" />
+        </div>
+
         <div className="container mt-12 flex flex-col lg:flex-row">
           <div className="w-full lg:w-3/5 xl:w-2/3 xl:pe-20">
             <SingleContentContainer post={post} comments={comments} />
@@ -146,6 +152,9 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
             <div className="space-y-7 lg:sticky lg:top-7">
               {/* Most engaging widgets first */}
               <WidgetNewsletter />
+
+              {/* Ad Slot 4 - sidebar MREC */}
+              <GptAdSlot slotId="div-gpt-ad-2784081-4" />
 
               {/* Content discovery widgets */}
               {relatedByCategory.length > 0 && (
@@ -176,6 +185,11 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Ad Slot 3 - above related posts */}
+        <div className="container mt-6">
+          <GptAdSlot slotId="div-gpt-ad-2784081-3" className="w-full" />
         </div>
 
         <SingleRelatedPosts relatedPosts={relatedPosts} moreFromAuthorPosts={moreFromAuthorPosts} />
