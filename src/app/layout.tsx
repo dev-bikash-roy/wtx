@@ -56,7 +56,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Start GPT Tag */}
-        <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" />
+        <Script
+          id="gpt-load"
+          src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"
+          strategy="afterInteractive"
+        />
         <Script id="gpt-init" strategy="afterInteractive">
           {`
             window.googletag = window.googletag || {cmd: []};
