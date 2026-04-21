@@ -1,12 +1,6 @@
 export async function getNavigation(): Promise<TNavigationItem[]> {
   return [
     {
-      id: 'home',
-      href: '/',
-      name: 'Home',
-      type: undefined,
-    },
-    {
       id: 'uk-news',
       href: '/category/uk-news',
       name: 'UK News',
