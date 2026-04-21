@@ -3,6 +3,7 @@ import { getAllPosts } from '@/data/posts'
 import Logo from '@/shared/Logo'
 import clsx from 'clsx'
 import { FC } from 'react'
+import Link from 'next/link'
 import HamburgerBtnMenu from './HamburgerBtnMenu'
 import Navigation from './Navigation/Navigation'
 import SearchModal from './SearchModal'
@@ -40,6 +41,12 @@ const Header2: FC<Props> = async ({ bottomBorder, className }) => {
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-x-0.5">
+          <Link
+            href="/subscription"
+            className="hidden lg:inline-flex items-center px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-colors whitespace-nowrap"
+          >
+            Subscribe
+          </Link>
           <div className="ms-2 flex lg:hidden">
             <HamburgerBtnMenu />
           </div>
