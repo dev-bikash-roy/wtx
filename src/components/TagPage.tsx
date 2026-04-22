@@ -18,7 +18,6 @@ export default async function TagPage({
   tag,
   title,
   description,
-  accentColor,
   accentFrom,
   accentVia,
   topics = [],
