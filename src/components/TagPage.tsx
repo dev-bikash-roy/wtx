@@ -9,9 +9,8 @@ interface TagPageProps {
   tag: string
   title: string
   description: string
-  accentColor: string // tailwind bg color e.g. 'bg-blue-700'
-  accentFrom: string  // gradient from e.g. 'from-blue-700/95'
-  accentVia: string   // gradient via
+  accentFrom: string
+  accentVia: string
   topics?: string[]
 }
 
