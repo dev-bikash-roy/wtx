@@ -327,20 +327,6 @@ const Page = async () => {
         />
       </section>
 
-      {/* Ad Slot 4 - before latest news */}
-      <GptAdSlot slotId="div-gpt-ad-2784081-4" className="w-full" />
-
-      {/* Section 9 */}
-      <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
-        <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
-          Latest News
-        </h2>
-        <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Most Recent</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {latestNews.map(post => <Card11 key={post.id} post={post} />)}
-        </div>
-      </section>
-
     </div>
   )
 }
