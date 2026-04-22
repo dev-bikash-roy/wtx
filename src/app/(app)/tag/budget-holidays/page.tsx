@@ -12,6 +12,7 @@ export default function Page() {
   return (
     <TagPage
       tag="budget-holidays"
+      fallbackTag="travel"
       title="Budget Holidays"
       description="Affordable travel ideas, cheap flight deals, budget destinations and money-saving tips for your next holiday."
       accentFrom="from-orange-700/95"

@@ -12,6 +12,8 @@ export default function Page() {
   return (
     <TagPage
       tag="uk-news-briefing"
+      fallbackTag="uk-politics"
+      fallbackCategory="uk-news"
       title="UK News Briefing"
       description="Your essential daily briefing on the biggest UK stories — concise, clear and up to date."
       accentFrom="from-neutral-800/95"

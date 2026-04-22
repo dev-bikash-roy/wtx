@@ -12,6 +12,7 @@ export default function Page() {
   return (
     <TagPage
       tag="hiking"
+      fallbackTag="travel"
       title="Hiking"
       description="Trail guides, walking routes, gear reviews and outdoor adventure stories from across the UK and beyond."
       accentFrom="from-green-700/95"

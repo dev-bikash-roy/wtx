@@ -12,6 +12,7 @@ export default function Page() {
   return (
     <TagPage
       tag="uk-eu-relations"
+      fallbackTag="world-news"
       title="UK/EU Relations"
       description="Post-Brexit developments, trade agreements, and the evolving relationship between the UK and European Union."
       accentFrom="from-indigo-800/95"

@@ -12,6 +12,7 @@ export default function Page() {
   return (
     <TagPage
       tag="news-clips"
+      fallbackCategory="videos"
       title="News Clips"
       description="Watch the latest video news reports, breaking news clips and on-the-ground footage."
       accentFrom="from-gray-800/95"

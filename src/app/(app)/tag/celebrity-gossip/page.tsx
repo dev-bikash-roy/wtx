@@ -12,6 +12,8 @@ export default function Page() {
   return (
     <TagPage
       tag="celebrity-gossip"
+      fallbackTag="celebrities"
+      fallbackCategory="entertainment"
       title="Celebrity Gossip"
       description="All the latest showbiz news, celebrity stories, red carpet moments and entertainment gossip."
       accentFrom="from-pink-700/95"

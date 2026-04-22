@@ -12,6 +12,7 @@ export default function Page() {
   return (
     <TagPage
       tag="viral-videos"
+      fallbackCategory="videos"
       title="Viral Videos"
       description="The most watched, shared and talked-about videos on the internet right now."
       accentFrom="from-rose-700/95"

@@ -12,6 +12,7 @@ export default function Page() {
   return (
     <TagPage
       tag="world-news-briefing"
+      fallbackTag="world-news"
       title="World News Briefing"
       description="The most important international stories of the day, summarised and delivered clearly."
       accentFrom="from-teal-800/95"

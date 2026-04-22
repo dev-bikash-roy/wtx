@@ -12,6 +12,8 @@ export default function Page() {
   return (
     <TagPage
       tag="uk-elections"
+      fallbackTag="uk-politics"
+      fallbackCategory="politics"
       title="UK Elections"
       description="Comprehensive coverage of UK elections — results, polls, candidates and political analysis."
       accentFrom="from-red-700/95"

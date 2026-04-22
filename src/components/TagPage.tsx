@@ -7,6 +7,8 @@ import SectionSubscribe2 from '@/components/SectionSubscribe2'
 
 interface TagPageProps {
   tag: string
+  fallbackTag?: string        // broader tag to try if primary returns nothing
+  fallbackCategory?: string   // category to try if both tags return nothing
   title: string
   description: string
   accentFrom: string
@@ -16,13 +18,27 @@ interface TagPageProps {
 
 export default async function TagPage({
   tag,
+  fallbackTag,
+  fallbackCategory,
   title,
   description,
   accentFrom,
   accentVia,
   topics = [],
 }: TagPageProps) {
-  const posts = await getWordPressPostsByTag(tag, 50)
+  let posts = await getWordPressPostsByTag(tag, 50)
+
+  // If no posts, try fallback tag
+  if (posts.length === 0 && fallbackTag) {
+    posts = await getWordPressPostsByTag(fallbackTag, 50)
+  }
+
+  // If still no posts, try fallback category
+  if (posts.length === 0 && fallbackCategory) {
+    const { getWordPressPostsByCategory } = await import('@/data/wordpress-posts')
+    posts = await getWordPressPostsByCategory(fallbackCategory, 50)
+  }
+
   const topStories = posts.slice(0, 10)
   const morePosts = posts.slice(10, 22)
 

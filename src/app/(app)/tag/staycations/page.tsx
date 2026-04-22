@@ -12,6 +12,7 @@ export default function Page() {
   return (
     <TagPage
       tag="staycations"
+      fallbackTag="travel"
       title="Staycations"
       description="Discover the best of Britain — staycation destinations, hidden gems and tips for the perfect UK holiday."
       accentFrom="from-sky-700/95"

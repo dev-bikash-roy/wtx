@@ -12,6 +12,7 @@ export default function Page() {
   return (
     <TagPage
       tag="uk-us-relations"
+      fallbackTag="world-news"
       title="UK–US Relations"
       description="Covering the special relationship — trade, diplomacy, politics and culture between the UK and United States."
       accentFrom="from-blue-800/95"
