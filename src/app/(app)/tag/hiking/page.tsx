@@ -17,7 +17,11 @@ export default function Page() {
       description="Trail guides, walking routes, gear reviews and outdoor adventure stories from across the UK and beyond."
       accentFrom="from-green-700/95"
       accentVia="via-green-600/80"
-      topics={['UK Trails', 'National Parks', 'Gear', 'Safety', 'Wild Camping']}
+      topics={[
+        { label: 'Travel', slug: 'travel' },
+        { label: 'Travel News', slug: 'travel-news' },
+        { label: 'UK News', slug: 'uk-news' },
+      ]}
     />
   )
 }

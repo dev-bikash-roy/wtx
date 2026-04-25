@@ -16,7 +16,12 @@ export default function Page() {
       description="Tennis news from Wimbledon, the Grand Slams, ATP and WTA tours — results, rankings and player news."
       accentFrom="from-lime-700/95"
       accentVia="via-lime-600/80"
-      topics={['Wimbledon', 'Grand Slams', 'ATP', 'WTA', 'British Tennis']}
+      topics={[
+        { label: 'Wimbledon', slug: 'wimbledon' },
+        { label: 'Emma Raducanu', slug: 'emma-raducanu' },
+        { label: 'Novak Djokovic', slug: 'novak-djokovic' },
+        { label: 'Andy Murray', slug: 'andy-murray' },
+      ]}
     />
   )
 }

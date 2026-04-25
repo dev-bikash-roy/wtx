@@ -16,7 +16,11 @@ export default function Page() {
       description="Workout tips, fitness trends, gym news and expert wellbeing advice to keep you moving."
       accentFrom="from-cyan-700/95"
       accentVia="via-cyan-600/80"
-      topics={['Workouts', 'Nutrition', 'Mental Health', 'Running', 'Gym']}
+      topics={[
+        { label: 'Health & Wellness', slug: 'health-wellness' },
+        { label: 'Health', slug: 'health' },
+        { label: 'Sport', slug: 'sport' },
+      ]}
     />
   )
 }

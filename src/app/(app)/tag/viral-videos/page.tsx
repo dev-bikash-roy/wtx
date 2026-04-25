@@ -17,7 +17,11 @@ export default function Page() {
       description="The most watched, shared and talked-about videos on the internet right now."
       accentFrom="from-rose-700/95"
       accentVia="via-rose-600/80"
-      topics={['Trending', 'Funny', 'Inspiring', 'Shocking', 'Animals']}
+      topics={[
+        { label: 'Trending', slug: 'trending' },
+        { label: 'UK Trending', slug: 'uk-trending' },
+        { label: 'UK Entertainment', slug: 'uk-entertainment' },
+      ]}
     />
   )
 }

@@ -17,7 +17,12 @@ export default function Page() {
       description="Post-Brexit developments, trade agreements, and the evolving relationship between the UK and European Union."
       accentFrom="from-indigo-800/95"
       accentVia="via-indigo-700/80"
-      topics={['Brexit', 'Trade', 'Borders', 'Diplomacy']}
+      topics={[
+        { label: 'Brexit', slug: 'brexit' },
+        { label: 'EU Politics', slug: 'eu-politics' },
+        { label: 'UK Politics', slug: 'uk-politics' },
+        { label: 'Featured EU', slug: 'featured-eu' },
+      ]}
     />
   )
 }

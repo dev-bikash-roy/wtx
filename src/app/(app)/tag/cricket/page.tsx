@@ -16,7 +16,12 @@ export default function Page() {
       description="Comprehensive cricket coverage — England, The Ashes, Test cricket, T20 and international tournaments."
       accentFrom="from-amber-800/95"
       accentVia="via-amber-700/80"
-      topics={['England', 'The Ashes', 'Test Cricket', 'T20', 'IPL']}
+      topics={[
+        { label: 'Cricket News', slug: 'cricket-news' },
+        { label: 'Tennis', slug: 'tennis' },
+        { label: 'Formula 1', slug: 'formula-1' },
+        { label: 'Boxing', slug: 'boxing' },
+      ]}
     />
   )
 }

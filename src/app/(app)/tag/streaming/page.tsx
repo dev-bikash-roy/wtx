@@ -16,7 +16,11 @@ export default function Page() {
       description="What to watch, new releases, reviews and news from Netflix, Disney+, Prime Video and all the major platforms."
       accentFrom="from-violet-800/95"
       accentVia="via-violet-700/80"
-      topics={['Netflix', 'Disney+', 'Prime Video', 'Apple TV+', 'BBC iPlayer']}
+      topics={[
+        { label: 'Netflix', slug: 'netflix' },
+        { label: 'UK Entertainment', slug: 'uk-entertainment' },
+        { label: 'US Entertainment', slug: 'us-entertainment' },
+      ]}
     />
   )
 }

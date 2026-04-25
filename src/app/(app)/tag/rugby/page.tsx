@@ -16,7 +16,11 @@ export default function Page() {
       description="Rugby union and league news — Six Nations, Premiership, World Cup and all the latest from the pitch."
       accentFrom="from-emerald-800/95"
       accentVia="via-emerald-700/80"
-      topics={['Six Nations', 'Premiership', 'World Cup', 'England Rugby', 'Lions']}
+      topics={[
+        { label: 'Six Nations', slug: 'six-nations' },
+        { label: 'England Rugby', slug: 'england-rugby' },
+        { label: 'Sport', slug: 'sport' },
+      ]}
     />
   )
 }

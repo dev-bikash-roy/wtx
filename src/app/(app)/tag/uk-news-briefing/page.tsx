@@ -18,7 +18,12 @@ export default function Page() {
       description="Your essential daily briefing on the biggest UK stories — concise, clear and up to date."
       accentFrom="from-neutral-800/95"
       accentVia="via-neutral-700/80"
-      topics={['Headlines', 'Politics', 'Economy', 'Society']}
+      topics={[
+        { label: 'Main Headlines', slug: 'main-headlines' },
+        { label: 'UK Politics', slug: 'uk-politics' },
+        { label: 'UK News', slug: 'uk-news' },
+        { label: 'Daily Briefing', slug: 'daily-news-briefing' },
+      ]}
     />
   )
 }

@@ -17,7 +17,12 @@ export default function Page() {
       description="Covering the special relationship — trade, diplomacy, politics and culture between the UK and United States."
       accentFrom="from-blue-800/95"
       accentVia="via-blue-700/80"
-      topics={['Trade', 'Diplomacy', 'Defence', 'Politics']}
+      topics={[
+        { label: 'Donald Trump', slug: 'donald-trump' },
+        { label: 'US Politics', slug: 'us-politics' },
+        { label: 'UK Politics', slug: 'uk-politics' },
+        { label: 'US Tariffs', slug: 'us-tariffs' },
+      ]}
     />
   )
 }

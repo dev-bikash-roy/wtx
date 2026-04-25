@@ -17,7 +17,11 @@ export default function Page() {
       description="Discover the best of Britain — staycation destinations, hidden gems and tips for the perfect UK holiday."
       accentFrom="from-sky-700/95"
       accentVia="via-sky-600/80"
-      topics={['England', 'Scotland', 'Wales', 'Coastal', 'Countryside']}
+      topics={[
+        { label: 'Travel', slug: 'travel' },
+        { label: 'Travel News', slug: 'travel-news' },
+        { label: 'UK News', slug: 'uk-news' },
+      ]}
     />
   )
 }

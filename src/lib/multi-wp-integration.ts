@@ -470,12 +470,12 @@ export class MultiWordPressIntegration {
       })),
       author: {
         id: author?.id.toString() || '1',
-        name: decodeHtmlEntities(author?.name || 'Unknown Author'),
-        handle: author?.slug || 'unknown',
+        name: decodeHtmlEntities(author?.name || 'WTX News'),
+        handle: author?.slug || 'wtx-news',
         description: decodeHtmlEntities(author?.description || ''),
         avatar: {
-          src: author?.avatar_urls?.['96'] || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-          alt: decodeHtmlEntities(author?.name || 'Author'),
+          src: author?.avatar_urls?.['96'] || 'https://wtxnews.co.uk/wtx-logo.png',
+          alt: decodeHtmlEntities(author?.name || 'WTX News'),
           width: 96,
           height: 96
         }

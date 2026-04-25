@@ -17,7 +17,11 @@ export default function Page() {
       description="Affordable travel ideas, cheap flight deals, budget destinations and money-saving tips for your next holiday."
       accentFrom="from-orange-700/95"
       accentVia="via-orange-600/80"
-      topics={['Cheap Flights', 'Package Deals', 'Europe', 'UK Breaks', 'Tips']}
+      topics={[
+        { label: 'Travel', slug: 'travel' },
+        { label: 'Travel News', slug: 'travel-news' },
+        { label: 'Travel Destinations', slug: 'travel-destinations' },
+      ]}
     />
   )
 }

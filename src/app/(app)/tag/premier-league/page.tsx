@@ -16,7 +16,12 @@ export default function Page() {
       description="All the latest from the world's most-watched football league — results, fixtures, transfers and analysis."
       accentFrom="from-purple-800/95"
       accentVia="via-purple-700/80"
-      topics={['Results', 'Fixtures', 'Transfers', 'Table', 'Gossip']}
+      topics={[
+        { label: 'Football Gossip', slug: 'football-gossip' },
+        { label: 'Transfer Gossip', slug: 'transfer-gossip' },
+        { label: 'Premier League Gossip', slug: 'premier-league-gossip' },
+        { label: 'Fixtures', slug: 'premier-league-fixtures' },
+      ]}
     />
   )
 }

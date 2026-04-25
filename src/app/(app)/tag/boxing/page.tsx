@@ -16,7 +16,11 @@ export default function Page() {
       description="Fight night coverage, world title bouts, British boxing stars and the latest from the ring."
       accentFrom="from-orange-800/95"
       accentVia="via-orange-700/80"
-      topics={['World Titles', 'British Boxing', 'Fight Results', 'Heavyweight', 'Undercards']}
+      topics={[
+        { label: 'Anthony Joshua', slug: 'anthony-joshua' },
+        { label: 'Tyson Fury', slug: 'tyson-fury' },
+        { label: 'Sport', slug: 'sport' },
+      ]}
     />
   )
 }

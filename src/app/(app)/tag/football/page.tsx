@@ -16,7 +16,13 @@ export default function Page() {
       description="The latest football news, match results, transfer rumours and in-depth analysis."
       accentFrom="from-green-800/95"
       accentVia="via-green-700/80"
-      topics={['Premier League', 'Championship', 'European', 'Transfers', 'International']}
+      topics={[
+        { label: 'Premier League', slug: 'premier-league' },
+        { label: 'Football Gossip', slug: 'football-gossip' },
+        { label: 'Transfers', slug: 'transfer-gossip' },
+        { label: 'Sports News', slug: 'sports-news' },
+        { label: 'F1', slug: 'f1-news' },
+      ]}
     />
   )
 }

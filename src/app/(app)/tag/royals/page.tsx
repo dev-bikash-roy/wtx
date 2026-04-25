@@ -16,7 +16,12 @@ export default function Page() {
       description="The latest news from the Royal Family — King Charles, the Prince and Princess of Wales, and the wider monarchy."
       accentFrom="from-yellow-700/95"
       accentVia="via-yellow-600/80"
-      topics={['King Charles', 'Prince William', 'Princess of Wales', 'Harry & Meghan', 'Royal Events']}
+      topics={[
+        { label: 'Royal Family', slug: 'royal-family' },
+        { label: 'King Charles', slug: 'king-charles' },
+        { label: 'Prince William', slug: 'prince-william' },
+        { label: 'Prince Harry', slug: 'prince-harry' },
+      ]}
     />
   )
 }

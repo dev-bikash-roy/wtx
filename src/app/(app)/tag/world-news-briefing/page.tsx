@@ -17,7 +17,12 @@ export default function Page() {
       description="The most important international stories of the day, summarised and delivered clearly."
       accentFrom="from-teal-800/95"
       accentVia="via-teal-700/80"
-      topics={['Global', 'Conflict', 'Climate', 'Economy']}
+      topics={[
+        { label: 'World News', slug: 'world-news' },
+        { label: 'US Featured', slug: 'us-featured' },
+        { label: 'Donald Trump', slug: 'donald-trump' },
+        { label: 'Russia Ukraine', slug: 'russia-ukraine-crisis' },
+      ]}
     />
   )
 }

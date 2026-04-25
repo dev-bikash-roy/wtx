@@ -435,30 +435,6 @@ const Page = async () => {
         )}
       </section>
 
-      {/* H2: Latest England News */}
-      <section>
-        <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-          Latest England News
-        </h2>
-
-        {/* H3: Chronological feed */}
-        <h3 className="sr-only">Chronological Feed</h3>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {latestPosts.slice(0, 12).map((post) => (
-            <Card11 key={post.id} post={post} />
-          ))}
-        </div>
-
-        <div className="mt-8 text-center">
-          <Link
-            href="/england-news?page=2"
-            className="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium"
-          >
-            Load More England News
-          </Link>
-        </div>
-      </section>
-
       {/* Newsletter */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <SectionSubscribe2 

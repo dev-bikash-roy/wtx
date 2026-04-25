@@ -17,7 +17,12 @@ export default function Page() {
       description="Watch the latest video news reports, breaking news clips and on-the-ground footage."
       accentFrom="from-gray-800/95"
       accentVia="via-gray-700/80"
-      topics={['Breaking News', 'Politics', 'Sport', 'World', 'Entertainment']}
+      topics={[
+        { label: 'UK News', slug: 'uk-news' },
+        { label: 'Main Headlines', slug: 'main-headlines' },
+        { label: 'UK Politics', slug: 'uk-politics' },
+        { label: 'World News', slug: 'world-news' },
+      ]}
     />
   )
 }

@@ -18,7 +18,12 @@ export default function Page() {
       description="Comprehensive coverage of UK elections — results, polls, candidates and political analysis."
       accentFrom="from-red-700/95"
       accentVia="via-red-600/80"
-      topics={['General Election', 'Local Elections', 'Polls', 'Parties']}
+      topics={[
+        { label: 'UK Politics', slug: 'uk-politics' },
+        { label: 'Keir Starmer', slug: 'keir-starmer' },
+        { label: 'Labour Party', slug: 'labour-party' },
+        { label: 'General Election', slug: 'general-election-2024' },
+      ]}
     />
   )
 }

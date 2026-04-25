@@ -18,7 +18,12 @@ export default function Page() {
       description="All the latest showbiz news, celebrity stories, red carpet moments and entertainment gossip."
       accentFrom="from-pink-700/95"
       accentVia="via-pink-600/80"
-      topics={['Showbiz', 'Red Carpet', 'Relationships', 'TV Stars', 'Music']}
+      topics={[
+        { label: 'Celebrities', slug: 'celebrities' },
+        { label: 'UK Entertainment', slug: 'uk-entertainment' },
+        { label: 'US Entertainment', slug: 'us-entertainment' },
+        { label: 'Streaming', slug: 'streaming' },
+      ]}
     />
   )
 }

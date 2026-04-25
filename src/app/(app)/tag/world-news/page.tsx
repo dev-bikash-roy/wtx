@@ -16,7 +16,13 @@ export default function Page() {
       description="Breaking international news and global stories from every corner of the world."
       accentFrom="from-slate-800/95"
       accentVia="via-slate-700/80"
-      topics={['Europe', 'Americas', 'Asia', 'Middle East', 'Africa']}
+      topics={[
+        { label: 'UK Politics', slug: 'uk-politics' },
+        { label: 'Donald Trump', slug: 'donald-trump' },
+        { label: 'Russia Ukraine', slug: 'russia-ukraine-crisis' },
+        { label: 'Middle East', slug: 'middle-east' },
+        { label: 'US Politics', slug: 'us-politics' },
+      ]}
     />
   )
 }

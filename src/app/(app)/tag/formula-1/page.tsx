@@ -16,7 +16,12 @@ export default function Page() {
       description="All the action from the F1 grid — race results, driver news, team updates and championship standings."
       accentFrom="from-red-800/95"
       accentVia="via-red-700/80"
-      topics={['Race Results', 'Drivers', 'Teams', 'Championship', 'Technical']}
+      topics={[
+        { label: 'F1 News', slug: 'f1-news' },
+        { label: 'Max Verstappen', slug: 'max-verstappen' },
+        { label: 'Lewis Hamilton', slug: 'lewis-hamilton' },
+        { label: 'Lando Norris', slug: 'lando-norris' },
+      ]}
     />
   )
 }
