@@ -4,6 +4,7 @@ import PaginationWrapper from '@/components/PaginationWrapper'
 import Card11 from '@/components/PostCards/Card11'
 import { getAuthorByHandle } from '@/data/authors'
 import { getAllPosts } from '@/data/posts'
+import { getAllPostsWithWordPress } from '@/data/wordpress-posts'
 import { AllBookmarkIcon, FolderFavouriteIcon, LicenseIcon } from '@hugeicons/core-free-icons'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -46,7 +47,9 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const { handle } = await params
 
   const author = await getAuthorByHandle(handle)
-  const posts = (await getAllPosts()).slice(0, 12)
+  const posts = handle === 'wtx-news'
+    ? await getAllPostsWithWordPress({ perPage: 12 })
+    : (await getAllPosts()).slice(0, 12)
 
   if (!author?.id) {
     return notFound()

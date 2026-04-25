@@ -288,18 +288,36 @@ export async function getAuthors() {
         height: 1080,
       },
     },
+    {
+      id: 'author-wtx',
+      name: 'WTX News',
+      handle: 'wtx-news',
+      career: 'News Desk',
+      description: 'WTX News is your source for the latest UK and world news, politics, sport, entertainment and lifestyle.',
+      count: 0,
+      joinedDate: '2020-01-01',
+      reviewCount: 0,
+      rating: 5,
+      avatar: {
+        src: 'https://wtxnews.co.uk/wtx-logo.png',
+        alt: 'WTX News',
+        width: 200,
+        height: 200,
+      },
+      cover: {
+        src: _demo_author_cover_image_urls[0],
+        alt: 'WTX News',
+        width: 1920,
+        height: 1080,
+      },
+    },
   ]
 }
 
 export async function getAuthorByHandle(handle: string) {
   const authors = await getAuthors()
-  let author = authors.find((author) => author.handle === handle)
-  if (!author?.id) {
-    // for demo purposes, if no author found, return the first one
-    author = authors[0]
-  }
-
-  return author
+  const author = authors.find((author) => author.handle === handle)
+  return author || null
 }
 
 export type TAuthor = Awaited<ReturnType<typeof getAuthors>>[number]
