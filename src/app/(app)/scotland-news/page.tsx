@@ -5,6 +5,7 @@ import Card6 from '@/components/PostCards/Card6'
 import Card11 from '@/components/PostCards/Card11'
 import { getWordPressPostsByTag } from '@/data/wordpress-posts'
 import SectionSubscribe2 from '@/components/SectionSubscribe2'
+import { dedupSections } from '@/utils/dedup-posts'
 
 export const metadata: Metadata = {
   title: 'Scotland News | WTX News',
@@ -15,20 +16,18 @@ export const metadata: Metadata = {
 export const revalidate = 180
 
 const Page = async () => {
-  const [scotlandPosts, scottishNewsPosts, featuredPosts, scottishFeaturedPosts] = await Promise.all([
+  const [scotlandRaw, scottishNewsRaw, featuredRaw, scottishFeaturedRaw] = await Promise.all([
     getWordPressPostsByTag('scotland', 40),
     getWordPressPostsByTag('scottish-news', 30),
     getWordPressPostsByTag('scottish-featured', 20),
     getWordPressPostsByTag('scotland-featured', 15),
   ])
 
-  const seen = new Set<string>()
-  const allPosts = [...scotlandPosts, ...scottishNewsPosts, ...featuredPosts, ...scottishFeaturedPosts].filter(p => {
-    if (seen.has(p.id)) return false
-    seen.add(p.id)
-    return true
-  })
+  const [scotlandPosts, scottishNewsPosts, featuredPosts, scottishFeaturedPosts] = dedupSections(
+    scotlandRaw, scottishNewsRaw, featuredRaw, scottishFeaturedRaw
+  )
 
+  const allPosts = [...scotlandPosts, ...scottishNewsPosts, ...featuredPosts, ...scottishFeaturedPosts]
   const topStories = allPosts.slice(0, 10)
   const morePosts = allPosts.slice(10, 22)
   const featuredSection = featuredPosts.slice(0, 8)

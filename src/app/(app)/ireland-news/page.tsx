@@ -5,6 +5,7 @@ import Card6 from '@/components/PostCards/Card6'
 import Card11 from '@/components/PostCards/Card11'
 import { getWordPressPostsByTag } from '@/data/wordpress-posts'
 import SectionSubscribe2 from '@/components/SectionSubscribe2'
+import { dedupSections } from '@/utils/dedup-posts'
 
 export const metadata: Metadata = {
   title: 'Ireland News | WTX News',
@@ -22,7 +23,7 @@ const Page = async () => {
     getWordPressPostsByTag('ireland-featured', 6),
   ])
 
-  // Deduplicate
+  // Deduplicate globally across all sections
   const seen = new Set<string>()
   const allPosts = [...niPosts, ...irelandPosts, ...protocolPosts, ...featuredPosts].filter(p => {
     if (seen.has(p.id)) return false
@@ -30,10 +31,13 @@ const Page = async () => {
     return true
   })
 
+  const [niOnly, republicOnly] = dedupSections(
+    niPosts.slice(0, 8),
+    irelandPosts.slice(0, 8),
+  )
+
   const topStories = allPosts.slice(0, 10)
   const morePosts = allPosts.slice(10, 22)
-  const niOnly = niPosts.slice(0, 8)
-  const republicOnly = irelandPosts.slice(0, 8)
 
   return (
     <div className="relative container space-y-16 pb-16 lg:space-y-20 lg:pb-20">

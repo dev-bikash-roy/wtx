@@ -5,6 +5,7 @@ import Card6 from '@/components/PostCards/Card6'
 import Card11 from '@/components/PostCards/Card11'
 import { getWordPressPostsByTag } from '@/data/wordpress-posts'
 import SectionSubscribe2 from '@/components/SectionSubscribe2'
+import { dedupSections } from '@/utils/dedup-posts'
 
 export const metadata: Metadata = {
   title: 'Travel | WTX News',
@@ -15,19 +16,15 @@ export const metadata: Metadata = {
 export const revalidate = 180
 
 const Page = async () => {
-  const [travelPosts, destinationPosts, guidePosts] = await Promise.all([
+  const [travelRaw, destinationRaw, guideRaw] = await Promise.all([
     getWordPressPostsByTag('travel', 30),
     getWordPressPostsByTag('travel-destinations', 8),
     getWordPressPostsByTag('travel-guides', 6),
   ])
 
-  // Deduplicate across all fetches
-  const seen = new Set<string>()
-  const allPosts = [...travelPosts, ...destinationPosts, ...guidePosts].filter(p => {
-    if (seen.has(p.id)) return false
-    seen.add(p.id)
-    return true
-  })
+  const [travelPosts, destinationPosts, guidePosts] = dedupSections(travelRaw, destinationRaw, guideRaw)
+
+  const allPosts = [...travelPosts, ...destinationPosts, ...guidePosts]
 
   const heroPost = allPosts[0]
   const topStories = allPosts.slice(0, 10)

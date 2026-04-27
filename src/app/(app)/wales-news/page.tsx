@@ -5,6 +5,7 @@ import Card6 from '@/components/PostCards/Card6'
 import Card11 from '@/components/PostCards/Card11'
 import { getWordPressPostsByTag } from '@/data/wordpress-posts'
 import SectionSubscribe2 from '@/components/SectionSubscribe2'
+import { dedupSections } from '@/utils/dedup-posts'
 
 export const metadata: Metadata = {
   title: 'Wales News | WTX News',
@@ -15,20 +16,18 @@ export const metadata: Metadata = {
 export const revalidate = 180
 
 const Page = async () => {
-  const [walesNewsPosts, walesPosts, welshFeaturedPosts, walesFeaturedPosts] = await Promise.all([
+  const [walesNewsRaw, walesRaw, welshFeaturedRaw, walesFeaturedRaw] = await Promise.all([
     getWordPressPostsByTag('wales-news', 40),
     getWordPressPostsByTag('wales', 30),
     getWordPressPostsByTag('welsh-featured', 20),
     getWordPressPostsByTag('wales-featured', 15),
   ])
 
-  const seen = new Set<string>()
-  const allPosts = [...walesNewsPosts, ...walesPosts, ...welshFeaturedPosts, ...walesFeaturedPosts].filter(p => {
-    if (seen.has(p.id)) return false
-    seen.add(p.id)
-    return true
-  })
+  const [walesNewsPosts, walesPosts, welshFeaturedPosts, walesFeaturedPosts] = dedupSections(
+    walesNewsRaw, walesRaw, welshFeaturedRaw, walesFeaturedRaw
+  )
 
+  const allPosts = [...walesNewsPosts, ...walesPosts, ...welshFeaturedPosts, ...walesFeaturedPosts]
   const topStories = allPosts.slice(0, 10)
   const morePosts = allPosts.slice(10, 22)
   const featuredSection = welshFeaturedPosts.slice(0, 8)
