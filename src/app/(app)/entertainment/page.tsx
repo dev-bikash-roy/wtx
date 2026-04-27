@@ -6,6 +6,20 @@ import Card11 from '@/components/PostCards/Card11'
 import { getWordPressPostsByTag } from '@/data/wordpress-posts'
 import SectionSubscribe2 from '@/components/SectionSubscribe2'
 import { dedupSections } from '@/utils/dedup-posts'
+import { TPost } from '@/data/posts'
+
+// Slugs that indicate a post is clearly NOT entertainment
+const NON_ENTERTAINMENT_CATEGORIES = new Set([
+  'world-news', 'uk-politics', 'politics', 'sport', 'sports',
+  'football', 'business', 'technology', 'science', 'weather', 'crime',
+])
+
+function isEntertainmentPost(post: TPost): boolean {
+  const cats = post.categories?.map(c => c.handle) || []
+  // Only exclude if ALL categories are non-entertainment
+  if (cats.length === 0) return true
+  return !cats.every(c => NON_ENTERTAINMENT_CATEGORIES.has(c))
+}
 
 export const revalidate = 180
 
@@ -61,6 +75,7 @@ export default async function EntertainmentPage() {
     ukEntertainmentRaw,
     usEntertainmentRaw,
     celebritiesRaw,
+    celebrityRaw,
     streamingRaw,
     royalFamilyRaw,
     netflixRaw,
@@ -74,6 +89,7 @@ export default async function EntertainmentPage() {
     getWordPressPostsByTag('uk-entertainment', 20),
     getWordPressPostsByTag('us-entertainment', 12),
     getWordPressPostsByTag('celebrities', 12),
+    getWordPressPostsByTag('celebrity', 9),
     getWordPressPostsByTag('streaming', 12),
     getWordPressPostsByTag('royal-family', 12),
     getWordPressPostsByTag('netflix', 8),
@@ -84,6 +100,14 @@ export default async function EntertainmentPage() {
     getWordPressPostsByTag('music', 8),
     getWordPressPostsByTag('celebrity-deaths', 6),
   ])
+
+  // Merge celebrities + celebrity, deduplicate within that set
+  const mergedCelebritiesRaw = [...celebritiesRaw, ...celebrityRaw].filter((p, i, arr) =>
+    arr.findIndex(x => x.id === p.id) === i
+  )
+
+  // Filter out posts that are clearly not entertainment
+  const filter = (posts: TPost[]) => posts.filter(isEntertainmentPost)
 
   // Deduplicate globally — posts seen in earlier sections won't appear again
   const [
@@ -100,18 +124,18 @@ export default async function EntertainmentPage() {
     music,
     celebrityDeaths,
   ] = dedupSections(
-    ukEntertainmentRaw,
-    usEntertainmentRaw,
-    celebritiesRaw,
-    streamingRaw,
-    royalFamilyRaw,
-    netflixRaw,
-    hollywoodRaw,
-    eastendersRaw,
-    coronationStreetRaw,
-    loveIslandRaw,
-    musicRaw,
-    celebrityDeathsRaw,
+    filter(ukEntertainmentRaw),
+    filter(usEntertainmentRaw),
+    filter(mergedCelebritiesRaw),
+    filter(streamingRaw),
+    filter(royalFamilyRaw),
+    filter(netflixRaw),
+    filter(hollywoodRaw),
+    filter(eastendersRaw),
+    filter(coronationStreetRaw),
+    filter(loveIslandRaw),
+    filter(musicRaw),
+    filter(celebrityDeathsRaw),
   )
 
   const heroPost = ukEntertainment[0]
@@ -185,7 +209,7 @@ export default async function EntertainmentPage() {
         {royalFamily.length > 0 && (
           <section aria-labelledby="royals-heading">
             <SectionHeader title="Royal Family" subtitle="News from the Palace" href="/tag/royal-family" />
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 [&_.post-card-11_.absolute]:hidden">
               {royalFamily.slice(0, 8).map(post => <Card11 key={post.id} post={post} />)}
             </div>
           </section>
