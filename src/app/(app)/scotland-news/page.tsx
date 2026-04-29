@@ -16,21 +16,49 @@ export const metadata: Metadata = {
 export const revalidate = 180
 
 const Page = async () => {
-  const [scotlandRaw, scottishNewsRaw, featuredRaw, scottishFeaturedRaw] = await Promise.all([
-    getWordPressPostsByTag('scotland', 40),
-    getWordPressPostsByTag('scottish-news', 30),
-    getWordPressPostsByTag('scottish-featured', 20),
-    getWordPressPostsByTag('scotland-featured', 15),
+  const [
+    scotlandRaw,
+    scottishNewsRaw,
+    featuredRaw,
+    scottishFeaturedRaw,
+    nicolaSturgeon,
+    edinburghRaw,
+    glasgowRaw,
+    scottishCrimeRaw,
+  ] = await Promise.all([
+    getWordPressPostsByTag('scotland', 20),
+    getWordPressPostsByTag('scottish-news', 20),
+    getWordPressPostsByTag('scottish-featured', 10),
+    getWordPressPostsByTag('scotland-featured', 10),
+    getWordPressPostsByTag('nicola-sturgeon', 4),
+    getWordPressPostsByTag('edinburgh', 4),
+    getWordPressPostsByTag('glasgow', 4),
+    getWordPressPostsByTag('scottish-police-force', 4),
   ])
 
-  const [scotlandPosts, scottishNewsPosts, featuredPosts, scottishFeaturedPosts] = dedupSections(
-    scotlandRaw, scottishNewsRaw, featuredRaw, scottishFeaturedRaw
+  const [
+    scotlandPosts,
+    scottishNewsPosts,
+    featuredPosts,
+    scottishFeaturedPosts,
+    sturgeonPosts,
+    edinburghPosts,
+    glasgowPosts,
+    crimePosts,
+  ] = dedupSections(
+    scotlandRaw,
+    scottishNewsRaw,
+    featuredRaw,
+    scottishFeaturedRaw,
+    nicolaSturgeon,
+    edinburghRaw,
+    glasgowRaw,
+    scottishCrimeRaw,
   )
 
   const allPosts = [...scotlandPosts, ...scottishNewsPosts, ...featuredPosts, ...scottishFeaturedPosts]
   const topStories = allPosts.slice(0, 10)
-  const morePosts = allPosts.slice(10, 22)
-  const featuredSection = featuredPosts.slice(0, 4)
+  const morePosts = allPosts.slice(10, 14)
 
   return (
     <div className="relative container space-y-16 pb-16 lg:space-y-20 lg:pb-20">
@@ -90,14 +118,66 @@ const Page = async () => {
       )}
 
       {/* H2: Featured in Scotland */}
-      {featuredSection.length > 0 && (
+      {featuredPosts.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
             <a href="https://wtxnews.com/tag/scottish-featured/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Featured in Scotland</a>
           </h2>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">Handpicked stories from across Scotland</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredSection.map(post => <Card11 key={post.id} post={post} />)}
+            {featuredPosts.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
+          </div>
+        </section>
+      )}
+
+      {/* H2: Edinburgh */}
+      {edinburghPosts.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
+            <a href="https://wtxnews.com/tag/edinburgh/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Edinburgh</a>
+          </h2>
+          <p className="text-neutral-500 dark:text-neutral-400 mb-8">News from Scotland's capital</p>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {edinburghPosts.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
+          </div>
+        </section>
+      )}
+
+      {/* H2: Glasgow */}
+      {glasgowPosts.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
+            <a href="https://wtxnews.com/tag/glasgow/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Glasgow</a>
+          </h2>
+          <p className="text-neutral-500 dark:text-neutral-400 mb-8">News from Scotland's largest city</p>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {glasgowPosts.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
+          </div>
+        </section>
+      )}
+
+      {/* H2: Scottish Politics */}
+      {sturgeonPosts.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
+            <a href="https://wtxnews.com/tag/nicola-sturgeon/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Scottish Politics</a>
+          </h2>
+          <p className="text-neutral-500 dark:text-neutral-400 mb-8">Holyrood, the SNP and Scottish government</p>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {sturgeonPosts.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
+          </div>
+        </section>
+      )}
+
+      {/* H2: Crime */}
+      {crimePosts.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
+            <a href="https://wtxnews.com/tag/scotland/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Crime &amp; Justice</a>
+          </h2>
+          <p className="text-neutral-500 dark:text-neutral-400 mb-8">Crime and courts news from Scotland</p>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {crimePosts.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
           </div>
         </section>
       )}
@@ -128,4 +208,3 @@ const Page = async () => {
 }
 
 export default Page
-

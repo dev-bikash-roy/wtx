@@ -185,7 +185,7 @@ const Page = async () => {
 
         <div>
           <h3 className="text-2xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100 border-b border-neutral-200 dark:border-neutral-700 pb-4">
-            Today&apos;s Main Headlines
+            <a href="https://wtxnews.com/tag/main-headlines/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Today&apos;s Main Headlines</a>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {topStories.slice(3, 7).map(post => (
@@ -201,7 +201,7 @@ const Page = async () => {
       {/* Section 2 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <h2 className="text-3xl lg:text-4xl font-semibold mb-2 text-neutral-900 dark:text-neutral-100">
-          England News
+          <a href="https://wtxnews.com/category/england-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">England News</a>
         </h2>
         <p className="mt-2 mb-8 text-neutral-500 dark:text-neutral-400">The latest News from England</p>
 
@@ -233,7 +233,7 @@ const Page = async () => {
       {/* Section 3 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <h2 className="text-3xl lg:text-4xl font-semibold mb-2 text-neutral-900 dark:text-neutral-100">
-          Scotland
+          <a href="https://wtxnews.com/tag/scotland/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Scotland</a>
         </h2>
         <p className="mt-2 mb-8 text-neutral-500 dark:text-neutral-400">The latest News from Scotland</p>
         <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in Scotland</h3>
@@ -245,7 +245,7 @@ const Page = async () => {
       {/* Section 4 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <h2 className="text-3xl lg:text-4xl font-semibold mb-2 text-neutral-900 dark:text-neutral-100">
-          Wales
+          <a href="https://wtxnews.com/tag/wales-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Wales</a>
         </h2>
         <p className="mt-2 mb-8 text-neutral-500 dark:text-neutral-400">The latest News from Wales</p>
         <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in Wales</h3>
@@ -257,7 +257,7 @@ const Page = async () => {
       {/* Section 5 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <h2 className="text-3xl lg:text-4xl font-semibold mb-2 text-neutral-900 dark:text-neutral-100">
-          Northern Ireland
+          <a href="https://wtxnews.com/tag/northern-ireland/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Northern Ireland</a>
         </h2>
         <p className="mt-2 mb-8 text-neutral-500 dark:text-neutral-400">The latest News from Ireland</p>
         <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Featured in Ireland</h3>
@@ -269,16 +269,16 @@ const Page = async () => {
       {/* Section 6 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
-          Sports News
+          <a href="https://wtxnews.com/category/sport/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Sports News</a>
         </h2>
         <div className="mb-12">
-          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Football</h3>
+          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm"><a href="https://wtxnews.com/tag/football/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Football</a></h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {football.map(post => <Card2 key={post.id} post={post} />)}
           </div>
         </div>
         <div className="mb-12">
-          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Other Sports</h3>
+          <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm"><a href="https://wtxnews.com/tag/sports-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Other Sports</a></h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {otherSports.map(post => <Card11 key={post.id} post={post} />)}
           </div>
@@ -291,7 +291,7 @@ const Page = async () => {
       {/* Section 7 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
-          Fashion
+          <a href="https://wtxnews.com/tag/fashion/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Fashion</a>
         </h2>
         <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">Latest Fashion</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -302,7 +302,7 @@ const Page = async () => {
       {/* Section 8 */}
       <section className="mt-20 border-t border-neutral-200 dark:border-neutral-700 pt-16">
         <h2 className="text-3xl lg:text-4xl font-semibold mb-8 text-neutral-900 dark:text-neutral-100">
-          Travel Around the UK
+          <a href="https://wtxnews.com/tag/travel/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Travel Around the UK</a>
         </h2>
         <div className="mb-12">
           <h3 className="text-xl font-medium mb-6 text-neutral-800 dark:text-neutral-200 uppercase tracking-wider text-sm">UK Destinations</h3>
