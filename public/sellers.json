@@ -1,0 +1,29 @@
+{
+  "contact_email": "advertising@wtxnews.co.uk",
+  "contact_address": "WTX News, United Kingdom",
+  "version": "1.0",
+  "identifiers": [
+    {
+      "name": "TAG-ID",
+      "value": "pub-4115163205031252"
+    }
+  ],
+  "sellers": [
+    {
+      "seller_id": "pub-4115163205031252",
+      "name": "WTX News",
+      "domain": "wtxnews.co.uk",
+      "seller_type": "PUBLISHER",
+      "is_confidential": 0,
+      "comment": "WTX News - UK News, Politics, Sports & Lifestyle"
+    },
+    {
+      "seller_id": "21601254161",
+      "name": "WTX News",
+      "domain": "wtxnews.co.uk",
+      "seller_type": "PUBLISHER",
+      "is_confidential": 0,
+      "comment": "WTX News Google Ad Manager account"
+    }
+  ]
+}
