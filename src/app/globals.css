@@ -64,3 +64,9 @@ body.dark {
 .will-change-opacity {
   will-change: opacity;
 }
+
+/* Hide author meta and comment button across all post cards site-wide */
+.post-card-meta,
+.post-card-comment-btn {
+  display: none !important;
+}

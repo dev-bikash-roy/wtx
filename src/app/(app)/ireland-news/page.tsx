@@ -32,8 +32,8 @@ const Page = async () => {
   })
 
   const [niOnly, republicOnly] = dedupSections(
-    niPosts.slice(0, 8),
-    irelandPosts.slice(0, 8),
+    niPosts.slice(0, 4),
+    irelandPosts.slice(0, 4),
   )
 
   const topStories = allPosts.slice(0, 10)
@@ -85,7 +85,7 @@ const Page = async () => {
       {topStories.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-            Top Stories
+            <a href="https://wtxnews.com/tag/northern-ireland/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Top Stories</a>
           </h2>
           <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
             {topStories[0] && <Card2 size="large" post={topStories[0]} />}
@@ -102,7 +102,7 @@ const Page = async () => {
       {niOnly.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
-            Northern Ireland
+            <a href="https://wtxnews.com/tag/northern-ireland/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Northern Ireland</a>
           </h2>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">News from Belfast and across Northern Ireland</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -115,7 +115,7 @@ const Page = async () => {
       {republicOnly.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
-            Republic of Ireland
+            <a href="https://wtxnews.com/tag/ireland/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Republic of Ireland</a>
           </h2>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">News from Dublin and across the Republic</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -128,7 +128,7 @@ const Page = async () => {
       {morePosts.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-            More Ireland News
+            <a href="https://wtxnews.com/category/ireland-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">More Ireland News</a>
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {morePosts.map(post => <Card11 key={post.id} post={post} />)}
@@ -150,3 +150,4 @@ const Page = async () => {
 }
 
 export default Page
+

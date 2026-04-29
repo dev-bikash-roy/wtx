@@ -37,12 +37,14 @@ export const metadata: Metadata = {
 }
 
 // Reusable section header with "View all" link
-function SectionHeader({ title, subtitle, href }: { title: string; subtitle?: string; href: string }) {
+function SectionHeader({ title, subtitle, href, titleHref }: { title: string; subtitle?: string; href: string; titleHref?: string }) {
   return (
     <div className="flex items-end justify-between mb-6 border-b-2 border-neutral-900 dark:border-neutral-100 pb-3">
       <div>
         <h2 className="text-xl font-extrabold uppercase tracking-tight text-neutral-900 dark:text-neutral-100 lg:text-2xl">
-          {title}
+          {titleHref ? (
+            <a href={titleHref} target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">{title}</a>
+          ) : title}
         </h2>
         {subtitle && <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">{subtitle}</p>}
       </div>
@@ -187,7 +189,7 @@ export default async function EntertainmentPage() {
         {/* ── UK ENTERTAINMENT ── */}
         {ukEntertainment.length > 0 && (
           <section aria-labelledby="uk-entertainment-heading">
-            <SectionHeader title="UK Entertainment" subtitle="The biggest stories from British showbiz" href="/tag/uk-entertainment" />
+            <SectionHeader title="UK Entertainment" subtitle="The biggest stories from British showbiz" href="/tag/uk-entertainment" titleHref="https://wtxnews.com/tag/uk-entertainment/" />
             <LeadSection posts={ukEntertainment} />
             {ukEntertainment.length > 4 && (
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -200,7 +202,7 @@ export default async function EntertainmentPage() {
         {/* ── CELEBRITIES ── */}
         {celebrities.length > 0 && (
           <section aria-labelledby="celebrities-heading">
-            <SectionHeader title="Celebrity Gossip" subtitle="Who's doing what in the world of fame" href="/tag/celebrities" />
+            <SectionHeader title="Celebrity Gossip" subtitle="Who's doing what in the world of fame" href="/tag/celebrities" titleHref="https://wtxnews.com/tag/celebrities/" />
             <LeadSection posts={celebrities} />
           </section>
         )}
@@ -208,9 +210,9 @@ export default async function EntertainmentPage() {
         {/* ── ROYAL FAMILY ── */}
         {royalFamily.length > 0 && (
           <section aria-labelledby="royals-heading">
-            <SectionHeader title="Royal Family" subtitle="News from the Palace" href="/tag/royal-family" />
+            <SectionHeader title="Royal Family" subtitle="News from the Palace" href="/tag/royal-family" titleHref="https://wtxnews.com/tag/royal-family/" />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 [&_.post-card-11_.absolute]:hidden">
-              {royalFamily.slice(0, 8).map(post => <Card11 key={post.id} post={post} />)}
+              {royalFamily.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
             </div>
           </section>
         )}
@@ -218,7 +220,7 @@ export default async function EntertainmentPage() {
         {/* ── STREAMING ── */}
         {streaming.length > 0 && (
           <section aria-labelledby="streaming-heading">
-            <SectionHeader title="Streaming" subtitle="What to watch on Netflix, Disney+ and more" href="/tag/streaming" />
+            <SectionHeader title="Streaming" subtitle="What to watch on Netflix, Disney+ and more" href="/tag/streaming" titleHref="https://wtxnews.com/tag/streaming/" />
             <LeadSection posts={streaming} />
             {streaming.length > 4 && (
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -231,7 +233,7 @@ export default async function EntertainmentPage() {
         {/* ── US ENTERTAINMENT ── */}
         {usEntertainment.length > 0 && (
           <section aria-labelledby="us-entertainment-heading">
-            <SectionHeader title="US Entertainment" subtitle="Hollywood, music and American showbiz" href="/tag/us-entertainment" />
+            <SectionHeader title="US Entertainment" subtitle="Hollywood, music and American showbiz" href="/tag/us-entertainment" titleHref="https://wtxnews.com/tag/us-entertainment/" />
             <LeadSection posts={usEntertainment} />
           </section>
         )}
@@ -239,7 +241,7 @@ export default async function EntertainmentPage() {
         {/* ── SOAPS: EASTENDERS + CORONATION STREET ── */}
         {(eastenders.length > 0 || coronationStreet.length > 0) && (
           <section aria-labelledby="soaps-heading">
-            <SectionHeader title="Soaps" subtitle="EastEnders, Coronation Street and more" href="/tag/eastenders" />
+            <SectionHeader title="Soaps" subtitle="EastEnders, Coronation Street and more" href="/tag/eastenders" titleHref="https://wtxnews.com/tag/eastenders/" />
             <div className="grid gap-6 lg:grid-cols-2">
               {eastenders.length > 0 && (
                 <div>
@@ -268,9 +270,9 @@ export default async function EntertainmentPage() {
         {/* ── NETFLIX ── */}
         {netflix.length > 0 && (
           <section aria-labelledby="netflix-heading">
-            <SectionHeader title="Netflix" subtitle="Latest from the world's biggest streaming platform" href="/tag/netflix" />
+            <SectionHeader title="Netflix" subtitle="Latest from the world's biggest streaming platform" href="/tag/netflix" titleHref="https://wtxnews.com/tag/netflix/" />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {netflix.slice(0, 8).map(post => <Card11 key={post.id} post={post} />)}
+              {netflix.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
             </div>
           </section>
         )}
@@ -278,9 +280,9 @@ export default async function EntertainmentPage() {
         {/* ── LOVE ISLAND ── */}
         {loveIsland.length > 0 && (
           <section aria-labelledby="love-island-heading">
-            <SectionHeader title="Love Island" subtitle="All the drama from the villa" href="/tag/love-island" />
+            <SectionHeader title="Love Island" subtitle="All the drama from the villa" href="/tag/love-island" titleHref="https://wtxnews.com/tag/love-island/" />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {loveIsland.slice(0, 8).map(post => <Card11 key={post.id} post={post} />)}
+              {loveIsland.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
             </div>
           </section>
         )}
@@ -288,9 +290,9 @@ export default async function EntertainmentPage() {
         {/* ── MUSIC ── */}
         {music.length > 0 && (
           <section aria-labelledby="music-heading">
-            <SectionHeader title="Music" subtitle="Charts, tours, albums and artist news" href="/tag/music" />
+            <SectionHeader title="Music" subtitle="Charts, tours, albums and artist news" href="/tag/music" titleHref="https://wtxnews.com/tag/music/" />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {music.slice(0, 8).map(post => <Card11 key={post.id} post={post} />)}
+              {music.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
             </div>
           </section>
         )}
@@ -298,9 +300,9 @@ export default async function EntertainmentPage() {
         {/* ── HOLLYWOOD ── */}
         {hollywood.length > 0 && (
           <section aria-labelledby="hollywood-heading">
-            <SectionHeader title="Hollywood" subtitle="Movies, stars and the film industry" href="/tag/hollywood" />
+            <SectionHeader title="Hollywood" subtitle="Movies, stars and the film industry" href="/tag/hollywood" titleHref="https://wtxnews.com/tag/hollywood/" />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {hollywood.slice(0, 8).map(post => <Card11 key={post.id} post={post} />)}
+              {hollywood.slice(0, 4).map(post => <Card11 key={post.id} post={post} />)}
             </div>
           </section>
         )}
@@ -308,7 +310,7 @@ export default async function EntertainmentPage() {
         {/* ── CELEBRITY DEATHS ── */}
         {celebrityDeaths.length > 0 && (
           <section aria-labelledby="celebrity-deaths-heading">
-            <SectionHeader title="Tributes & Obituaries" subtitle="Remembering those we've lost" href="/tag/celebrity-deaths" />
+            <SectionHeader title="Tributes & Obituaries" subtitle="Remembering those we've lost" href="/tag/celebrity-deaths" titleHref="https://wtxnews.com/tag/celebrity-deaths/" />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {celebrityDeaths.slice(0, 6).map(post => <Card11 key={post.id} post={post} />)}
             </div>
@@ -328,3 +330,4 @@ export default async function EntertainmentPage() {
     </div>
   )
 }
+

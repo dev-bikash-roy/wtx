@@ -30,7 +30,7 @@ const Page = async () => {
   const allPosts = [...walesNewsPosts, ...walesPosts, ...welshFeaturedPosts, ...walesFeaturedPosts]
   const topStories = allPosts.slice(0, 10)
   const morePosts = allPosts.slice(10, 22)
-  const featuredSection = welshFeaturedPosts.slice(0, 8)
+  const featuredSection = welshFeaturedPosts.slice(0, 4)
 
   return (
     <div className="relative container space-y-16 pb-16 lg:space-y-20 lg:pb-20">
@@ -76,7 +76,7 @@ const Page = async () => {
       {topStories.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-            Top Stories
+            <a href="https://wtxnews.com/tag/wales-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Top Stories</a>
           </h2>
           <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
             {topStories[0] && <Card2 size="large" post={topStories[0]} />}
@@ -93,7 +93,7 @@ const Page = async () => {
       {featuredSection.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
-            Featured in Wales
+            <a href="https://wtxnews.com/tag/welsh-featured/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Featured in Wales</a>
           </h2>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">Handpicked stories from across Wales</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -106,7 +106,7 @@ const Page = async () => {
       {morePosts.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-            More Wales News
+            <a href="https://wtxnews.com/tag/wales-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">More Wales News</a>
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {morePosts.map(post => <Card11 key={post.id} post={post} />)}
@@ -128,3 +128,4 @@ const Page = async () => {
 }
 
 export default Page
+

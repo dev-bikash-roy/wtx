@@ -19,8 +19,24 @@ export const metadata: Metadata = {
 export const revalidate = 180 // 3 minutes
 
 const Page = async () => {
-  // Fetch England posts
-  const allEnglandPosts = await getWordPressPostsByCategory('england-news', 50)
+  // Fetch England posts + city posts by tag in parallel
+  const [
+    allEnglandPosts,
+    londonPosts,
+    manchesterPosts,
+    birminghamPosts,
+    liverpoolPosts,
+    leedsPosts,
+    bristolPosts,
+  ] = await Promise.all([
+    getWordPressPostsByCategory('england-news', 50),
+    getWordPressPostsByTag('london', 6),
+    getWordPressPostsByTag('manchester', 6),
+    getWordPressPostsByTag('birmingham', 6),
+    getWordPressPostsByTag('liverpool', 6),
+    getWordPressPostsByTag('leeds', 6),
+    getWordPressPostsByTag('bristol', 6),
+  ])
 
   // Helper to filter posts by tags
   const filterByTags = (posts: TPost[], tagHandles: string[]) => {
@@ -29,32 +45,24 @@ const Page = async () => {
     )
   }
 
-  // Helper to filter by location tags
-  const filterByLocation = (posts: TPost[], locations: string[]) => {
-    return posts.filter(post =>
-      post.tags?.some(tag => locations.includes(tag.handle))
-    )
-  }
-
   // Top Stories
   const topStories = allEnglandPosts.slice(0, 10)
-
-  // Location-based posts
-  const londonPosts = filterByLocation(allEnglandPosts, ['london', 'london-news'])
-  const manchesterPosts = filterByLocation(allEnglandPosts, ['manchester'])
-  const birminghamPosts = filterByLocation(allEnglandPosts, ['birmingham'])
-  const liverpoolPosts = filterByLocation(allEnglandPosts, ['liverpool'])
-  const leedsPosts = filterByLocation(allEnglandPosts, ['leeds'])
-  const bristolPosts = filterByLocation(allEnglandPosts, ['bristol'])
 
   // Topic-based posts
   const politicsPosts = filterByTags(allEnglandPosts, ['politics', 'uk-politics', 'prime-minister'])
   const crimePosts = filterByTags(allEnglandPosts, ['crime', 'uk-crime', 'courts'])
   const transportPosts = filterByTags(allEnglandPosts, ['transport', 'rail', 'road'])
-  const healthPosts = filterByTags(allEnglandPosts, ['health', 'nhs'])
-  const educationPosts = filterByTags(allEnglandPosts, ['education', 'schools'])
+  const educationPosts = await getWordPressPostsByTag('education', 4)
+  const ukPoliticsPosts = await getWordPressPostsByTag('uk-politics', 4)
   const economyPosts = filterByTags(allEnglandPosts, ['economy', 'business', 'cost-of-living'])
   const weatherPosts = filterByTags(allEnglandPosts, ['weather', 'environment'])
+  const [nhsRaw, nhsEnglandRaw] = await Promise.all([
+    getWordPressPostsByTag('nhs', 4),
+    getWordPressPostsByTag('nhs-england', 4),
+  ])
+  const nhsPosts = [...nhsRaw, ...nhsEnglandRaw]
+    .filter((p, i, arr) => arr.findIndex(x => x.id === p.id) === i)
+    .slice(0, 4)
 
   // Trending (most recent after top stories)
   const trendingPosts = allEnglandPosts.slice(10, 20)
@@ -144,7 +152,9 @@ const Page = async () => {
       {/* H2: Top Stories in England */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-          Top Stories
+          <a href="https://wtxnews.com/category/england-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">
+            Top Stories
+          </a>
         </h2>
 
         {/* 1 Large Left, 4 Small List Right (Main Section Layout) */}
@@ -163,14 +173,16 @@ const Page = async () => {
       {/* H2: Browse England by Area */}
       <section>
         <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-          Browse England by Area
+          <a href="https://wtxnews.com/category/england-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">
+            Browse England by Area
+          </a>
         </h2>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {/* H3: London */}
           <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 hover:border-primary-500 transition-colors">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              <Link href="/england/london" className="hover:text-primary-600">
+              <Link href="/tag/london" className="hover:text-primary-600">
                 London
               </Link>
             </h3>
@@ -194,7 +206,7 @@ const Page = async () => {
           {/* H3: Manchester */}
           <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 hover:border-primary-500 transition-colors">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              <Link href="/england/manchester" className="hover:text-primary-600">
+              <Link href="/tag/manchester" className="hover:text-primary-600">
                 Manchester
               </Link>
             </h3>
@@ -218,7 +230,7 @@ const Page = async () => {
           {/* H3: Birmingham */}
           <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 hover:border-primary-500 transition-colors">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              <Link href="/england/birmingham" className="hover:text-primary-600">
+              <Link href="/tag/birmingham" className="hover:text-primary-600">
                 Birmingham
               </Link>
             </h3>
@@ -242,7 +254,7 @@ const Page = async () => {
           {/* H3: Liverpool */}
           <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 hover:border-primary-500 transition-colors">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              <Link href="/england/liverpool" className="hover:text-primary-600">
+              <Link href="/tag/liverpool" className="hover:text-primary-600">
                 Liverpool
               </Link>
             </h3>
@@ -266,7 +278,7 @@ const Page = async () => {
           {/* H3: Leeds */}
           <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 hover:border-primary-500 transition-colors">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              <Link href="/england/leeds" className="hover:text-primary-600">
+              <Link href="/tag/leeds" className="hover:text-primary-600">
                 Leeds
               </Link>
             </h3>
@@ -290,7 +302,7 @@ const Page = async () => {
           {/* H3: Bristol */}
           <div className="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 hover:border-primary-500 transition-colors">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              <Link href="/england/bristol" className="hover:text-primary-600">
+              <Link href="/tag/bristol" className="hover:text-primary-600">
                 Bristol
               </Link>
             </h3>
@@ -316,7 +328,9 @@ const Page = async () => {
       {/* H2: Trending in England */}
       <section>
         <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-          Trending in England
+          <a href="https://wtxnews.com/category/england-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">
+            Trending in England
+          </a>
         </h2>
 
         {/* H3: Most read today */}
@@ -324,7 +338,7 @@ const Page = async () => {
           Most Read Today
         </h3>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {trendingPosts.slice(0, 8).map((post) => (
+          {trendingPosts.slice(0, 4).map((post) => (
             <Card11 key={post.id} post={post} />
           ))}
         </div>
@@ -333,14 +347,16 @@ const Page = async () => {
       {/* H2: England News by Topic */}
       <section>
         <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-          England News by Topic
+          <a href="https://wtxnews.com/category/england-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">
+            England News by Topic
+          </a>
         </h2>
 
         {/* H3: Politics */}
         {politicsPosts.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              Politics
+              <a href="https://wtxnews.com/tag/politics/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Politics</a>
             </h3>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {politicsPosts.slice(0, 3).map((post) => (
@@ -354,7 +370,7 @@ const Page = async () => {
         {crimePosts.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              Crime & Courts
+              <a href="https://wtxnews.com/tag/uk-crime/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Crime &amp; Courts</a>
             </h3>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {crimePosts.slice(0, 3).map((post) => (
@@ -368,7 +384,7 @@ const Page = async () => {
         {transportPosts.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              Transport
+              <a href="https://wtxnews.com/tag/transport/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Transport</a>
             </h3>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {transportPosts.slice(0, 3).map((post) => (
@@ -378,14 +394,14 @@ const Page = async () => {
           </div>
         )}
 
-        {/* H3: Health (NHS) */}
-        {healthPosts.length > 0 && (
+        {/* H3: NHS */}
+        {nhsPosts.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              Health (NHS)
+              <a href="https://wtxnews.com/tag/nhs/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">NHS</a>
             </h3>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {healthPosts.slice(0, 3).map((post) => (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {nhsPosts.slice(0, 4).map((post) => (
                 <Card11 key={post.id} post={post} />
               ))}
             </div>
@@ -396,10 +412,24 @@ const Page = async () => {
         {educationPosts.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              Education
+              <a href="https://wtxnews.com/tag/education/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Education</a>
             </h3>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {educationPosts.slice(0, 3).map((post) => (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {educationPosts.slice(0, 4).map((post) => (
+                <Card11 key={post.id} post={post} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* H3: UK Politics */}
+        {ukPoliticsPosts.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
+              <a href="https://wtxnews.com/tag/uk-politics/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">UK Politics</a>
+            </h3>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {ukPoliticsPosts.slice(0, 4).map((post) => (
                 <Card11 key={post.id} post={post} />
               ))}
             </div>
@@ -410,7 +440,7 @@ const Page = async () => {
         {economyPosts.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              Economy & Jobs
+              <a href="https://wtxnews.com/tag/economy/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Economy &amp; Jobs</a>
             </h3>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {economyPosts.slice(0, 3).map((post) => (
@@ -424,7 +454,7 @@ const Page = async () => {
         {weatherPosts.length > 0 && (
           <div className="mb-12">
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
-              Weather & Environment
+              <a href="https://wtxnews.com/tag/weather/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Weather &amp; Environment</a>
             </h3>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {weatherPosts.slice(0, 3).map((post) => (

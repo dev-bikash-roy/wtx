@@ -115,7 +115,7 @@ export default async function NewsBriefingPage() {
         <section>
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-3xl">
-              Today's Main Headlines
+              <a href="https://wtxnews.com/tag/main-headlines/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Today's Main Headlines</a>
             </h2>
             <Link href="/tag/main-headlines" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
               View all →
@@ -137,7 +137,7 @@ export default async function NewsBriefingPage() {
         <section>
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-3xl">
-              UK News Briefing
+              <a href="https://wtxnews.com/tag/uk-news-briefing/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">UK News Briefing</a>
             </h2>
             <Link href="/tag/uk-news-briefing" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
               View all →
@@ -145,7 +145,7 @@ export default async function NewsBriefingPage() {
           </div>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">The essential UK stories you need to know today</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {ukNewsBriefing.slice(0, 8).map(post => (
+            {ukNewsBriefing.slice(0, 4).map(post => (
               <Card11 key={post.id} post={post} />
             ))}
           </div>
@@ -157,7 +157,7 @@ export default async function NewsBriefingPage() {
         <section>
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-3xl">
-              UK Politics
+              <a href="https://wtxnews.com/tag/uk-politics/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">UK Politics</a>
             </h2>
             <Link href="/uk-politics" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
               View all →
@@ -180,7 +180,7 @@ export default async function NewsBriefingPage() {
         <section>
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-3xl">
-              Keir Starmer
+              <a href="https://wtxnews.com/tag/keir-starmer/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Keir Starmer</a>
             </h2>
             <Link href="/tag/keir-starmer" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
               View all →
@@ -188,7 +188,7 @@ export default async function NewsBriefingPage() {
           </div>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">Latest news on the Prime Minister</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {keirStarmer.slice(0, 8).map(post => (
+            {keirStarmer.slice(0, 4).map(post => (
               <Card11 key={post.id} post={post} />
             ))}
           </div>
@@ -200,7 +200,7 @@ export default async function NewsBriefingPage() {
         <section>
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-3xl">
-              World News
+              <a href="https://wtxnews.com/tag/world-news/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">World News</a>
             </h2>
             <Link href="/tag/world-news" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
               View all →
@@ -223,7 +223,7 @@ export default async function NewsBriefingPage() {
         <section>
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-3xl">
-              World News Briefing
+              <a href="https://wtxnews.com/tag/world-news-briefing/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">World News Briefing</a>
             </h2>
             <Link href="/tag/world-news-briefing" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
               View all →
@@ -231,7 +231,7 @@ export default async function NewsBriefingPage() {
           </div>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">The most important international stories summarised</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {worldNewsBriefing.slice(0, 8).map(post => (
+            {worldNewsBriefing.slice(0, 4).map(post => (
               <Card11 key={post.id} post={post} />
             ))}
           </div>
@@ -243,7 +243,7 @@ export default async function NewsBriefingPage() {
         <section>
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-3xl">
-              Donald Trump
+              <a href="https://wtxnews.com/tag/donald-trump/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Donald Trump</a>
             </h2>
             <Link href="/tag/donald-trump" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
               View all →
@@ -251,7 +251,7 @@ export default async function NewsBriefingPage() {
           </div>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">Latest news from the White House</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {donaldTrump.slice(0, 8).map(post => (
+            {donaldTrump.slice(0, 4).map(post => (
               <Card11 key={post.id} post={post} />
             ))}
           </div>
@@ -263,7 +263,7 @@ export default async function NewsBriefingPage() {
         <section>
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-3xl">
-              Daily News Briefing
+              <a href="https://wtxnews.com/tag/daily-news-briefing/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Daily News Briefing</a>
             </h2>
             <Link href="/tag/daily-news-briefing" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
               View all →
@@ -271,7 +271,7 @@ export default async function NewsBriefingPage() {
           </div>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">Your daily roundup of the biggest stories</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {dailyBriefing.slice(0, 8).map(post => (
+            {dailyBriefing.slice(0, 4).map(post => (
               <Card11 key={post.id} post={post} />
             ))}
           </div>
@@ -283,14 +283,14 @@ export default async function NewsBriefingPage() {
         <section>
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 lg:text-3xl">
-              More Briefings
+              <a href="https://wtxnews.com/tag/news-briefing/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">More Briefings</a>
             </h2>
             <Link href="/tag/news-briefing" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
               View all →
             </Link>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {newsBriefing.slice(0, 8).map(post => (
+            {newsBriefing.slice(0, 4).map(post => (
               <Card11 key={post.id} post={post} />
             ))}
           </div>
@@ -309,3 +309,4 @@ export default async function NewsBriefingPage() {
     </div>
   )
 }
+

@@ -28,7 +28,7 @@ const Page = async () => {
 
   const heroPost = allPosts[0]
   const topStories = allPosts.slice(0, 10)
-  const destinations = destinationPosts.slice(0, 8)
+  const destinations = destinationPosts.slice(0, 4)
   const guides = guidePosts.slice(0, 6)
   const morePosts = allPosts.slice(10, 22)
 
@@ -83,7 +83,7 @@ const Page = async () => {
       {topStories.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-            Top Travel Stories
+            <a href="https://wtxnews.com/tag/travel/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Top Travel Stories</a>
           </h2>
           <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
             {topStories[0] && <Card2 size="large" post={topStories[0]} />}
@@ -100,7 +100,7 @@ const Page = async () => {
       {destinations.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
-            Travel Destinations
+            <a href="https://wtxnews.com/tag/travel-destinations/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Travel Destinations</a>
           </h2>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">Places to explore and discover</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -115,7 +115,7 @@ const Page = async () => {
       {guides.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 lg:text-3xl">
-            Travel Guides
+            <a href="https://wtxnews.com/tag/travel-guides/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Travel Guides</a>
           </h2>
           <p className="text-neutral-500 dark:text-neutral-400 mb-8">Tips, advice and how-to guides for your next trip</p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -130,7 +130,7 @@ const Page = async () => {
       {morePosts.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-            More Travel Stories
+            <a href="https://wtxnews.com/tag/travel/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">More Travel Stories</a>
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {morePosts.map(post => (
@@ -160,3 +160,4 @@ const Page = async () => {
 }
 
 export default Page
+

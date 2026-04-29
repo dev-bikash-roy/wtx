@@ -62,6 +62,7 @@ export default async function TagPage({
 
   const topStories = uniquePosts.slice(0, 10)
   const morePosts = uniquePosts.slice(10, 22)
+  const wtxUrl = `https://wtxnews.com/tag/${tag}/`
 
   return (
     <div className="relative container space-y-16 pb-16 lg:space-y-20 lg:pb-20">
@@ -109,7 +110,7 @@ export default async function TagPage({
       {topStories.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-            Top Stories
+            <a href={wtxUrl} target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Top Stories</a>
           </h2>
           <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
             {topStories[0] && <Card2 size="large" post={topStories[0]} />}
@@ -126,7 +127,7 @@ export default async function TagPage({
       {morePosts.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 lg:text-3xl">
-            More Stories
+            <a href={wtxUrl} target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">More Stories</a>
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {morePosts.map((post) => (
