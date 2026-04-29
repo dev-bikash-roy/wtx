@@ -37,7 +37,7 @@ const Page = async ({ params }: { params: Promise<{ handle: string }> }) => {
   const posts = category.posts
   const heroPost = posts[0]
   const topStories = posts.slice(0, 10)
-  const morePosts = posts.slice(10, 22)
+  const morePosts = posts.slice(10, 14)
 
   return (
     <div className={`page-category-${handle}`}>
