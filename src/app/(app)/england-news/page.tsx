@@ -50,7 +50,7 @@ const Page = async () => {
 
   // Topic-based posts
   const politicsPosts = filterByTags(allEnglandPosts, ['politics', 'uk-politics', 'prime-minister'])
-  const crimePosts = filterByTags(allEnglandPosts, ['crime', 'uk-crime', 'courts'])
+  const crimePosts = await getWordPressPostsByTag('uk-crime', 4)
   const transportPosts = filterByTags(allEnglandPosts, ['transport', 'rail', 'road'])
   const educationPosts = await getWordPressPostsByTag('education', 4)
   const ukPoliticsPosts = await getWordPressPostsByTag('uk-politics', 4)
@@ -372,8 +372,8 @@ const Page = async () => {
             <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
               <a href="https://wtxnews.com/tag/uk-crime/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600 transition-colors">Crime &amp; Courts</a>
             </h3>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {crimePosts.slice(0, 3).map((post) => (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {crimePosts.slice(0, 4).map((post) => (
                 <Card11 key={post.id} post={post} />
               ))}
             </div>

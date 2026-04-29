@@ -428,25 +428,89 @@ export class MultiWordPressIntegration {
         }
       }
 
-      // Final fallback: Use a diverse set of placeholder images based on post ID
+      // Final fallback: Use topic-specific images based on post categories/tags
       console.log('[getFeaturedImage] Using fallback placeholder image')
-      const fallbackImages = [
-        'https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // News/general
-        'https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Sports
-        'https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Politics
-        'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Business/Money
-        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Technology
-        'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Travel
-        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Entertainment
-        'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80', // Fashion/Lifestyle
-      ]
 
-      // Use post ID to select a consistent but varied fallback image
-      const imageIndex = wpPost.id % fallbackImages.length
+      // Topic-specific fallback images — matched against post categories/tags
+      const topicFallbacks: Record<string, string> = {
+        // UK regions
+        'england':        'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80', // London skyline
+        'england-news':   'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80',
+        'london':         'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80',
+        'scotland':       'https://images.unsplash.com/photo-1506377585622-bedcbb027afc?w=1000&q=80', // Edinburgh
+        'scottish-news':  'https://images.unsplash.com/photo-1506377585622-bedcbb027afc?w=1000&q=80',
+        'wales':          'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80', // Welsh landscape
+        'wales-news':     'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80',
+        'northern-ireland': 'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?w=1000&q=80', // Belfast
+        'ireland':        'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?w=1000&q=80',
+        // Politics
+        'uk-politics':    'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80', // Parliament
+        'politics':       'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80',
+        'keir-starmer':   'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80',
+        'donald-trump':   'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1000&q=80', // White House
+        'us-politics':    'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1000&q=80',
+        // Sport
+        'football':       'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=1000&q=80', // Football
+        'premier-league': 'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=1000&q=80',
+        'sport':          'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80',
+        'cricket':        'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1000&q=80',
+        'tennis':         'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1000&q=80',
+        'boxing':         'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1000&q=80',
+        'formula-1':      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80',
+        'rugby':          'https://images.unsplash.com/photo-1544298621-35a989e4e54a?w=1000&q=80',
+        // Entertainment
+        'uk-entertainment': 'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=1000&q=80', // Showbiz
+        'celebrities':    'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=1000&q=80',
+        'royal-family':   'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&q=80', // Crown/royals
+        'streaming':      'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=1000&q=80', // Streaming
+        'netflix':        'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=1000&q=80',
+        'music':          'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1000&q=80',
+        // Lifestyle
+        'health':         'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1000&q=80',
+        'nhs':            'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1000&q=80',
+        'fashion':        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80',
+        'fitness':        'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1000&q=80',
+        // Travel
+        'travel':         'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1000&q=80',
+        // Business
+        'business':       'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80',
+        'economy':        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80',
+        // Crime
+        'uk-crime':       'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1000&q=80',
+        'crime':          'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1000&q=80',
+        // World news
+        'world-news':     'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80',
+        'main-headlines': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80',
+      }
+
+      // Try to match by category slug first, then tag slug
+      const allSlugs = [
+        ...(categories.map((c: any) => c.slug) || []),
+        ...(tags.map((t: any) => t.slug) || []),
+      ]
+      for (const slug of allSlugs) {
+        if (topicFallbacks[slug]) {
+          return {
+            alt: decodeHtmlEntities(wpPost.title.rendered),
+            src: topicFallbacks[slug],
+            width: 800,
+            height: 600
+          }
+        }
+      }
+
+      // Generic fallback — WTX News branded placeholder
+      const genericFallbacks = [
+        'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80', // News desk
+        'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80', // Parliament
+        'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80', // London
+        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80', // Business
+      ]
+      const imageIndex = wpPost.id % genericFallbacks.length
 
       return {
         alt: decodeHtmlEntities(wpPost.title.rendered),
-        src: fallbackImages[imageIndex],
+        src: genericFallbacks[imageIndex],
         width: 800,
         height: 600
       }

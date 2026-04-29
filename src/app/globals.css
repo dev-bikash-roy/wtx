@@ -70,3 +70,8 @@ body.dark {
 .post-card-comment-btn {
   display: none !important;
 }
+
+/* Hide category badge on post card images site-wide */
+.category-badge-list {
+  display: none !important;
+}
