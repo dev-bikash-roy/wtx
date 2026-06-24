@@ -68,6 +68,12 @@ const LoginPageContent = () => {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
 
+    if (!auth) {
+      setError('Authentication is not configured.')
+      setIsLoading(false)
+      return
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password)
       // Redirect happens in useEffect

@@ -86,31 +86,35 @@ const Page = async () => {
     getWordPressPostsByCategory('fashion', 4),
     getWordPressPostsByTag('travel', 4),
     getWordPressPostsByTag('travel-tips', 4),
-    getAllPostsWithWordPress({ perPage: 30 }),
+    getAllPostsWithWordPress({ perPage: 60 }),
     getCategoriesWithPosts().catch(() => [])
   ])
 
-  const usedFallbackIds = new Set<number | string>()
+  // Tracks every post already rendered anywhere on the page so the same article
+  // never appears twice across sections.
+  const usedIds = new Set<number | string>()
 
-  // Fallback function ensures we always display some feed without repeating fallbacks across sections
+  // Returns up to `count` posts for a section. Posts already shown elsewhere are
+  // skipped, and any shortfall is topped up from the latest-news pool (also
+  // skipping already-used posts). Whatever is returned is marked as used.
   const getPostsOrFallback = (posts: any[], count: number) => {
-    if (posts && posts.length >= count) return posts.slice(0, count)
+    const picked: any[] = []
 
-    if (posts && posts.length > 0) {
-      // mix with fallback if short
-      const needed = count - posts.length
-      const fallback = latestNewsRaw
-        .filter(p => !posts.find(ep => ep.id === p.id) && !usedFallbackIds.has(p.id))
-        .slice(0, needed)
-      fallback.forEach(f => usedFallbackIds.add(f.id))
-      return [...posts, ...fallback]
+    const tryAdd = (candidates: any[]) => {
+      for (const p of candidates) {
+        if (picked.length >= count) break
+        if (!p || usedIds.has(p.id)) continue
+        picked.push(p)
+        usedIds.add(p.id)
+      }
     }
 
-    const fallback = latestNewsRaw
-      .filter(p => !usedFallbackIds.has(p.id))
-      .slice(0, count)
-    fallback.forEach(f => usedFallbackIds.add(f.id))
-    return fallback
+    // 1) the section's own topic posts
+    tryAdd(posts || [])
+    // 2) top up from the global latest-news pool if the section came up short
+    if (picked.length < count) tryAdd(latestNewsRaw)
+
+    return picked
   }
 
   const topStories = getPostsOrFallback(topStoriesRaw, 6)

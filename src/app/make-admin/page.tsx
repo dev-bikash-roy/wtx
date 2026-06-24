@@ -20,6 +20,11 @@ export default function MakeAdmin() {
 
     setLoading(true)
     try {
+      if (!db) {
+        setMessage('Database is not configured')
+        setLoading(false)
+        return
+      }
       // Update user role to admin
       const userRef = doc(db, 'users', user.firebaseUser.uid)
       await updateDoc(userRef, {

@@ -1,6 +1,6 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
+import { getAuth, Auth } from "firebase/auth";
+import { getFirestore, Firestore } from "firebase/firestore";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -13,19 +13,36 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
-const db = getFirestore(app);
+// Treat the placeholder values from .env.example as "not configured".
+const apiKey = firebaseConfig.apiKey;
+export const isFirebaseConfigured = Boolean(
+    apiKey && !apiKey.includes("your_") && firebaseConfig.projectId
+);
 
-// Initialize Analytics only in browser environment and if supported
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let db: Firestore | null = null;
 let analytics: any = null;
-if (typeof window !== "undefined") {
-    isSupported().then((supported) => {
-        if (supported) {
-            analytics = getAnalytics(app);
-        }
-    });
+
+if (isFirebaseConfigured) {
+    // Initialize Firebase only when real credentials are present, so a missing
+    // local .env doesn't crash the whole app with auth/invalid-api-key.
+    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+    db = getFirestore(app);
+
+    // Initialize Analytics only in browser environment and if supported
+    if (typeof window !== "undefined") {
+        isSupported().then((supported) => {
+            if (supported && app) {
+                analytics = getAnalytics(app);
+            }
+        });
+    }
+} else if (typeof window !== "undefined") {
+    console.warn(
+        "[firebase] Not configured — set NEXT_PUBLIC_FIREBASE_* env vars to enable auth/Firestore. Auth features are disabled."
+    );
 }
 
 export { app, auth, db, analytics };

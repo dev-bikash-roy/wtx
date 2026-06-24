@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   const fetchUserProfile = async (uid: string): Promise<UserProfile | null> => {
+    if (!db) return null;
     try {
       const userDoc = await getDoc(doc(db, "users", uid));
       if (userDoc.exists()) {
@@ -84,11 +85,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       lastLoginAt: new Date(),
     };
 
-    await setDoc(doc(db, "users", firebaseUser.uid), userProfile);
+    if (db) {
+      await setDoc(doc(db, "users", firebaseUser.uid), userProfile);
+    }
     return userProfile;
   };
 
   const updateLastLogin = async (uid: string) => {
+    if (!db) return;
     try {
       await setDoc(doc(db, "users", uid), { lastLoginAt: new Date() }, { merge: true });
     } catch (error) {
@@ -104,6 +108,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    // Firebase not configured (e.g. missing local .env) — render as logged-out.
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         let profile = await fetchUserProfile(firebaseUser.uid);
@@ -127,6 +137,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const loginWithGoogle = async () => {
+    if (!auth) {
+      console.warn("[auth] Firebase not configured — cannot sign in.");
+      return;
+    }
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
@@ -138,6 +152,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
+    if (!auth) return;
     try {
       await signOut(auth);
       router.push("/");

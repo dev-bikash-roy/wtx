@@ -1,4 +1,5 @@
 import { multiWP } from '@/lib/multi-wp-integration'
+import { dedupePosts } from '@/lib/dedupe-posts'
 import { TPost } from './posts'
 
 // Enhanced post fetching that combines local and WordPress posts
@@ -24,21 +25,15 @@ export async function getAllPostsWithWordPress(options: {
     // Get WordPress posts
     const wpPosts = await multiWP.fetchPostsAsTPost(options)
 
-    // Combine and sort by date
-    // Combine and sort by date
+    // Combine and sort by date (newest first) before deduping so the freshest
+    // copy of any republished story is the one that survives.
     const allPosts = [...localPosts, ...wpPosts]
+    allPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
-    // Deduplicate based on ID
-    const uniquePostsMap = new Map()
-    allPosts.forEach(post => {
-      uniquePostsMap.set(post.id, post)
-    })
+    // Deduplicate by id, slug, AND normalized title — catches republished posts
+    // that share a headline but have different WordPress IDs.
+    const uniquePosts = dedupePosts(allPosts)
 
-    const uniquePosts = Array.from(uniquePostsMap.values())
-    uniquePosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-    // TEMPORARILY DISABLED: Strip content to reduce payload size for list views
-    // return uniquePosts.map(post => ({ ...post, content: undefined }))
     return uniquePosts
   } catch (error) {
     console.error('Error fetching WordPress posts:', error)

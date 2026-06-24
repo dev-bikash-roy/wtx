@@ -22,6 +22,12 @@ export default function AdminLogin() {
     setLoading(true)
     setError('')
 
+    if (!auth) {
+      setError('Authentication is not configured.')
+      setLoading(false)
+      return
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password)
       router.push('/admin')

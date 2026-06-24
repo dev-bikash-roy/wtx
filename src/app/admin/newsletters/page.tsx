@@ -21,6 +21,10 @@ export default function AdminNewsletterPage() {
     useEffect(() => {
         const fetchSubscribers = async () => {
             try {
+                if (!db) {
+                    setLoading(false);
+                    return;
+                }
                 const q = query(collection(db, "newsletters"), orderBy("createdAt", "desc"));
                 const querySnapshot = await getDocs(q);
                 const data: Subscriber[] = [];

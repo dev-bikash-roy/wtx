@@ -5,6 +5,9 @@ import { db } from '@/lib/firebase/config'
 // GET /api/posts - Get all posts
 export async function GET(request: Request) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
     const { searchParams } = new URL(request.url)
     // const page = parseInt(searchParams.get('page') || '1') // Firestore pagination is complex, simplified for now
     const limitVal = parseInt(searchParams.get('limit') || '10')
@@ -46,6 +49,9 @@ export async function GET(request: Request) {
 // POST /api/posts - Create a new post
 export async function POST(request: Request) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
     const body = await request.json()
 
     // Validate required fields

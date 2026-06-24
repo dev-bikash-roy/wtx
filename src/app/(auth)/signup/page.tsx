@@ -81,6 +81,12 @@ const SignupPageContent = () => {
       return
     }
 
+    if (!auth) {
+      setError('Authentication is not configured.')
+      setIsLoading(false)
+      return
+    }
+
     try {
       await createUserWithEmailAndPassword(auth, email, password)
       // Success! The useEffect will handle the redirect when user state updates

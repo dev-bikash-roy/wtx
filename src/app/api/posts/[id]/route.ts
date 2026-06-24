@@ -8,6 +8,9 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
     const { id } = await context.params
     const postSnap = await getDoc(doc(db, "posts", id));
 
@@ -31,6 +34,9 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
     const body = await request.json()
 
     if (!body.title || !body.content) {
@@ -75,6 +81,9 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
     const { id } = await context.params
     await deleteDoc(doc(db, "posts", id));
 

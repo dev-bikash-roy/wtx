@@ -4,6 +4,9 @@ import { db } from "@/lib/firebase/config";
 
 export async function POST(request: NextRequest) {
     try {
+        if (!db) {
+            return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+        }
         const body = await request.json();
         const { uid, email } = body;
 

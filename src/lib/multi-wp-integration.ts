@@ -1,6 +1,7 @@
 // Multi-WordPress Site Integration
 import { wpAuth, WordPressSite } from './wordpress-auth'
 import { TPost } from '@/data/posts'
+import { dedupePosts } from './dedupe-posts'
 
 export interface WordPressPost {
   id: number
@@ -431,56 +432,58 @@ export class MultiWordPressIntegration {
       // Final fallback: Use topic-specific images based on post categories/tags
       console.log('[getFeaturedImage] Using fallback placeholder image')
 
-      // Topic-specific fallback images — matched against post categories/tags
-      const topicFallbacks: Record<string, string> = {
+      // Topic-specific fallback images — matched against post categories/tags.
+      // Each topic maps to a POOL of images; a per-post image is chosen from the
+      // pool by post id so two posts sharing a topic don't get the identical photo.
+      const topicFallbacks: Record<string, string[]> = {
         // UK regions
-        'england':        'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80', // London skyline
-        'england-news':   'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80',
-        'london':         'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80',
-        'scotland':       'https://images.unsplash.com/photo-1506377585622-bedcbb027afc?w=1000&q=80', // Edinburgh
-        'scottish-news':  'https://images.unsplash.com/photo-1506377585622-bedcbb027afc?w=1000&q=80',
-        'wales':          'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80', // Welsh landscape
-        'wales-news':     'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80',
-        'northern-ireland': 'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?w=1000&q=80', // Belfast
-        'ireland':        'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?w=1000&q=80',
+        'england':        ['https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80', 'https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=1000&q=80', 'https://images.unsplash.com/photo-1520986606214-8b456906c813?w=1000&q=80'], // London skyline / Big Ben / city
+        'england-news':   ['https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80', 'https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=1000&q=80', 'https://images.unsplash.com/photo-1520986606214-8b456906c813?w=1000&q=80'],
+        'london':         ['https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80', 'https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=1000&q=80', 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=1000&q=80'],
+        'scotland':       ['https://images.unsplash.com/photo-1506377585622-bedcbb027afc?w=1000&q=80', 'https://images.unsplash.com/photo-1565008576549-57569a49371d?w=1000&q=80'], // Edinburgh / Highlands
+        'scottish-news':  ['https://images.unsplash.com/photo-1506377585622-bedcbb027afc?w=1000&q=80', 'https://images.unsplash.com/photo-1565008576549-57569a49371d?w=1000&q=80'],
+        'wales':          ['https://images.unsplash.com/photo-1591030857615-d31cb3a3a36b?w=1000&q=80', 'https://images.unsplash.com/photo-1605540436563-5bca919ae766?w=1000&q=80'], // Welsh castle / coast
+        'wales-news':     ['https://images.unsplash.com/photo-1591030857615-d31cb3a3a36b?w=1000&q=80', 'https://images.unsplash.com/photo-1605540436563-5bca919ae766?w=1000&q=80'],
+        'northern-ireland': ['https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?w=1000&q=80', 'https://images.unsplash.com/photo-1576437740756-c7e60c0b3a17?w=1000&q=80'], // Belfast / Giant's Causeway
+        'ireland':        ['https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?w=1000&q=80', 'https://images.unsplash.com/photo-1576437740756-c7e60c0b3a17?w=1000&q=80'],
         // Politics
-        'uk-politics':    'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80', // Parliament
-        'politics':       'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80',
-        'keir-starmer':   'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80',
-        'donald-trump':   'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1000&q=80', // White House
-        'us-politics':    'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1000&q=80',
+        'uk-politics':    ['https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80', 'https://images.unsplash.com/photo-1605283176568-9b41fde3672e?w=1000&q=80'], // Parliament / Westminster
+        'politics':       ['https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80', 'https://images.unsplash.com/photo-1605283176568-9b41fde3672e?w=1000&q=80'],
+        'keir-starmer':   ['https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80'],
+        'donald-trump':   ['https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1000&q=80'], // White House
+        'us-politics':    ['https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1000&q=80'],
         // Sport
-        'football':       'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=1000&q=80', // Football
-        'premier-league': 'https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=1000&q=80',
-        'sport':          'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80',
-        'cricket':        'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1000&q=80',
-        'tennis':         'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1000&q=80',
-        'boxing':         'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1000&q=80',
-        'formula-1':      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80',
-        'rugby':          'https://images.unsplash.com/photo-1544298621-35a989e4e54a?w=1000&q=80',
+        'football':       ['https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=1000&q=80', 'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1000&q=80'], // Football
+        'premier-league': ['https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=1000&q=80', 'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1000&q=80'],
+        'sport':          ['https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1000&q=80', 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1000&q=80'],
+        'cricket':        ['https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1000&q=80'],
+        'tennis':         ['https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1000&q=80'],
+        'boxing':         ['https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1000&q=80'],
+        'formula-1':      ['https://images.unsplash.com/photo-1504707748692-419802cf939d?w=1000&q=80'],
+        'rugby':          ['https://images.unsplash.com/photo-1544298621-35a989e4e54a?w=1000&q=80'],
         // Entertainment
-        'uk-entertainment': 'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=1000&q=80', // Showbiz
-        'celebrities':    'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=1000&q=80',
-        'royal-family':   'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&q=80', // Crown/royals
-        'streaming':      'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=1000&q=80', // Streaming
-        'netflix':        'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=1000&q=80',
-        'music':          'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1000&q=80',
+        'uk-entertainment': ['https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=1000&q=80'], // Showbiz
+        'celebrities':    ['https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=1000&q=80'],
+        'royal-family':   ['https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&q=80'], // Crown/royals
+        'streaming':      ['https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=1000&q=80'], // Streaming
+        'netflix':        ['https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=1000&q=80'],
+        'music':          ['https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1000&q=80'],
         // Lifestyle
-        'health':         'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1000&q=80',
-        'nhs':            'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1000&q=80',
-        'fashion':        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80',
-        'fitness':        'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1000&q=80',
+        'health':         ['https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1000&q=80'],
+        'nhs':            ['https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1000&q=80'],
+        'fashion':        ['https://images.unsplash.com/photo-1445205170230-053b83016050?w=1000&q=80', 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1000&q=80'],
+        'fitness':        ['https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1000&q=80'],
         // Travel
-        'travel':         'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1000&q=80',
+        'travel':         ['https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1000&q=80', 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1000&q=80'],
         // Business
-        'business':       'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80',
-        'economy':        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80',
+        'business':       ['https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80'],
+        'economy':        ['https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80'],
         // Crime
-        'uk-crime':       'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1000&q=80',
-        'crime':          'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1000&q=80',
+        'uk-crime':       ['https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1000&q=80'],
+        'crime':          ['https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1000&q=80'],
         // World news
-        'world-news':     'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80',
-        'main-headlines': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80',
+        'world-news':     ['https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80'],
+        'main-headlines': ['https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80'],
       }
 
       // Try to match by category slug first, then tag slug
@@ -489,10 +492,11 @@ export class MultiWordPressIntegration {
         ...(tags.map((t: any) => t.slug) || []),
       ]
       for (const slug of allSlugs) {
-        if (topicFallbacks[slug]) {
+        const pool = topicFallbacks[slug]
+        if (pool && pool.length > 0) {
           return {
             alt: decodeHtmlEntities(wpPost.title.rendered),
-            src: topicFallbacks[slug],
+            src: pool[wpPost.id % pool.length],
             width: 800,
             height: 600
           }
@@ -502,9 +506,10 @@ export class MultiWordPressIntegration {
       // Generic fallback — WTX News branded placeholder
       const genericFallbacks = [
         'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&q=80', // News desk
-        'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1000&q=80', // Parliament
-        'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=80', // London
-        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&q=80', // Business
+        'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=1000&q=80', // Newspaper
+        'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1000&q=80', // Reporter
+        'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1000&q=80', // Open book / press
+        'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1000&q=80', // Headlines
       ]
       const imageIndex = wpPost.id % genericFallbacks.length
 
@@ -584,7 +589,9 @@ export class MultiWordPressIntegration {
     tags?: string[]
   } = {}): Promise<TPost[]> {
     const result = await this.fetchAllPosts(options)
-    return result.posts.map(post => this.convertWordPressPostToTPost(post))
+    // Posts arrive sorted newest-first; dedupe by id/slug/title so a republished
+    // story never renders twice in the same feed.
+    return dedupePosts(result.posts.map(post => this.convertWordPressPostToTPost(post)))
   }
 
   // Fetch posts from specific site as TPost

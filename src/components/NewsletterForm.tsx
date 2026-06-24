@@ -34,6 +34,11 @@ const NewsletterForm = ({ category = "General" }: Props) => {
         setMessage('')
 
         try {
+            if (!db) {
+                setStatus('error')
+                setMessage('Newsletter signup is temporarily unavailable.')
+                return
+            }
             const collectionName = 'newsletters'
             await addDoc(collection(db, collectionName), {
                 firstName,
